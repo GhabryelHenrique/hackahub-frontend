@@ -1,0 +1,65 @@
+<header class="nav">
+  <div class="container nav__inner">
+    <app-brand-logo [href]="variant() === 'app' ? '/app' : '/'" />
+
+    <button
+      type="button"
+      class="nav__burger"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-label="Abrir menu"
+    >
+      <app-icon [name]="menuOpen() ? 'x' : 'menu'" [size]="22" />
+    </button>
+
+    <nav class="nav__links" [class.is-open]="menuOpen()" (click)="closeMenus()">
+      @if (variant() === 'app') {
+        <a class="nav__link" routerLink="/app" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+          Meus eventos
+        </a>
+        <a class="nav__link" routerLink="/">Descobrir eventos</a>
+      } @else {
+        <a class="nav__link" routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+          Eventos
+        </a>
+        @if (auth.isAuthenticated()) {
+          <a class="nav__link" routerLink="/app">Meus eventos</a>
+        }
+      }
+
+      <div class="nav__auth">
+        @if (auth.isAuthenticated()) {
+          <div class="usermenu">
+            <button
+              type="button"
+              class="usermenu__trigger"
+              (click)="userMenuOpen.set(!userMenuOpen()); $event.stopPropagation()"
+              [attr.aria-expanded]="userMenuOpen()"
+            >
+              <app-avatar [name]="auth.user()!.name" [size]="32" />
+              <span class="usermenu__name">{{ auth.user()!.name }}</span>
+              <app-icon name="chevron-down" [size]="16" />
+            </button>
+            @if (userMenuOpen()) {
+              <div class="usermenu__backdrop" (click)="userMenuOpen.set(false)"></div>
+              <div class="usermenu__dropdown" role="menu">
+                <a class="usermenu__item" routerLink="/app/perfil" role="menuitem">
+                  <app-icon name="user" [size]="16" /> Perfil
+                </a>
+                <a class="usermenu__item" routerLink="/app/candidaturas" role="menuitem">
+                  <app-icon name="briefcase" [size]="16" /> Candidaturas de mentor
+                </a>
+                <button type="button" class="usermenu__item usermenu__item--danger" (click)="logout()" role="menuitem">
+                  <app-icon name="log-out" [size]="16" /> Sair
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a class="nav__link" routerLink="/login">Entrar</a>
+          <app-button size="sm" [routerLink]="'/cadastro'">Criar conta</app-button>
+        }
+      </div>
+    </nav>
+  </div>
+</header>

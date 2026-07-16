@@ -1,0 +1,51 @@
+<div class="container me">
+  <header class="me__head">
+    <div>
+      <h1>Meus eventos</h1>
+      <p class="text-muted">Seus hackathons como participante e como mentor.</p>
+    </div>
+    <app-button variant="outline" routerLink="/">
+      <app-icon slot="icon" name="compass" [size]="18" /> Descobrir eventos
+    </app-button>
+  </header>
+
+  @if (memberships().length) {
+    <div class="me__tabs">
+      <app-tabs [tabs]="tabs" [(active)]="filter" />
+    </div>
+
+    @if (filtered().length) {
+      <div class="me__grid">
+        @for (m of filtered(); track m.id) {
+          <a class="me-card" [routerLink]="['/app/eventos', m.hackathonId]">
+            <div class="me-card__cover" [style.--hue]="hueFromString(m.hackathon.slug)">
+              <span class="me-card__role">{{ ROLE_LABEL[m.role] }}</span>
+            </div>
+            <div class="me-card__body">
+              <span class="me-card__org">{{ m.hackathon.organization.name }}</span>
+              <h3 class="me-card__name">{{ m.hackathon.name }}</h3>
+              <div class="me-card__meta">
+                <app-icon name="calendar" [size]="15" />
+                {{ dateRange(m.hackathon.startsAt, m.hackathon.endsAt) }}
+              </div>
+            </div>
+            <div class="me-card__foot">
+              <app-badge [tone]="STATUS_TONE[m.status]" [dot]="true">{{ STATUS_LABEL[m.status] }}</app-badge>
+              <span class="me-card__cta">Abrir <app-icon name="arrow-right" [size]="15" /></span>
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <app-empty-state icon="filter" title="Nenhum evento neste filtro" description="Você ainda não tem participações com esse papel." />
+    }
+  } @else {
+    <app-empty-state
+      icon="rocket"
+      title="Você ainda não participa de nenhum evento"
+      description="Descubra hackathons no catálogo e entre como participante ou candidate-se como mentor."
+    >
+      <app-button routerLink="/">Explorar o catálogo</app-button>
+    </app-empty-state>
+  }
+</div>

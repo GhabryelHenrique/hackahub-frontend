@@ -1,0 +1,53 @@
+<div class="container profile">
+  <h1 class="profile__title">Perfil</h1>
+
+  @if (auth.user(); as u) {
+    <div class="profile__grid">
+      <app-card class="profile__identity">
+        <app-avatar [name]="u.name" [size]="72" />
+        <h2 class="profile__name">{{ u.name }}</h2>
+        <p class="profile__email"><app-icon name="mail" [size]="15" /> {{ u.email }}</p>
+        <dl class="profile__facts">
+          <div><dt>Documento</dt><dd>{{ u.documentId }}</dd></div>
+          <div><dt>Nascimento</dt><dd>{{ fullDate(u.birthDate) }}</dd></div>
+          <div><dt>Membro desde</dt><dd>{{ fullDate(u.createdAt) }}</dd></div>
+        </dl>
+      </app-card>
+
+      <app-card class="profile__form-card">
+        <h2 class="profile__subtitle">Editar dados</h2>
+        <form class="profile__form" [formGroup]="form" (ngSubmit)="save()">
+          <app-form-field
+            label="Nome completo"
+            [required]="true"
+            [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''"
+          >
+            <input class="control" formControlName="name" />
+          </app-form-field>
+          <app-form-field label="Telefone">
+            <input class="control" formControlName="phone" placeholder="(11) 90000-0000" />
+          </app-form-field>
+          <div class="profile__row">
+            <app-form-field label="Instituição">
+              <input class="control" formControlName="institution" placeholder="Universidade / empresa" />
+            </app-form-field>
+            <app-form-field label="Curso / área">
+              <input class="control" formControlName="course" placeholder="Ex.: Engenharia" />
+            </app-form-field>
+          </div>
+          <div class="profile__row">
+            <app-form-field label="GitHub">
+              <input class="control" formControlName="githubUrl" placeholder="https://github.com/você" />
+            </app-form-field>
+            <app-form-field label="LinkedIn">
+              <input class="control" formControlName="linkedinUrl" placeholder="https://linkedin.com/in/você" />
+            </app-form-field>
+          </div>
+          <div class="profile__actions">
+            <app-button type="submit" [loading]="saving()">Salvar alterações</app-button>
+          </div>
+        </form>
+      </app-card>
+    </div>
+  }
+</div>

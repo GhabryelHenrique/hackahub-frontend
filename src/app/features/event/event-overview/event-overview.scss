@@ -1,0 +1,63 @@
+:host { display: block; }
+
+.notice {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--sp-6);
+}
+.notice strong { display: block; }
+.notice p { font-size: var(--fs-sm); opacity: 0.9; }
+.notice--warning { background: var(--warning-bg); color: #92400e; }
+.notice--warning app-icon { color: var(--warning); }
+
+.ov {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--sp-8);
+  align-items: start;
+}
+.ov__section { margin-bottom: var(--sp-8); }
+.ov__section h2 { font-size: var(--fs-2xl); margin-bottom: var(--sp-4); }
+.ov__desc { color: var(--text-muted); font-size: var(--fs-lg); line-height: 1.7; white-space: pre-line; }
+
+.ov__challenges { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--sp-4); }
+.ov__challenge {
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--sp-4);
+  background: var(--surface); display: flex; flex-direction: column; gap: var(--sp-2);
+}
+.ov__challenge h3 { font-size: var(--fs-lg); }
+.ov__challenge p { color: var(--text-muted); font-size: var(--fs-sm); }
+
+.ov__aside { display: flex; flex-direction: column; gap: var(--sp-4); }
+.ov__actions { display: flex; flex-direction: column; gap: var(--sp-3); }
+.ov__action {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.ov__action:hover { text-decoration: none; border-color: var(--brand-blue); box-shadow: var(--shadow-sm); }
+.ov__action-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--radius); flex: none;
+  background: var(--brand-gradient-soft); color: var(--brand-blue);
+}
+.ov__action-text { flex: 1; display: flex; flex-direction: column; }
+.ov__action-text small { color: var(--text-subtle); font-size: var(--fs-sm); }
+
+.ov__facts h3 { font-size: var(--fs-lg); margin-bottom: var(--sp-3); }
+.ov__facts dl { display: flex; flex-direction: column; gap: var(--sp-3); }
+.ov__facts dl > div { display: flex; justify-content: space-between; gap: var(--sp-4); font-size: var(--fs-sm); }
+.ov__facts dt { color: var(--text-subtle); }
+.ov__facts dd { font-weight: 600; text-align: right; }
+
+@media (max-width: 900px) { .ov { grid-template-columns: 1fr; } }

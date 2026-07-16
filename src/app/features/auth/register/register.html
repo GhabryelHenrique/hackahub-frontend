@@ -1,0 +1,59 @@
+<div class="auth">
+  <div class="auth__card">
+    <div class="auth__strip"></div>
+    <div class="auth__inner">
+      <div class="login__brand"><app-brand-logo /></div>
+      <h1 class="auth__title">Criar conta</h1>
+      <p class="auth__sub">
+        Uma única identidade para todos os eventos. Seu papel (participante ou mentor) é
+        definido ao entrar em cada hackathon.
+      </p>
+
+      @if (error()) {
+        <div class="auth__error"><app-icon name="alert-circle" [size]="18" /> {{ error() }}</div>
+      }
+
+      <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()">
+        <app-form-field label="Nome completo" for="name" [required]="true" [error]="field('name')">
+          <input id="name" class="control" formControlName="name" autocomplete="name" placeholder="Seu nome" />
+        </app-form-field>
+
+        <app-form-field label="E-mail" for="email" [required]="true" [error]="field('email')">
+          <input id="email" class="control" type="email" formControlName="email" autocomplete="email" placeholder="voce@email.com" />
+        </app-form-field>
+
+        <app-form-field label="Senha" for="password" [required]="true" hint="Mínimo de 6 caracteres." [error]="field('password')">
+          <input id="password" class="control" type="password" formControlName="password" autocomplete="new-password" placeholder="••••••••" />
+        </app-form-field>
+
+        <div class="auth__row">
+          <app-form-field label="CPF" for="documentId" [required]="true" [error]="field('documentId')">
+            <input id="documentId" class="control" formControlName="documentId" placeholder="000.000.000-00" />
+          </app-form-field>
+          <app-form-field label="Telefone" for="phone" [required]="true" [error]="field('phone')">
+            <input id="phone" class="control" formControlName="phone" autocomplete="tel" placeholder="(11) 90000-0000" />
+          </app-form-field>
+        </div>
+
+        <app-form-field label="Data de nascimento" for="birthDate" [required]="true" [error]="field('birthDate')">
+          <input id="birthDate" class="control" type="date" formControlName="birthDate" />
+        </app-form-field>
+
+        <label class="auth__terms">
+          <input type="checkbox" formControlName="acceptedTerms" />
+          <span>
+            Li e aceito os <a href="#" (click)="$event.preventDefault()">termos de uso</a> e a política de
+            privacidade (LGPD).
+          </span>
+        </label>
+        @if (field('acceptedTerms')) {
+          <p class="auth__error" role="alert"><app-icon name="alert-circle" [size]="16" /> {{ field('acceptedTerms') }}</p>
+        }
+
+        <app-button type="submit" [block]="true" [loading]="submitting()">Criar conta</app-button>
+      </form>
+
+      <p class="auth__foot">Já tem conta? <a routerLink="/login">Entrar</a></p>
+    </div>
+  </div>
+</div>

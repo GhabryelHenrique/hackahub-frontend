@@ -1,0 +1,46 @@
+<div class="container apps">
+  <header class="apps__head">
+    <div>
+      <h1>Minhas candidaturas de mentor</h1>
+      <p class="text-muted">Acompanhe o status das suas candidaturas em cada evento.</p>
+    </div>
+    <app-button variant="outline" routerLink="/">
+      <app-icon slot="icon" name="compass" [size]="18" /> Explorar eventos
+    </app-button>
+  </header>
+
+  @if (applications().length) {
+    <div class="apps__list">
+      @for (a of applications(); track a.id) {
+        <div class="app-item">
+          <div class="app-item__main">
+            <span class="app-item__org">{{ a.hackathon.organization.name }}</span>
+            <a class="app-item__name" [routerLink]="['/app/eventos', a.hackathonId]">{{ a.hackathon.name }}</a>
+            <span class="app-item__date">{{ dateRange(a.hackathon.startsAt, a.hackathon.endsAt) }}</span>
+            @if (a.mentorProfile?.expertise?.length) {
+              <div class="app-item__tags">
+                @for (e of a.mentorProfile!.expertise; track e) { <span class="app-tag">{{ e }}</span> }
+              </div>
+            }
+          </div>
+          <div class="app-item__side">
+            <app-badge [tone]="STATUS_TONE[a.status]" [dot]="true">{{ STATUS_LABEL[a.status] }}</app-badge>
+            @if (a.status === 'APPROVED') {
+              <a class="app-item__link" [routerLink]="['/app/eventos', a.hackathonId, 'mentoria']">
+                Painel de mentoria <app-icon name="arrow-right" [size]="15" />
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <app-empty-state
+      icon="lightbulb"
+      title="Você ainda não se candidatou como mentor"
+      description="Encontre um evento no catálogo e use “Candidatar-se como mentor” na página do evento."
+    >
+      <app-button routerLink="/">Explorar o catálogo</app-button>
+    </app-empty-state>
+  }
+</div>

@@ -1,0 +1,54 @@
+<section class="event-head" [style.--hue]="hue()">
+  <div class="container">
+    <a class="event-head__back" routerLink="/app">
+      <app-icon name="arrow-left" [size]="16" /> Meus eventos
+    </a>
+
+    @if (head(); as ev) {
+      <div class="event-head__top">
+        <div class="stack gap-2">
+          <span class="event-head__org">{{ ev.organization.name }}</span>
+          <h1 class="event-head__title">{{ ev.name }}</h1>
+          <div class="row wrap gap-3 event-head__meta">
+            <span class="row gap-1"><app-icon name="calendar" [size]="16" /> {{ dateRange(ev.startsAt, ev.endsAt) }}</span>
+            <span class="row gap-1"><app-icon name="users" [size]="16" /> {{ ev.participantsCount }} participantes</span>
+          </div>
+        </div>
+        <div class="event-head__roles">
+          @for (m of memberships(); track m.id) {
+            <app-badge [tone]="STATUS_TONE[m.status]" [dot]="true">
+              {{ ROLE_LABEL[m.role] }} · {{ STATUS_LABEL[m.status] }}
+            </app-badge>
+          }
+        </div>
+      </div>
+    } @else if (ctx.loading()) {
+      <app-skeleton width="55%" height="34px" />
+      <div style="height: 12px"></div>
+      <app-skeleton width="35%" height="18px" />
+    } @else {
+      <h1 class="event-head__title">Evento indisponível</h1>
+      <p class="event-head__meta">{{ ctx.error() ?? 'Não foi possível carregar o evento.' }}</p>
+    }
+  </div>
+</section>
+
+<nav class="event-nav" aria-label="Seções do evento">
+  <div class="container event-nav__inner">
+    @for (item of navItems(); track item.label) {
+      <a
+        class="event-nav__link"
+        [routerLink]="item.link"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+      >
+        <app-icon [name]="item.icon" [size]="17" />
+        {{ item.label }}
+      </a>
+    }
+  </div>
+</nav>
+
+<div class="container event-body">
+  <router-outlet />
+</div>

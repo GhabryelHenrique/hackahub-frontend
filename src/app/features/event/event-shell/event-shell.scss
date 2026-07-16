@@ -1,0 +1,74 @@
+:host { display: block; }
+
+.event-head {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 60%, var(--surface-muted) 100%),
+    linear-gradient(135deg, hsl(var(--hue) 70% 42%) 0%, hsl(calc(var(--hue) - 40) 75% 46%) 55%, var(--brand-orange) 130%);
+  color: #fff;
+  padding-block: var(--sp-8) var(--sp-12);
+}
+.event-head__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: var(--sp-6);
+}
+.event-head__back:hover { color: #fff; text-decoration: none; }
+
+.event-head__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  flex-wrap: wrap;
+}
+.event-head__org { font-size: var(--fs-sm); font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.05em; }
+.event-head__title { color: #fff; font-size: var(--fs-4xl); max-width: 20ch; }
+.event-head__meta { color: rgba(255, 255, 255, 0.92); font-size: var(--fs-sm); }
+.event-head__roles { display: flex; flex-direction: column; gap: var(--sp-2); align-items: flex-end; }
+
+.event-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+/* Desvanece o conteúdo que passa sob a barra fixa, em vez de um corte abrupto. */
+.event-nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: var(--sp-6);
+  background: linear-gradient(to bottom, var(--surface), transparent);
+  pointer-events: none;
+}
+.event-nav__inner { display: flex; gap: var(--sp-2); overflow-x: auto; }
+.event-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--sp-4) var(--sp-3);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.event-nav__link:hover { color: var(--text); text-decoration: none; }
+.event-nav__link.is-active { color: var(--brand-navy); border-bottom-color: var(--brand-orange); }
+
+.event-body { padding-block: var(--sp-8); }
+
+@media (max-width: 640px) {
+  .event-head__roles { align-items: flex-start; }
+  .event-head__title { font-size: var(--fs-3xl); }
+}

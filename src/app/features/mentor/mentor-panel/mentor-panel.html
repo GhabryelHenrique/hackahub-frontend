@@ -1,0 +1,48 @@
+<div class="mp">
+  <section>
+    <h2 class="mp__title">Times que você mentora</h2>
+    @if (loading()) {
+      <app-skeleton width="100%" height="120px" radius="var(--radius-lg)" />
+    } @else if (teams().length) {
+      <div class="mp__teams">
+        @for (t of teams(); track t.id) {
+          <app-card class="mp-team">
+            <div class="mp-team__head">
+              <h3>{{ t.name }}</h3>
+              <app-badge tone="brand">{{ t.members.length }} integrantes</app-badge>
+            </div>
+            @if (t.description) { <p class="mp-team__desc">{{ t.description }}</p> }
+            <div class="mp-team__members">
+              @for (m of t.members; track m.id) {
+                <span class="mp-avatar"><app-avatar [name]="m.name" [size]="30" /> {{ m.name }}</span>
+              }
+            </div>
+            @if (t.challenges.length) {
+              <div class="mp-team__chips">
+                @for (c of t.challenges; track c.id) { <span class="mp-chip">{{ c.title }}</span> }
+              </div>
+            }
+          </app-card>
+        }
+      </div>
+    } @else {
+      <app-empty-state
+        icon="users"
+        title="Nenhum time atribuído ainda"
+        description="Quando a organização associar times a você, eles aparecerão aqui."
+      />
+    }
+  </section>
+
+  <!-- Estrutura para V1 (docs §4.8 / §8) -->
+  <section class="mp__help">
+    <div class="mp__help-head">
+      <h2 class="mp__title">Pedidos de ajuda</h2>
+      <app-badge tone="neutral">Em breve</app-badge>
+    </div>
+    <div class="mp__help-empty">
+      <app-icon name="lightbulb" [size]="24" />
+      <p>A fila de pedidos de ajuda dos times chega na próxima versão. A estrutura já está preparada.</p>
+    </div>
+  </section>
+</div>

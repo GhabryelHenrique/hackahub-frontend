@@ -1,0 +1,32 @@
+<h2 class="invites__title">Convites recebidos</h2>
+
+@if (loading()) {
+  <app-skeleton width="100%" height="80px" radius="var(--radius-lg)" />
+} @else if (invites().length) {
+  <div class="invites">
+    @for (i of invites(); track i.id) {
+      <app-card class="invite" [padded]="false">
+        <div class="invite__inner">
+          <app-avatar [name]="i.fromUser.name" [size]="42" />
+          <div class="invite__info">
+            <p class="invite__text">
+              <strong>{{ i.fromUser.name }}</strong> convidou você para o time
+              <strong>{{ i.team.name }}</strong>
+            </p>
+          </div>
+          <div class="invite__actions">
+            <app-button variant="outline" size="sm" [disabled]="busyId() === i.id" (click)="decline(i)">Recusar</app-button>
+            <app-button size="sm" [loading]="busyId() === i.id" (click)="accept(i)">
+              <app-icon slot="icon" name="check" [size]="16" /> Aceitar
+            </app-button>
+          </div>
+        </div>
+      </app-card>
+    }
+  </div>
+  <p class="invites__hint">
+    <app-icon name="info" [size]="15" /> Ao aceitar, se você já estiver em outro time deste evento, será necessário sair dele antes.
+  </p>
+} @else {
+  <app-empty-state icon="mail" title="Nenhum convite pendente" description="Quando um líder de time convidar você, o convite aparecerá aqui." />
+}

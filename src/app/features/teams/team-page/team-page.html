@@ -1,0 +1,156 @@
+@if (loading()) {
+  <app-skeleton width="100%" height="220px" radius="var(--radius-lg)" />
+} @else if (myTeam(); as team) {
+  <!-- COM TIME -->
+  <div class="team">
+    <app-card class="team__main">
+      <header class="team__head">
+        <div>
+          <span class="team__eyebrow">Meu time</span>
+          <h2 class="team__name">{{ team.name }}</h2>
+          @if (team.description) { <p class="team__desc">{{ team.description }}</p> }
+        </div>
+        @if (isLeader()) {
+          <app-button size="sm" (click)="openInvite()">
+            <app-icon slot="icon" name="user-plus" [size]="16" /> Convidar
+          </app-button>
+        }
+      </header>
+
+      <div class="team__members">
+        <h3 class="team__subtitle">Integrantes <span class="team__count">{{ team.members.length }}@if (ctx.teamMaxSize()){ / {{ ctx.teamMaxSize() }} }</span></h3>
+        <ul class="members">
+          @for (m of team.members; track m.id) {
+            <li class="member">
+              <app-avatar [name]="m.name" [size]="38" />
+              <div class="member__info">
+                <span class="member__name">
+                  {{ m.name }}
+                  @if (m.id === team.leaderId) { <app-badge tone="warning"><app-icon name="crown" [size]="12" /> Líder</app-badge> }
+                  @if (m.id === myId()) { <span class="member__you">você</span> }
+                </span>
+                <span class="member__email">{{ m.email }}</span>
+              </div>
+              @if (isLeader() && m.id !== team.leaderId) {
+                <button type="button" class="member__remove" (click)="removeMember(m)" [disabled]="busy()" aria-label="Remover">
+                  <app-icon name="trash" [size]="16" />
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="team__challenges">
+        <div class="row" style="justify-content: space-between">
+          <h3 class="team__subtitle">Desafios selecionados</h3>
+          @if (isLeader()) {
+            <a class="team__edit" [routerLink]="['/app/eventos', hackathonId(), 'desafios']">
+              <app-icon name="edit" [size]="15" /> Editar
+            </a>
+          }
+        </div>
+        @if (team.challenges.length) {
+          <div class="chips">
+            @for (c of team.challenges; track c.id) {
+              <span class="chip"><app-icon name="target" [size]="14" /> {{ c.title }}</span>
+            }
+          </div>
+        } @else {
+          <p class="text-subtle fs-sm">Nenhum desafio selecionado ainda.</p>
+        }
+      </div>
+    </app-card>
+
+    <!-- Solicitações de entrada (só líder) -->
+    @if (isLeader()) {
+      <app-card class="team__requests">
+        <h3 class="team__subtitle">Solicitações de entrada</h3>
+        @if (requests().length) {
+          <ul class="requests">
+            @for (r of requests(); track r.id) {
+              <li class="request">
+                <app-avatar [name]="r.user.name" [size]="34" />
+                <span class="request__name">{{ r.user.name }}</span>
+                <div class="request__actions">
+                  <app-button size="sm" variant="outline" [disabled]="busy()" (click)="reject(r)">Recusar</app-button>
+                  <app-button size="sm" [disabled]="busy()" (click)="approve(r)">Aprovar</app-button>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="text-subtle fs-sm">Nenhuma solicitação pendente.</p>
+        }
+      </app-card>
+    }
+  </div>
+} @else {
+  <!-- SEM TIME (docs §4.5) -->
+  <div class="team__empty">
+    <app-card class="create">
+      <h2 class="team__subtitle">Criar um time</h2>
+      <p class="text-muted fs-sm">Você será o líder e poderá convidar participantes.</p>
+      <form class="create__form" [formGroup]="createForm" (ngSubmit)="createTeam()">
+        <app-form-field
+          label="Nome do time"
+          [required]="true"
+          [error]="createForm.controls.name.touched && createForm.controls.name.invalid ? 'Informe um nome (mín. 2 caracteres).' : ''"
+        >
+          <input class="control" formControlName="name" placeholder="Ex.: Os Inovadores" />
+        </app-form-field>
+        <app-form-field label="Descrição" hint="Opcional — conte o foco do time.">
+          <textarea class="control" rows="3" formControlName="description" placeholder="No que o time vai trabalhar?"></textarea>
+        </app-form-field>
+        <app-button type="submit" [loading]="creating()">Criar time</app-button>
+      </form>
+    </app-card>
+
+    <div class="browse">
+      <h2 class="team__subtitle">Procurar times</h2>
+      <p class="rule"><app-icon name="info" [size]="15" /> Você pode fazer parte de <strong>um time por evento</strong>.</p>
+      @if (otherTeams().length) {
+        <ul class="browse__list">
+          @for (t of otherTeams(); track t.id) {
+            <li class="browse__item">
+              <div class="browse__info">
+                <strong>{{ t.name }}</strong>
+                @if (t.description) { <p>{{ t.description }}</p> }
+                <span class="browse__count"><app-icon name="users" [size]="14" /> {{ t.members.length }} integrantes</span>
+              </div>
+              @if (requestedTeamIds().has(t.id)) {
+                <app-badge tone="info">Solicitado</app-badge>
+              } @else {
+                <app-button size="sm" variant="outline" (click)="requestJoin(t.id)">Solicitar entrada</app-button>
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <app-empty-state icon="users" title="Nenhum time ainda" description="Seja o primeiro a criar um time neste evento." />
+      }
+    </div>
+  </div>
+}
+
+<!-- Modal de convite -->
+<app-modal [open]="inviteOpen()" title="Convidar participante" (close)="inviteOpen.set(false)">
+  <app-form-field label="Buscar participante" hint="Busque por nome ou e-mail entre os participantes do evento.">
+    <input class="control" [value]="inviteSearch()" (input)="onInviteSearch($any($event.target).value)" placeholder="Digite um nome…" />
+  </app-form-field>
+  <ul class="invite-results">
+    @for (u of inviteResults(); track u.id) {
+      <li class="invite-result">
+        <app-avatar [name]="u.name" [size]="34" />
+        <div class="invite-result__info"><strong>{{ u.name }}</strong><small>{{ u.email }}</small></div>
+        <app-button size="sm" [disabled]="inviting()" (click)="invite(u)">Convidar</app-button>
+      </li>
+    } @empty {
+      @if (inviteSearch()) {
+        <li class="invite-empty">Nenhum participante encontrado.</li>
+      } @else {
+        <li class="invite-empty">Digite para buscar participantes do evento.</li>
+      }
+    }
+  </ul>
+</app-modal>

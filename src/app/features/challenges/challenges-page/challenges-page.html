@@ -1,0 +1,56 @@
+<div class="ch__head">
+  <div>
+    <h2 class="ch__title">Desafios</h2>
+    <p class="text-muted fs-sm">
+      @if (myTeam()) {
+        @if (isLeader()) { Selecione os desafios que o time <strong>{{ myTeam()!.name }}</strong> vai atacar. }
+        @else { Desafios escolhidos pelo líder do time <strong>{{ myTeam()!.name }}</strong>. }
+      } @else { Desafios disponíveis neste evento. }
+    </p>
+  </div>
+  @if (myTeam() && isLeader()) {
+    <app-button [loading]="saving()" [disabled]="!dirty()" (click)="save()">Salvar seleção</app-button>
+  }
+</div>
+
+@if (loading()) {
+  <app-skeleton width="100%" height="140px" radius="var(--radius-lg)" />
+} @else if (!challenges().length) {
+  <app-empty-state icon="target" title="Nenhum desafio publicado" description="A organização ainda não publicou os desafios deste evento." />
+} @else {
+  @if (!myTeam()) {
+    <div class="notice">
+      <app-icon name="info" [size]="18" />
+      <span>Você precisa fazer parte de um time para selecionar desafios.
+        <a [routerLink]="['/app/eventos', hackathonId(), 'time']">Ir para Meu time</a>.
+      </span>
+    </div>
+  } @else if (!isLeader()) {
+    <div class="notice">
+      <app-icon name="info" [size]="18" />
+      <span>Apenas o líder do time pode alterar a seleção de desafios.</span>
+    </div>
+  }
+
+  <div class="ch__grid">
+    @for (c of challenges(); track c.id) {
+      <button
+        type="button"
+        class="ch-card"
+        [class.is-selected]="isSelected(c.id)"
+        [class.is-readonly]="!isLeader() || !myTeam()"
+        [disabled]="!isLeader() || !myTeam()"
+        (click)="toggle(c.id)"
+      >
+        <div class="ch-card__top">
+          <app-badge tone="brand">{{ c.category }}</app-badge>
+          <span class="ch-card__check" [class.on]="isSelected(c.id)">
+            @if (isSelected(c.id)) { <app-icon name="check" [size]="14" /> }
+          </span>
+        </div>
+        <h3 class="ch-card__title">{{ c.title }}</h3>
+        <p class="ch-card__desc">{{ c.description }}</p>
+      </button>
+    }
+  </div>
+}

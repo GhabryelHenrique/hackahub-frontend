@@ -1,0 +1,111 @@
+<!-- Hero (docs §4.1) -->
+<section class="hero">
+  <div class="container hero__inner">
+    <span class="hero__eyebrow">Plataforma de hackathons</span>
+    <h1 class="hero__title">
+      Encontre e participe de <span class="hero__accent">hackathons</span>
+    </h1>
+    <p class="hero__sub">
+      Descubra eventos, candidate-se como participante ou mentor, monte seu time e escolha
+      desafios — tudo em um só lugar.
+    </p>
+
+    <form class="hero__search" (submit)="$event.preventDefault()" role="search">
+      <app-icon name="search" [size]="20" />
+      <input
+        class="hero__search-input"
+        type="search"
+        name="search"
+        placeholder="Buscar por nome, tema ou organização…"
+        [value]="searchModel()"
+        (input)="onSearchInput($any($event.target).value)"
+        aria-label="Buscar eventos"
+      />
+    </form>
+  </div>
+  <div class="hero__glow" aria-hidden="true"></div>
+</section>
+
+<!-- Filtros + resultados -->
+<section class="container catalog">
+  <div class="catalog__bar">
+    <div class="catalog__filters">
+      <label class="sr-only" for="mode">Modo de inscrição</label>
+      <select
+        id="mode"
+        class="control catalog__select"
+        [value]="registrationMode()"
+        (change)="setMode($any($event.target).value)"
+      >
+        <option value="">Todos os modos de inscrição</option>
+        @for (opt of REGISTRATION_OPTIONS; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
+
+      @if (hasFilters()) {
+        <button type="button" class="catalog__clear" (click)="clearFilters()">
+          <app-icon name="x" [size]="15" /> Limpar filtros
+        </button>
+      }
+    </div>
+
+    @if (view().status === 'ok') {
+      <span class="catalog__count">
+        {{ $any(view()).data.total }}
+        {{ $any(view()).data.total === 1 ? 'evento' : 'eventos' }}
+      </span>
+    }
+  </div>
+
+  @switch (view().status) {
+    @case ('loading') {
+      <div class="catalog__grid">
+        @for (s of skeletons; track $index) {
+          <div class="skel-card">
+            <app-skeleton height="128px" radius="var(--radius-lg)" />
+            <app-skeleton width="40%" height="12px" />
+            <app-skeleton width="80%" height="20px" />
+            <app-skeleton width="100%" height="14px" />
+          </div>
+        }
+      </div>
+    }
+    @case ('error') {
+      <app-empty-state
+        icon="alert-circle"
+        title="Não foi possível carregar os eventos"
+        description="Verifique sua conexão e tente novamente."
+      >
+        <app-button variant="outline" (click)="goToPage(1)">Tentar de novo</app-button>
+      </app-empty-state>
+    }
+    @case ('ok') {
+      @if ($any(view()).data.data.length) {
+        <div class="catalog__grid">
+          @for (ev of $any(view()).data.data; track ev.id) {
+            <app-event-card [event]="ev" />
+          }
+        </div>
+        <div class="catalog__pagination">
+          <app-pagination
+            [page]="$any(view()).data.page"
+            [total]="$any(view()).data.total"
+            [pageSize]="$any(view()).data.pageSize"
+            (pageChange)="goToPage($event)"
+          />
+        </div>
+      } @else {
+        <app-empty-state
+          icon="search"
+          title="Nenhum evento encontrado"
+          description="Ajuste a busca ou os filtros para ver mais eventos."
+        >
+          @if (hasFilters()) {
+            <app-button variant="outline" (click)="clearFilters()">Limpar filtros</app-button>
+          }
+        </app-empty-state>
+      }
+    }
+  }
+</section>

@@ -1,0 +1,185 @@
+@switch (view().status) {
+  @case ('loading') {
+    <div class="detail-cover detail-cover--skeleton" [style.--hue]="hue()"></div>
+    <div class="container detail-load">
+      <app-skeleton width="50%" height="34px" />
+      <app-skeleton width="30%" height="18px" />
+      <app-skeleton width="100%" height="120px" />
+    </div>
+  }
+  @case ('error') {
+    <div class="container" style="padding-block: var(--sp-16)">
+      <app-empty-state
+        icon="alert-circle"
+        title="Evento não encontrado"
+        description="Este evento pode ter sido removido ou não é público."
+      >
+        <app-button routerLink="/">Voltar ao catálogo</app-button>
+      </app-empty-state>
+    </div>
+  }
+  @case ('ok') {
+    @if (event(); as ev) {
+      <header
+        class="detail-cover"
+        [style.--hue]="hue()"
+        [style.backgroundImage]="ev.coverImage ? 'url(' + ev.coverImage + ')' : null"
+      >
+        <div class="container detail-cover__inner">
+          <a class="detail-cover__back" routerLink="/"><app-icon name="arrow-left" [size]="16" /> Catálogo</a>
+          <span class="detail-cover__org">{{ ev.organization.name }}</span>
+          <h1 class="detail-cover__title">{{ ev.name }}</h1>
+          <div class="row wrap gap-4 detail-cover__meta">
+            <span class="row gap-1"><app-icon name="calendar" [size]="18" /> {{ dateRange(ev.startsAt, ev.endsAt) }}</span>
+            <span class="row gap-1"><app-icon name="users" [size]="18" /> {{ ev.participantsCount }} participantes</span>
+            <app-badge [tone]="registrationState(ev).tone" [dot]="true">{{ registrationState(ev).label }}</app-badge>
+          </div>
+        </div>
+      </header>
+
+      <div class="container detail-body">
+        <main class="detail-main">
+          <section class="detail-section">
+            <h2>Sobre o evento</h2>
+            <p class="detail-desc">{{ ev.description }}</p>
+          </section>
+
+          <section class="detail-section">
+            <h2>Cronograma</h2>
+            <ul class="timeline">
+              <li><span class="timeline__dot"></span><div><strong>Início</strong><p>{{ fullDate(ev.startsAt) }}</p></div></li>
+              <li><span class="timeline__dot"></span><div><strong>Encerramento</strong><p>{{ fullDate(ev.endsAt) }}</p></div></li>
+            </ul>
+          </section>
+
+          @if (ev.challenges.length) {
+            <section class="detail-section">
+              <h2>Desafios</h2>
+              <div class="challenges">
+                @for (c of ev.challenges; track c.id) {
+                  <div class="challenge">
+                    <app-badge tone="brand">{{ c.category }}</app-badge>
+                    <h3>{{ c.title }}</h3>
+                    <p>{{ c.description }}</p>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </main>
+
+        <!-- CTA contextual (docs §4.2) -->
+        <aside class="detail-aside">
+          <app-card class="cta">
+            <h3 class="cta__title">Participe deste evento</h3>
+
+            @if (!isAuthenticated()) {
+              <p class="cta__hint">Entre na sua conta para participar ou se candidatar como mentor.</p>
+              <app-button [block]="true" (click)="join()">
+                <app-icon slot="icon" name="log-in" [size]="18" /> Entrar para participar
+              </app-button>
+            } @else if (participant()?.status === 'APPROVED') {
+              <app-badge tone="success" [dot]="true">Você já participa</app-badge>
+              <app-button [block]="true" [routerLink]="['/app/eventos', ev.id]">
+                Acessar evento <app-icon slot="icon" name="arrow-right" [size]="18" />
+              </app-button>
+            } @else if (participant()?.status === 'PENDING') {
+              <app-badge tone="warning" [dot]="true">Solicitação pendente</app-badge>
+              <p class="cta__hint">Sua solicitação de participação aguarda aprovação da organização.</p>
+            } @else {
+              @switch (ev.registrationMode) {
+                @case ('OPEN') {
+                  <p class="cta__hint">Inscrições abertas — entre e comece agora.</p>
+                  <app-button [block]="true" [loading]="joining()" (click)="join()">Participar</app-button>
+                }
+                @case ('APPROVAL') {
+                  <p class="cta__hint">A participação passa por aprovação da organização.</p>
+                  <app-button [block]="true" [loading]="joining()" (click)="join()">Solicitar participação</app-button>
+                }
+                @case ('CODE') {
+                  <app-form-field label="Código de inscrição" hint="Evento demo: use o código INOVA2026." for="code">
+                    <input
+                      id="code"
+                      class="control"
+                      placeholder="Digite o código"
+                      [value]="code()"
+                      (input)="code.set($any($event.target).value)"
+                    />
+                  </app-form-field>
+                  <app-button [block]="true" [loading]="joining()" (click)="join()">Validar e participar</app-button>
+                }
+                @case ('INVITE') {
+                  <div class="cta__invite">
+                    <app-icon name="shield" [size]="18" />
+                    <span>Este evento é <strong>somente por convite</strong> da organização.</span>
+                  </div>
+                }
+              }
+            }
+
+            <div class="cta__divider"></div>
+
+            <!-- Fluxo pull de mentor (docs §4.8) -->
+            @if (mentor(); as me) {
+              <p class="cta__mentor-label">Mentoria</p>
+              @if (me.status === 'APPROVED') {
+                <app-badge tone="success" [dot]="true">Mentor aprovado</app-badge>
+              } @else if (me.status === 'PENDING') {
+                <app-badge tone="warning" [dot]="true">Candidatura de mentor pendente</app-badge>
+              } @else {
+                <app-badge tone="danger" [dot]="true">Candidatura recusada</app-badge>
+              }
+            } @else {
+              <app-button variant="outline" [block]="true" (click)="openMentor()">
+                <app-icon slot="icon" name="lightbulb" [size]="18" /> Candidatar-se como mentor
+              </app-button>
+            }
+          </app-card>
+
+          <p class="detail-aside__meta">
+            Tamanho de time e regras específicas aparecem na área do evento após a inscrição.
+          </p>
+        </aside>
+      </div>
+
+      <!-- Modal de candidatura de mentor -->
+      <app-modal [open]="mentorOpen()" title="Candidatar-se como mentor" (close)="mentorOpen.set(false)">
+        <app-stepper [steps]="mentorSteps" [current]="mentorStep()" />
+        <form class="mentor-form" [formGroup]="mentorForm" (ngSubmit)="submitMentor()">
+          @if (mentorStep() === 0) {
+            <app-form-field
+              label="Áreas de expertise"
+              hint="Separe por vírgulas (ex.: Backend, Cloud, Produto)."
+              [error]="mentorForm.controls.expertise.touched && mentorForm.controls.expertise.invalid ? 'Informe ao menos uma área.' : ''"
+            >
+              <input class="control" formControlName="expertise" placeholder="Backend, IA, Design…" />
+            </app-form-field>
+            <app-form-field label="Senioridade">
+              <select class="control" formControlName="seniority">
+                @for (s of SENIORITY_OPTIONS; track s) { <option [value]="s">{{ s }}</option> }
+              </select>
+            </app-form-field>
+          } @else {
+            <app-form-field
+              label="Por que você quer mentorar?"
+              hint="Conte sua motivação e experiência (mín. 20 caracteres)."
+              [error]="mentorForm.controls.motivation.touched && mentorForm.controls.motivation.invalid ? 'Descreva sua motivação (mín. 20 caracteres).' : ''"
+            >
+              <textarea class="control" rows="5" formControlName="motivation" placeholder="Tenho experiência em…"></textarea>
+            </app-form-field>
+          }
+        </form>
+
+        <div slot="footer">
+          @if (mentorStep() === 0) {
+            <app-button variant="ghost" (click)="mentorOpen.set(false)">Cancelar</app-button>
+            <app-button (click)="mentorNext()">Continuar</app-button>
+          } @else {
+            <app-button variant="ghost" (click)="mentorStep.set(0)">Voltar</app-button>
+            <app-button [loading]="submittingMentor()" (click)="submitMentor()">Enviar candidatura</app-button>
+          }
+        </div>
+      </app-modal>
+    }
+  }
+}

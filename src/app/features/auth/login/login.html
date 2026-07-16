@@ -1,0 +1,34 @@
+<div class="auth">
+  <div class="auth__card">
+    <div class="auth__strip"></div>
+    <div class="auth__inner">
+      <div class="login__brand"><app-brand-logo /></div>
+      <h1 class="auth__title">Entrar</h1>
+      <p class="auth__sub">Acesse sua conta para participar e mentorar hackathons.</p>
+
+      @if (error()) {
+        <div class="auth__error"><app-icon name="alert-circle" [size]="18" /> {{ error() }}</div>
+      }
+
+      <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()">
+        <app-form-field label="E-mail" for="email" [error]="field('email')">
+          <input id="email" class="control" type="email" formControlName="email" autocomplete="email" placeholder="voce@email.com" />
+        </app-form-field>
+
+        <app-form-field label="Senha" for="password" [error]="field('password')">
+          <input id="password" class="control" type="password" formControlName="password" autocomplete="current-password" placeholder="••••••••" />
+        </app-form-field>
+
+        <app-button type="submit" [block]="true" [loading]="submitting()">Entrar</app-button>
+      </form>
+
+      <p class="auth__foot">
+        Não tem conta? <a routerLink="/cadastro">Criar conta</a>
+      </p>
+
+      <div class="auth__demo">
+        Demo: <strong>ana&#64;hackahub.dev</strong> / <strong>123456</strong>
+      </div>
+    </div>
+  </div>
+</div>
