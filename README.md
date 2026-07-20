@@ -1,8 +1,9 @@
 # Hackahub — Frontend
 
 Aplicação web do **Hackahub**, a plataforma SaaS de gestão de hackathons.
-Escopo: **MVP** — catálogo público, autenticação, descoberta/participação
-(participante + mentor via fluxo *pull*), formação de times e seleção de desafios.
+Escopo: catálogo público, autenticação, descoberta/participação (participante +
+mentor via fluxo *pull*), formação de times e seleção de desafios, **área do
+organizador** (editar evento + CRUD de desafios) e **vínculo de conta Discord**.
 
 Implementa a especificação de `../hackahub-frontend-docs.md`, consumindo o contrato da
 **Hackahub API** (NestJS multi-tenant, em `../hackahub-api`).
@@ -32,31 +33,25 @@ npm run serve:ssr:hackahub-frontend   # → http://localhost:4000
 > permitidos ficam em `angular.json → architect.build.options.security.allowedHosts`.
 > Já inclui `localhost`; **adicione o domínio de produção** ao publicar.
 
-## Backend: mock x real
+## Backend
 
-O app roda **sem backend** por padrão, através de um interceptor HTTP que simula a
-Hackahub API em memória (dados de seed realistas). Controlado em
+O app consome a **Hackahub API real** (NestJS, em `../hackahub-api`). Configuração em
 `src/environments/environment.ts`:
 
 ```ts
 export const environment = {
-  useMock: true,           // false → usa o backend real
-  apiBaseUrl: '/api',      // real: ex. 'http://localhost:3000'
+  useMock: false,                       // API real (padrão)
+  apiBaseUrl: 'http://localhost:3000',  // URL do NestJS
 };
 ```
 
-Para apontar ao NestJS real: `useMock: false` e ajuste `apiBaseUrl`. Todas as chamadas
-usam `HttpClient` com as **rotas e shapes reais** da API — o mock só curto-circuita a
-resposta; nenhuma tela precisa mudar.
+Suba a API antes (`../hackahub-api`: `docker compose up -d postgres` + `npx prisma db seed`
++ `npm run start:dev`). As credenciais são as **do seed da API** (ver README de lá):
+`organizer@hackahub.local` / `organizer123`, `ana@hackahub.local` / `ana12345`, etc.
 
-### Credenciais de demonstração (modo mock)
-
-| E-mail | Senha | Perfil no seed |
-|---|---|---|
-| `ana@hackahub.dev` | `123456` | Participante (líder de time) em 2 eventos, **mentora aprovada** em 1, com candidatura de mentor pendente |
-| `bruno@hackahub.dev` … `felipe@hackahub.dev` | `123456` | Demais participantes/mentores |
-
-Evento com inscrição por código: **InovaLab Fintech Challenge** — código `INOVA2026`.
+> Existe um interceptor de mock em memória (`core/data/mock/`), **desligado** por padrão
+> (`useMock` é `false` nos dois environments). Ele reproduz as rotas/shapes originais mas
+> **não** cobre as features novas (organizador, Discord) — use a API real.
 
 ### Contrato: `GET /me/memberships`
 
@@ -74,7 +69,7 @@ core/
   auth/            AuthService (signals), TokenStorage
   http/            interceptors (auth, error)
   guards/          authGuard, membershipGuard(role, status)
-  services/        CatalogService, HackathonService, TeamService, MentorService, UserService
+  services/        CatalogService, HackathonService, TeamService, MentorService, UserService, DiscordService
   event-context/   EventContextService (evento ativo + papel derivado)
   data/mock/       backend em memória (interceptor + seed) — reproduz os mappers da API
   models/          contrato de tipos (alinhado a src/common/mappers do backend)
@@ -90,9 +85,10 @@ features/
   dashboard/       meus eventos
   event/           shell de contexto + visão geral
   teams/           meu time (criar/convidar/aprovar/remover) + convites recebidos
-  challenges/      seleção de desafios do time
+  challenges/      seleção de desafios do time + detalhe do desafio
+  organizer/       área do organizador: config do evento + gestão de desafios
   mentor/          candidaturas + painel de mentoria
-  profile/         perfil
+  profile/         perfil + vínculo de conta Discord
 ```
 
 ## Papel é por evento (ponto crítico)
@@ -104,7 +100,14 @@ evento** (`hackathonId` na rota). `membershipGuard('PARTICIPANT','APPROVED')` pr
 Como as rotas-filho herdam o `:hackathonId` do pai, o roteador usa
 `paramsInheritanceStrategy: 'always'` (ver `app.config.ts`).
 
-## Fora de escopo (MVP)
+## Área do organizador
 
-Área do organizador completa, billing, white-label, submissões, julgamento, matchmaking,
-fluxo *push* de mentor, integrações e analytics. Há ganchos/TODOs onde faz sentido.
+`membershipGuard('ORGANIZER','APPROVED')` protege `/app/eventos/:id/gerenciar`:
+edição do evento (nome, sobre, local, preço, limites de participantes/mentores, datas,
+inscrição, status/visibilidade) e CRUD de desafios (cada um com tela de detalhe).
+Aparece como abas no shell do evento só para organizadores aprovados.
+
+## Fora de escopo
+
+Billing, white-label, submissões, julgamento, matchmaking, fluxo *push* de mentor e
+analytics. Há ganchos/TODOs onde faz sentido.
