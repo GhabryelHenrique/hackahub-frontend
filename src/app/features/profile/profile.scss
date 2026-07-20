@@ -11,6 +11,29 @@
 .profile__facts dd { font-weight: 600; }
 
 .profile__subtitle { font-size: var(--fs-lg); margin-bottom: var(--sp-4); }
+
+/* ---- Integração Discord ---- */
+.profile__discord { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-3); }
+.profile__discord .profile__subtitle { margin-bottom: 0; }
+.profile__discord-status { display: flex; align-items: center; gap: var(--sp-2); }
+.profile__discord-user { font-weight: 600; }
+.profile__discord-hint { color: var(--text-muted); font-size: var(--fs-sm); }
+.profile__code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--surface-inset);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  color: var(--text);
+  width: 100%;
+  text-align: center;
+}
+.profile__code:hover { border-color: var(--brand-blue); }
+
 .profile__form { display: flex; flex-direction: column; gap: var(--sp-4); }
 .profile__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
 .profile__actions { display: flex; justify-content: flex-end; margin-top: var(--sp-2); }

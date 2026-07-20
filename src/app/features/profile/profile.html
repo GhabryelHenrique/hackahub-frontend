@@ -48,6 +48,42 @@
           </div>
         </form>
       </app-card>
+
+      <app-card class="profile__discord">
+        <h2 class="profile__subtitle">Integração Discord</h2>
+        @if (discordLink(); as link) {
+          @if (link.linked) {
+            <p class="profile__discord-status">
+              <app-badge tone="success" [dot]="true">Vinculado</app-badge>
+              <span class="profile__discord-user">&#64;{{ link.discordUsername }}</span>
+            </p>
+            <p class="profile__discord-hint">
+              Sua conta está conectada — use os comandos do bot nos servidores dos eventos.
+            </p>
+            <app-button variant="outline" size="sm" [loading]="discordBusy()" (click)="unlinkDiscord()">
+              Desvincular
+            </app-button>
+          } @else {
+            <p class="profile__discord-hint">
+              Conecte sua conta para se inscrever, gerenciar equipe e pedir mentoria pelo Discord.
+            </p>
+            @if (linkCode(); as code) {
+              <button type="button" class="profile__code" (click)="copyCode()" title="Copiar comando">
+                /vincular codigo:{{ code.code }}
+              </button>
+              <p class="profile__discord-hint">
+                Use este comando no servidor do evento. O código expira em 10 minutos —
+                clique acima para copiar.
+              </p>
+            }
+            <app-button size="sm" [loading]="discordBusy()" (click)="generateCode()">
+              {{ linkCode() ? 'Gerar novo código' : 'Gerar código' }}
+            </app-button>
+          }
+        } @else {
+          <p class="profile__discord-hint">Carregando…</p>
+        }
+      </app-card>
     </div>
   }
 </div>
