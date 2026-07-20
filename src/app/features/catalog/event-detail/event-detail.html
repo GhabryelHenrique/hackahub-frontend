@@ -32,6 +32,10 @@
           <div class="row wrap gap-4 detail-cover__meta">
             <span class="row gap-1"><app-icon name="calendar" [size]="18" /> {{ dateRange(ev.startsAt, ev.endsAt) }}</span>
             <span class="row gap-1"><app-icon name="users" [size]="18" /> {{ ev.participantsCount }} participantes</span>
+            @if (ev.location) {
+              <span class="row gap-1"><app-icon name="map-pin" [size]="18" /> {{ ev.location }}</span>
+            }
+            <span class="row gap-1"><app-icon name="ticket" [size]="18" /> {{ formatPrice(ev.price) }}</span>
             <app-badge [tone]="registrationState(ev).tone" [dot]="true">{{ registrationState(ev).label }}</app-badge>
           </div>
         </div>

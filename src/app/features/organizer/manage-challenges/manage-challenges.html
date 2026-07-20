@@ -1,0 +1,64 @@
+<div class="manage">
+  <header class="manage__head">
+    <div>
+      <h1>Desafios do evento</h1>
+      <p>Cadastre e edite os desafios que os times poderão escolher.</p>
+    </div>
+    <app-button [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios', 'novo']">
+      <app-icon slot="icon" name="plus" [size]="18" /> Novo desafio
+    </app-button>
+  </header>
+
+  @if (loading()) {
+    <div class="manage__grid">
+      @for (s of [1, 2, 3]; track s) {
+        <app-skeleton height="140px" radius="var(--radius-lg)" />
+      }
+    </div>
+  } @else if (challenges().length) {
+    <div class="manage__grid">
+      @for (c of challenges(); track c.id) {
+        <div class="manage__card">
+          <app-badge tone="brand">{{ c.category }}</app-badge>
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.description }}</p>
+          <div class="manage__actions">
+            <app-button
+              variant="outline"
+              size="sm"
+              [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios', c.id]"
+            >
+              <app-icon slot="icon" name="edit" [size]="15" /> Editar
+            </app-button>
+            <app-button variant="ghost" size="sm" (click)="confirming.set(c)">
+              <app-icon slot="icon" name="trash" [size]="15" /> Excluir
+            </app-button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <app-empty-state
+      icon="target"
+      title="Nenhum desafio cadastrado"
+      description="Crie o primeiro desafio para que os times possam escolher."
+    >
+      <app-button [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios', 'novo']">
+        <app-icon slot="icon" name="plus" [size]="18" /> Novo desafio
+      </app-button>
+    </app-empty-state>
+  }
+</div>
+
+<app-modal [open]="!!confirming()" title="Excluir desafio" (close)="confirming.set(null)">
+  @if (confirming(); as c) {
+    <p>
+      Excluir o desafio <strong>{{ c.title }}</strong>? Times que o selecionaram perderão essa
+      seleção. Esta ação não pode ser desfeita.
+    </p>
+  }
+  <div slot="footer">
+    <app-button variant="ghost" (click)="confirming.set(null)">Cancelar</app-button>
+    <app-button variant="danger" [loading]="deleting()" (click)="confirmDelete()">Excluir</app-button>
+  </div>
+</app-modal>

@@ -53,6 +53,11 @@ export class EventShell {
     if (this.ctx.isMentorApproved()) {
       items.push({ label: 'Mentoria', icon: 'lightbulb', link: ['/app/eventos', id, 'mentoria'], exact: false });
     }
+    // Organizador não colide com as abas de participante (1 papel por evento).
+    if (this.ctx.isOrganizerApproved()) {
+      items.push({ label: 'Configurações', icon: 'settings', link: ['/app/eventos', id, 'gerenciar'], exact: true });
+      items.push({ label: 'Desafios', icon: 'target', link: ['/app/eventos', id, 'gerenciar', 'desafios'], exact: false });
+    }
     return items;
   });
 

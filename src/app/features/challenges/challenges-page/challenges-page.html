@@ -34,23 +34,28 @@
 
   <div class="ch__grid">
     @for (c of challenges(); track c.id) {
-      <button
-        type="button"
-        class="ch-card"
-        [class.is-selected]="isSelected(c.id)"
-        [class.is-readonly]="!isLeader() || !myTeam()"
-        [disabled]="!isLeader() || !myTeam()"
-        (click)="toggle(c.id)"
-      >
-        <div class="ch-card__top">
-          <app-badge tone="brand">{{ c.category }}</app-badge>
-          <span class="ch-card__check" [class.on]="isSelected(c.id)">
-            @if (isSelected(c.id)) { <app-icon name="check" [size]="14" /> }
-          </span>
-        </div>
-        <h3 class="ch-card__title">{{ c.title }}</h3>
-        <p class="ch-card__desc">{{ c.description }}</p>
-      </button>
+      <div class="ch-item">
+        <button
+          type="button"
+          class="ch-card"
+          [class.is-selected]="isSelected(c.id)"
+          [class.is-readonly]="!isLeader() || !myTeam()"
+          [disabled]="!isLeader() || !myTeam()"
+          (click)="toggle(c.id)"
+        >
+          <div class="ch-card__top">
+            <app-badge tone="brand">{{ c.category }}</app-badge>
+            <span class="ch-card__check" [class.on]="isSelected(c.id)">
+              @if (isSelected(c.id)) { <app-icon name="check" [size]="14" /> }
+            </span>
+          </div>
+          <h3 class="ch-card__title">{{ c.title }}</h3>
+          <p class="ch-card__desc">{{ c.description }}</p>
+        </button>
+        <a class="ch-item__link" [routerLink]="['/app/eventos', hackathonId(), 'desafios', c.id]">
+          Ver detalhes <app-icon name="arrow-right" [size]="14" />
+        </a>
+      </div>
     }
   </div>
 }

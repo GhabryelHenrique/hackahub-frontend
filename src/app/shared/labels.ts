@@ -1,6 +1,12 @@
 /* Rótulos pt-BR e mapeamentos de enums (docs §2.1 i18n-ready: centralizados). */
 
-import { MembershipRole, MembershipStatus, RegistrationMode } from '../core/models';
+import {
+  HackathonStatus,
+  HackathonVisibility,
+  MembershipRole,
+  MembershipStatus,
+  RegistrationMode,
+} from '../core/models';
 import { BadgeTone } from './ui/badge/badge';
 
 export const REGISTRATION_LABEL: Record<RegistrationMode, string> = {
@@ -44,3 +50,17 @@ export const STATUS_TONE: Record<MembershipStatus, BadgeTone> = {
 
 /** Senioridade de mentor — texto livre no backend (docs §4.8). */
 export const SENIORITY_OPTIONS = ['Júnior', 'Pleno', 'Sênior', 'Especialista'];
+
+/** Área do organizador: selects de publicação do evento. */
+export const EVENT_STATUS_OPTIONS: { value: HackathonStatus; label: string }[] = [
+  { value: 'DRAFT', label: 'Rascunho' },
+  { value: 'PUBLISHED', label: 'Publicado' },
+  { value: 'CLOSED', label: 'Encerrado' },
+  { value: 'ARCHIVED', label: 'Arquivado' },
+];
+
+export const VISIBILITY_OPTIONS: { value: HackathonVisibility; label: string }[] = [
+  { value: 'PUBLIC', label: 'Público (aparece no catálogo)' },
+  { value: 'UNLISTED', label: 'Não listado (acesso por link)' },
+  { value: 'PRIVATE', label: 'Privado' },
+];

@@ -32,8 +32,10 @@ export class EventContextService {
   });
   readonly participant = computed(() => this.memberships().find((m) => m.role === 'PARTICIPANT'));
   readonly mentor = computed(() => this.memberships().find((m) => m.role === 'MENTOR'));
+  readonly organizer = computed(() => this.memberships().find((m) => m.role === 'ORGANIZER'));
   readonly isParticipantApproved = computed(() => this.participant()?.status === 'APPROVED');
   readonly isMentorApproved = computed(() => this.mentor()?.status === 'APPROVED');
+  readonly isOrganizerApproved = computed(() => this.organizer()?.status === 'APPROVED');
   readonly teamMaxSize = computed(() => this.full()?.teamMaxSize ?? null);
 
   setActive(hackathonId: string): void {
@@ -46,10 +48,11 @@ export class EventContextService {
     const summary = this.auth.membershipsFor(hackathonId)[0]?.hackathon ?? null;
     this.summary.set(summary);
 
-    // Detalhe público (descrição + desafios) — funciona para qualquer status.
+    // Detalhe público (descrição + desafios). `silent`: evento DRAFT/PRIVATE
+    // retorna 404 esperado aqui — sem toast global.
     if (summary?.slug) {
       this.loading.set(true);
-      this.catalog.getBySlug(summary.slug).subscribe({
+      this.catalog.getBySlug(summary.slug, { silent: true }).subscribe({
         next: (d) => {
           this.detail.set(d);
           this.loading.set(false);
@@ -58,13 +61,46 @@ export class EventContextService {
       });
     }
 
-    // Detalhe autenticado (teamMaxSize) quando o usuário é membro aprovado.
-    if (this.isParticipantApproved() || this.isMentorApproved()) {
+    // Detalhe autenticado (teamMaxSize etc.) quando o usuário é membro aprovado.
+    if (this.isParticipantApproved() || this.isMentorApproved() || this.isOrganizerApproved()) {
       this.hackathons.detail(hackathonId).subscribe({
         next: (f) => this.full.set(f),
         error: () => {},
       });
     }
+  }
+
+  /** Reflete um PATCH do organizador nos signals sem refetch. */
+  applyFull(h: Hackathon): void {
+    this.full.set(h);
+    this.summary.update((s) =>
+      s && s.id === h.id
+        ? {
+            ...s,
+            name: h.name,
+            registrationMode: h.registrationMode,
+            coverImage: h.coverImage,
+            startsAt: h.startsAt,
+            endsAt: h.endsAt,
+            location: h.location,
+            price: h.price,
+          }
+        : s,
+    );
+    this.detail.update((d) =>
+      d && d.id === h.id
+        ? {
+            ...d,
+            name: h.name,
+            description: h.description,
+            registrationMode: h.registrationMode,
+            startsAt: h.startsAt,
+            endsAt: h.endsAt,
+            location: h.location,
+            price: h.price,
+          }
+        : d,
+    );
   }
 
   clear(): void {

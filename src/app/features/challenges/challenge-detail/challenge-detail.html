@@ -1,0 +1,27 @@
+<div class="chdetail">
+  <a class="chdetail__back" [routerLink]="['/app/eventos', hackathonId(), 'desafios']">
+    <app-icon name="arrow-left" [size]="16" /> Desafios
+  </a>
+
+  @if (loading()) {
+    <app-skeleton width="40%" height="30px" />
+    <div style="height: 12px"></div>
+    <app-skeleton width="100%" height="180px" radius="var(--radius-lg)" />
+  } @else if (challenge(); as c) {
+    <article class="chdetail__body">
+      <app-badge tone="brand">{{ c.category }}</app-badge>
+      <h1>{{ c.title }}</h1>
+      <p class="chdetail__desc">{{ c.description }}</p>
+    </article>
+  } @else {
+    <app-empty-state
+      icon="alert-circle"
+      title="Desafio não encontrado"
+      description="Este desafio pode ter sido removido pela organização."
+    >
+      <app-button variant="outline" [routerLink]="['/app/eventos', hackathonId(), 'desafios']">
+        Voltar aos desafios
+      </app-button>
+    </app-empty-state>
+  }
+</div>

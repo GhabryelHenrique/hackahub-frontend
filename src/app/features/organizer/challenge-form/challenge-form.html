@@ -1,0 +1,60 @@
+<div class="chform">
+  <a class="chform__back" [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios']">
+    <app-icon name="arrow-left" [size]="16" /> Desafios
+  </a>
+
+  <header class="chform__head">
+    <h1>{{ isEdit() ? 'Editar desafio' : 'Novo desafio' }}</h1>
+    <p>Título, categoria e a descrição completa que os times verão.</p>
+  </header>
+
+  @if (loading()) {
+    <app-skeleton width="100%" height="320px" radius="var(--radius-lg)" />
+  } @else {
+    <app-card>
+      <form class="chform__form" [formGroup]="form" (ngSubmit)="save()">
+        <app-form-field
+          label="Título"
+          [required]="true"
+          [error]="
+            titleError() ||
+            (form.controls.title.touched && form.controls.title.invalid
+              ? 'Informe o título (máx. 160 caracteres).'
+              : '')
+          "
+        >
+          <input class="control" formControlName="title" placeholder="Ex.: Mobilidade Inteligente" />
+        </app-form-field>
+
+        <app-form-field
+          label="Categoria"
+          [required]="true"
+          [error]="form.controls.category.touched && form.controls.category.invalid ? 'Informe a categoria (máx. 80 caracteres).' : ''"
+        >
+          <input class="control" formControlName="category" placeholder="Ex.: Mobilidade" />
+        </app-form-field>
+
+        <app-form-field
+          label="Sobre o desafio"
+          [required]="true"
+          hint="Contexto, objetivo e critérios — o que os times precisam saber."
+          [error]="form.controls.description.touched && form.controls.description.invalid ? 'Descreva o desafio.' : ''"
+        >
+          <textarea class="control" rows="8" formControlName="description" placeholder="Descreva o problema e o que se espera das soluções…"></textarea>
+        </app-form-field>
+
+        <div class="chform__actions">
+          <app-button
+            variant="ghost"
+            [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios']"
+          >
+            Cancelar
+          </app-button>
+          <app-button type="submit" [loading]="saving()">
+            {{ isEdit() ? 'Salvar alterações' : 'Criar desafio' }}
+          </app-button>
+        </div>
+      </form>
+    </app-card>
+  }
+</div>

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { Badge, Card, Icon, Skeleton } from '../../../shared/ui';
 import { REGISTRATION_LABEL } from '../../../shared/labels';
+import { formatPrice } from '../../../shared/format';
 
 interface ActionCard {
   label: string;
@@ -21,6 +22,7 @@ interface ActionCard {
 export class EventOverview {
   protected readonly ctx = inject(EventContextService);
   protected readonly REGISTRATION_LABEL = REGISTRATION_LABEL;
+  protected readonly formatPrice = formatPrice;
 
   protected readonly participantPending = computed(() => this.ctx.participant()?.status === 'PENDING');
   protected readonly mentorPending = computed(() => this.ctx.mentor()?.status === 'PENDING');
@@ -38,6 +40,12 @@ export class EventOverview {
     }
     if (this.ctx.isMentorApproved()) {
       items.push({ label: 'Painel de mentoria', description: 'Times que você acompanha.', icon: 'lightbulb', link: ['/app/eventos', id, 'mentoria'] });
+    }
+    if (this.ctx.isOrganizerApproved()) {
+      items.push(
+        { label: 'Configurações do evento', description: 'Edite informações, inscrições e publicação.', icon: 'settings', link: ['/app/eventos', id, 'gerenciar'] },
+        { label: 'Gerenciar desafios', description: 'Cadastre e edite os desafios do evento.', icon: 'target', link: ['/app/eventos', id, 'gerenciar', 'desafios'] },
+      );
     }
     return items;
   });

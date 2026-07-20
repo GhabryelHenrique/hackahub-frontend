@@ -11,7 +11,7 @@ import { ToastService } from '../../../core/toast/toast.service';
 import { HackathonDetail } from '../../../core/models';
 import { Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper } from '../../../shared/ui';
 import { REGISTRATION_LABEL, REGISTRATION_TONE, SENIORITY_OPTIONS } from '../../../shared/labels';
-import { dateRange, fullDate, hueFromString, registrationState } from '../../../shared/format';
+import { dateRange, formatPrice, fullDate, hueFromString, registrationState } from '../../../shared/format';
 
 type ViewState =
   | { status: 'loading' }
@@ -42,6 +42,7 @@ export class EventDetail {
   protected readonly SENIORITY_OPTIONS = SENIORITY_OPTIONS;
   protected readonly dateRange = dateRange;
   protected readonly fullDate = fullDate;
+  protected readonly formatPrice = formatPrice;
   protected readonly registrationState = registrationState;
 
   protected readonly view = toSignal(

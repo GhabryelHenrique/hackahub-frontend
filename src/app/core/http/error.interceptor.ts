@@ -1,4 +1,9 @@
-import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from '@angular/common/http';
+import {
+  HttpContextToken,
+  HttpErrorResponse,
+  HttpHandlerFn,
+  HttpRequest,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
@@ -6,6 +11,12 @@ import { ToastService } from '../toast/toast.service';
 import { AuthService } from '../auth/auth.service';
 import { ApiError } from '../models';
 import { environment } from '../../../environments/environment';
+
+/**
+ * Suprime o toast global de erro — para chamadas cujo erro é tratado
+ * silenciosamente pelo chamador (ex.: detalhe público de evento DRAFT).
+ */
+export const SUPPRESS_ERROR_TOAST = new HttpContextToken<boolean>(() => false);
 
 /**
  * Normaliza o erro `{ statusCode, message, error }` da API (docs §6) e trata
@@ -34,7 +45,7 @@ export function errorInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn)
           toast.error('Sua sessão expirou. Faça login novamente.');
           router.navigate(['/login'], { queryParams: { returnUrl: router.url } });
         }
-      } else if (!isAuthEndpoint) {
+      } else if (!isAuthEndpoint && !req.context.get(SUPPRESS_ERROR_TOAST)) {
         toast.error(message);
       }
 

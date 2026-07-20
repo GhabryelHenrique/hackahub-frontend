@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { SUPPRESS_ERROR_TOAST } from '../http/error.interceptor';
 import { CatalogPage, CatalogQuery, HackathonDetail, HackathonSummary } from '../models';
 
 /** Catálogo público cross-tenant (docs §4.1). Sem token. */
@@ -18,7 +19,10 @@ export class CatalogService {
     return this.http.get<CatalogPage<HackathonSummary>>(`${this.base}/catalog`, { params });
   }
 
-  getBySlug(slug: string): Observable<HackathonDetail> {
-    return this.http.get<HackathonDetail>(`${this.base}/catalog/${slug}`);
+  /** `silent` evita o toast global (ex.: evento DRAFT dentro do app — 404 esperado). */
+  getBySlug(slug: string, opts?: { silent?: boolean }): Observable<HackathonDetail> {
+    return this.http.get<HackathonDetail>(`${this.base}/catalog/${slug}`, {
+      context: new HttpContext().set(SUPPRESS_ERROR_TOAST, opts?.silent ?? false),
+    });
   }
 }

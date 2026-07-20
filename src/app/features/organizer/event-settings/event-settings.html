@@ -1,0 +1,117 @@
+<div class="settings">
+  <header class="settings__head">
+    <h1>Configurações do evento</h1>
+    <p>Edite as informações, inscrições e publicação. As alterações valem na hora.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="settings__skeleton">
+      <app-skeleton width="100%" height="220px" radius="var(--radius-lg)" />
+      <app-skeleton width="100%" height="220px" radius="var(--radius-lg)" />
+    </div>
+  } @else {
+    <form class="settings__form" [formGroup]="form" (ngSubmit)="save()">
+      <app-card>
+        <h2 class="settings__section">Informações básicas</h2>
+        <div class="settings__fields">
+          <app-form-field
+            label="Nome do evento"
+            [required]="true"
+            [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe o nome (máx. 140 caracteres).' : ''"
+          >
+            <input class="control" formControlName="name" />
+          </app-form-field>
+
+          <app-form-field label="Sobre o evento" hint="Descrição completa mostrada aos participantes.">
+            <textarea class="control" rows="6" formControlName="description" placeholder="Conte o que é o evento, para quem é e o que esperar…"></textarea>
+          </app-form-field>
+
+          <app-form-field label="Local" hint="Deixe em branco para eventos online.">
+            <input class="control" formControlName="location" placeholder="Ex.: Centro de Convenções — São Paulo/SP" />
+          </app-form-field>
+
+          <div class="settings__row">
+            <app-form-field label="Início">
+              <input class="control" type="datetime-local" formControlName="startsAt" />
+            </app-form-field>
+            <app-form-field
+              label="Encerramento"
+              [error]="form.errors?.['dateOrder'] ? 'O encerramento não pode ser antes do início.' : ''"
+            >
+              <input class="control" type="datetime-local" formControlName="endsAt" />
+            </app-form-field>
+          </div>
+        </div>
+      </app-card>
+
+      <app-card>
+        <h2 class="settings__section">Inscrições e limites</h2>
+        <div class="settings__fields">
+          <div class="settings__row">
+            <app-form-field label="Modo de inscrição" [required]="true">
+              <select class="control" formControlName="registrationMode">
+                @for (opt of REGISTRATION_OPTIONS; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </app-form-field>
+            <app-form-field label="Preço da inscrição (R$)" hint="Deixe em branco se o evento for gratuito.">
+              <input class="control" type="number" min="0" step="0.01" formControlName="price" placeholder="0,00" />
+            </app-form-field>
+          </div>
+
+          @if (form.controls.registrationMode.value === 'CODE') {
+            <app-form-field
+              label="Código de inscrição"
+              hint="Preencha para definir um novo código; em branco mantém o atual."
+            >
+              <input class="control" formControlName="registrationCode" placeholder="Ex.: MEUEVENTO2026" />
+            </app-form-field>
+          }
+
+          <div class="settings__row settings__row--3">
+            <app-form-field label="Máx. de participantes" hint="Em branco = ilimitado.">
+              <input class="control" type="number" min="1" formControlName="maxParticipants" />
+            </app-form-field>
+            <app-form-field label="Máx. de mentores" hint="Em branco = ilimitado.">
+              <input class="control" type="number" min="1" formControlName="maxMentors" />
+            </app-form-field>
+            <app-form-field
+              label="Tamanho do time"
+              [required]="true"
+              [error]="form.controls.teamMaxSize.touched && form.controls.teamMaxSize.invalid ? 'Entre 1 e 50.' : ''"
+            >
+              <input class="control" type="number" min="1" max="50" formControlName="teamMaxSize" />
+            </app-form-field>
+          </div>
+        </div>
+      </app-card>
+
+      <app-card>
+        <h2 class="settings__section">Publicação</h2>
+        <div class="settings__fields">
+          <div class="settings__row">
+            <app-form-field label="Status" [required]="true" hint="Somente eventos publicados aceitam inscrições.">
+              <select class="control" formControlName="status">
+                @for (opt of EVENT_STATUS_OPTIONS; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </app-form-field>
+            <app-form-field label="Visibilidade" [required]="true">
+              <select class="control" formControlName="visibility">
+                @for (opt of VISIBILITY_OPTIONS; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            </app-form-field>
+          </div>
+        </div>
+      </app-card>
+
+      <div class="settings__actions">
+        <app-button type="submit" [loading]="saving()">Salvar alterações</app-button>
+      </div>
+    </form>
+  }
+</div>

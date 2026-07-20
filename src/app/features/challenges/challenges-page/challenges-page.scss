@@ -13,6 +13,20 @@
 
 .ch__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-4); }
 
+.ch-item { display: flex; flex-direction: column; gap: var(--sp-2); }
+.ch-item .ch-card { flex: 1; }
+.ch-item__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  color: var(--brand-blue);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ch-item__link:hover { text-decoration: underline; }
+
 .ch-card {
   text-align: left;
   display: flex;

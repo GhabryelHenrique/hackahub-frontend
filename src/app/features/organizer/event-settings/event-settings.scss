@@ -1,0 +1,23 @@
+:host { display: block; }
+
+.settings { max-width: 760px; }
+
+.settings__head { margin-bottom: var(--sp-6); }
+.settings__head h1 { font-size: var(--fs-2xl); }
+.settings__head p { color: var(--text-muted); font-size: var(--fs-sm); margin-top: var(--sp-1); }
+
+.settings__skeleton { display: flex; flex-direction: column; gap: var(--sp-6); }
+
+.settings__form { display: flex; flex-direction: column; gap: var(--sp-6); }
+.settings__section { font-size: var(--fs-lg); margin-bottom: var(--sp-4); }
+.settings__fields { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+.settings__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.settings__row--3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.settings__actions { display: flex; justify-content: flex-end; }
+
+@media (max-width: 720px) {
+  .settings__row,
+  .settings__row--3 { grid-template-columns: 1fr; }
+}

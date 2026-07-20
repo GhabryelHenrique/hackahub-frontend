@@ -80,9 +80,43 @@ export const routes: Routes = [
             loadComponent: () => import('./features/challenges/challenges-page/challenges-page').then((m) => m.ChallengesPage),
           },
           {
+            path: 'desafios/:challengeId',
+            canActivate: [membershipGuard('PARTICIPANT', 'APPROVED')],
+            loadComponent: () => import('./features/challenges/challenge-detail/challenge-detail').then((m) => m.ChallengeDetail),
+            title: 'Desafio — Hackahub',
+          },
+          {
             path: 'mentoria',
             canActivate: [membershipGuard('MENTOR', 'APPROVED')],
             loadComponent: () => import('./features/mentor/mentor-panel/mentor-panel').then((m) => m.MentorPanel),
+          },
+          // Área do organizador (guard no pai cobre os filhos)
+          {
+            path: 'gerenciar',
+            canActivate: [membershipGuard('ORGANIZER', 'APPROVED')],
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/organizer/event-settings/event-settings').then((m) => m.EventSettings),
+                title: 'Configurações do evento — Hackahub',
+              },
+              {
+                path: 'desafios',
+                loadComponent: () => import('./features/organizer/manage-challenges/manage-challenges').then((m) => m.ManageChallenges),
+                title: 'Gerenciar desafios — Hackahub',
+              },
+              // Ordem importa: 'novo' antes de ':challengeId'.
+              {
+                path: 'desafios/novo',
+                loadComponent: () => import('./features/organizer/challenge-form/challenge-form').then((m) => m.ChallengeForm),
+                title: 'Novo desafio — Hackahub',
+              },
+              {
+                path: 'desafios/:challengeId',
+                loadComponent: () => import('./features/organizer/challenge-form/challenge-form').then((m) => m.ChallengeForm),
+                title: 'Editar desafio — Hackahub',
+              },
+            ],
           },
         ],
       },

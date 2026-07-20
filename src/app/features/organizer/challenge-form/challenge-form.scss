@@ -1,0 +1,22 @@
+:host { display: block; }
+
+.chform { max-width: 680px; }
+
+.chform__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: var(--sp-4);
+}
+.chform__back:hover { color: var(--text); text-decoration: none; }
+
+.chform__head { margin-bottom: var(--sp-6); }
+.chform__head h1 { font-size: var(--fs-2xl); }
+.chform__head p { color: var(--text-muted); font-size: var(--fs-sm); margin-top: var(--sp-1); }
+
+.chform__form { display: flex; flex-direction: column; gap: var(--sp-4); }
+.chform__actions { display: flex; justify-content: flex-end; gap: var(--sp-2); }

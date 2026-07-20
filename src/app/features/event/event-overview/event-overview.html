@@ -41,6 +41,12 @@
       }
     } @else if (ctx.loading()) {
       <app-skeleton width="100%" height="120px" />
+    } @else if (ctx.full(); as f) {
+      <!-- Fallback: evento fora do catálogo público (DRAFT/PRIVATE) — organizador ainda vê o conteúdo. -->
+      <section class="ov__section">
+        <h2>Sobre o evento</h2>
+        <p class="ov__desc">{{ f.description || 'Sem descrição ainda — adicione uma em Configurações.' }}</p>
+      </section>
     }
   </main>
 
@@ -66,7 +72,15 @@
         <dl>
           <div><dt>Organização</dt><dd>{{ s.organization.name }}</dd></div>
           <div><dt>Inscrição</dt><dd>{{ REGISTRATION_LABEL[s.registrationMode] }}</dd></div>
-          <div><dt>Participantes</dt><dd>{{ s.participantsCount }}</dd></div>
+          @if (s.location) {
+            <div><dt>Local</dt><dd>{{ s.location }}</dd></div>
+          }
+          <div><dt>Preço</dt><dd>{{ formatPrice(s.price) }}</dd></div>
+          @if (ctx.full()?.maxParticipants; as max) {
+            <div><dt>Participantes</dt><dd>{{ s.participantsCount }}/{{ max }}</dd></div>
+          } @else {
+            <div><dt>Participantes</dt><dd>{{ s.participantsCount }}</dd></div>
+          }
           @if (ctx.teamMaxSize(); as max) {
             <div><dt>Tamanho do time</dt><dd>até {{ max }} pessoas</dd></div>
           }

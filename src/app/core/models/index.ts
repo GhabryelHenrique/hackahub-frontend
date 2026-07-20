@@ -81,6 +81,8 @@ export interface HackathonSummary {
   coverImage?: string | null;
   startsAt: string | null;
   endsAt: string | null;
+  location?: string | null;
+  price?: number | null; // null = gratuito
   participantsCount: number;
 }
 
@@ -111,6 +113,10 @@ export interface Hackathon {
   startsAt: string | null;
   endsAt: string | null;
   teamMaxSize: number;
+  maxParticipants: number | null; // null = ilimitado
+  maxMentors: number | null; // null = ilimitado
+  location: string | null;
+  price: number | null; // null = gratuito
   createdAt: string;
   updatedAt: string;
 }
@@ -244,4 +250,32 @@ export interface CatalogQuery {
   search?: string;
   registrationMode?: RegistrationMode | '';
   page?: number;
+}
+
+/**
+ * Edição do evento pelo organizador (PATCH /hackathons/:id).
+ * `undefined` mantém o valor; `null` limpa o campo no backend.
+ * `registrationCode` é write-only (a API nunca o retorna) — enviar só quando preenchido.
+ */
+export interface UpdateHackathonPayload {
+  name?: string;
+  description?: string | null;
+  visibility?: HackathonVisibility;
+  status?: HackathonStatus;
+  registrationMode?: RegistrationMode;
+  registrationCode?: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  teamMaxSize?: number;
+  maxParticipants?: number | null;
+  maxMentors?: number | null;
+  location?: string | null;
+  price?: number | null;
+}
+
+/** Criação/edição de desafio (área do organizador). */
+export interface ChallengePayload {
+  title: string;
+  description: string;
+  category: string;
 }
