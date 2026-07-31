@@ -1,0 +1,14 @@
+@if (show()) {
+  <div class="pcb" role="status">
+    <div class="pcb__inner">
+      <app-icon name="alert-circle" [size]="18" class="pcb__icon" />
+      <p class="pcb__text">
+        Complete seu perfil — faltam <strong>{{ missingLabel() }}</strong>.
+      </p>
+      <a class="pcb__cta" routerLink="/app/perfil">Completar perfil</a>
+      <button type="button" class="pcb__close" (click)="dismiss()" aria-label="Dispensar aviso">
+        <app-icon name="x" [size]="16" />
+      </button>
+    </div>
+  </div>
+}

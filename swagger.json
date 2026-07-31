@@ -1,0 +1,3968 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+      "/auth/register": {
+        "post": {
+          "description": "Cria uma nova conta na plataforma com os dados pessoais informados e devolve o usuário criado (o login é feito em seguida em POST /auth/login). Rota pública, sem autenticação.",
+          "operationId": "AuthController_register",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserWrapperDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Cadastro de usuário",
+          "tags": [
+            "auth"
+          ]
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "description": "Autentica o usuário com e-mail e senha e retorna o token JWT de acesso usado como Bearer nas demais rotas. Rota pública.",
+          "operationId": "AuthController_login",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Login por e-mail e senha",
+          "tags": [
+            "auth"
+          ]
+        }
+      },
+      "/auth/me": {
+        "get": {
+          "description": "Retorna os dados do usuário dono do token JWT enviado. Requer autenticação Bearer.",
+          "operationId": "AuthController_me",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserWrapperDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Perfil do usuário autenticado",
+          "tags": [
+            "auth"
+          ]
+        }
+      },
+      "/auth/discord/complete": {
+        "post": {
+          "description": "Finaliza o cadastro de um usuário novo que autenticou pelo SSO do Discord. Recebe o ticket emitido no callback do OAuth junto com os dados que faltam e cria a conta, devolvendo o token JWT de acesso. Rota pública (o início e o callback do OAuth são redirects de página e não aparecem na documentação).",
+          "operationId": "DiscordAuthController_complete",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompleteDiscordSignupDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Conclui o cadastro iniciado via Discord",
+          "tags": [
+            "auth"
+          ]
+        }
+      },
+      "/organizations": {
+        "post": {
+          "description": "Registra uma nova organização (tenant), que passa a ser dona dos hackathons criados sob ela no modelo multi-tenant. Requer autenticação Bearer.",
+          "operationId": "OrganizationsController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrganizationDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OrganizationResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Cria uma organização",
+          "tags": [
+            "organizations"
+          ]
+        }
+      },
+      "/hackathons": {
+        "post": {
+          "description": "Cria um novo hackathon sob uma organização e torna o usuário que criou o organizador do evento. Requer autenticação Bearer.",
+          "operationId": "HackathonsController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateHackathonDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HackathonResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Cria um hackathon",
+          "tags": [
+            "hackathons"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}": {
+        "get": {
+          "description": "Retorna os dados completos do evento para quem já faz parte dele. Acessível a qualquer membro aprovado (participante, mentor ou organizador), inclusive quando o evento ainda está em rascunho (DRAFT).",
+          "operationId": "HackathonsController_findOne",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HackathonResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Detalha um hackathon (área interna)",
+          "tags": [
+            "hackathons"
+          ]
+        },
+        "patch": {
+          "description": "Edita os dados do evento (nome, descrição, datas, modalidade, limites etc.). Restrito ao ORGANIZER do próprio hackathon.",
+          "operationId": "HackathonsController_update",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateHackathonDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HackathonResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Atualiza um hackathon",
+          "tags": [
+            "hackathons"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/join": {
+        "post": {
+          "description": "Inscreve o usuário autenticado no evento como participante. O status resultante depende da modalidade de inscrição: OPEN aprova na hora, APPROVAL deixa pendente de aprovação, CODE exige o código correto e INVITE só permite entrada por convite. Bloqueia se o evento estiver lotado ou se o usuário já participar.",
+          "operationId": "HackathonsController_join",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinHackathonDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MembershipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Inscreve o usuário como participante",
+          "tags": [
+            "hackathons"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/apply-mentor": {
+        "post": {
+          "description": "Envia uma candidatura de mentoria para o evento (com expertise, senioridade, motivação e número máximo de equipes). A candidatura nasce sempre pendente e depende da aprovação de um organizador.",
+          "operationId": "HackathonsController_applyMentor",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplyMentorDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MembershipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Candidata o usuário a mentor",
+          "tags": [
+            "hackathons"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/memberships/me": {
+        "get": {
+          "description": "Retorna as participações do próprio usuário neste hackathon (pode estar vazio ou pendente). Não exige uma membership já aprovada, servindo para o frontend saber se o usuário está inscrito e em que status. Requer autenticação Bearer.",
+          "operationId": "MembershipsController_getMine",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MembershipResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Minhas participações neste evento",
+          "tags": [
+            "memberships"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/memberships": {
+        "get": {
+          "description": "Lista as participações (participantes e mentores) deste hackathon, com filtros opcionais por papel e status. Usado pelo organizador para gerir inscrições e aprovações. Restrito ao ORGANIZER do evento.",
+          "operationId": "MembershipsController_list",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MembershipResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista as participações do evento",
+          "tags": [
+            "memberships"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/memberships/{membershipId}/approve": {
+        "post": {
+          "description": "Aprova uma inscrição ou candidatura de mentor que está pendente, revalidando o limite de vagas do papel no momento da aprovação. Restrito ao ORGANIZER do evento.",
+          "operationId": "MembershipsController_approve",
+          "parameters": [
+            {
+              "name": "membershipId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MembershipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Aprova uma participação pendente",
+          "tags": [
+            "memberships"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/memberships/{membershipId}/reject": {
+        "post": {
+          "description": "Rejeita uma inscrição ou candidatura de mentor que está pendente. Restrito ao ORGANIZER do evento.",
+          "operationId": "MembershipsController_reject",
+          "parameters": [
+            {
+              "name": "membershipId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MembershipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Rejeita uma participação pendente",
+          "tags": [
+            "memberships"
+          ]
+        }
+      },
+      "/me/memberships": {
+        "get": {
+          "description": "Retorna todas as participações do usuário autenticado agregadas entre os eventos (cross-tenant), com o resumo de cada hackathon embutido. Alimenta a tela \"Meus eventos\" e as candidaturas de mentor no frontend. Requer autenticação Bearer.",
+          "operationId": "MeController_memberships",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MembershipWithHackathonDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista as participações do usuário atual",
+          "tags": [
+            "me"
+          ]
+        }
+      },
+      "/catalog": {
+        "get": {
+          "description": "Retorna, de forma paginada, os hackathons públicos e publicados de todas as organizações (cross-tenant), ordenados pelos com inscrição mais próxima. Aceita busca por texto e filtro por modalidade de inscrição. Rota pública, sem autenticação.",
+          "operationId": "CatalogController_list",
+          "parameters": [
+            {
+              "name": "search",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "registrationMode",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "OPEN",
+                  "APPROVAL",
+                  "INVITE",
+                  "CODE"
+                ]
+              }
+            },
+            {
+              "name": "page",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "minimum": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "minimum": 1,
+                "maximum": 50,
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CatalogPageDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Lista o catálogo público de eventos",
+          "tags": [
+            "catalog"
+          ]
+        }
+      },
+      "/catalog/{slug}": {
+        "get": {
+          "description": "Retorna os dados completos de um hackathon público e publicado (organização, desafios e total de participantes) a partir do seu slug. Responde 404 se o evento não existir ou não estiver público. Rota pública, sem autenticação.",
+          "operationId": "CatalogController_detail",
+          "parameters": [
+            {
+              "name": "slug",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CatalogDetailDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Detalha um evento público pelo slug",
+          "tags": [
+            "catalog"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams": {
+        "post": {
+          "description": "Cria uma equipe no hackathon e torna o autor líder e primeiro membro. Cada participante só pode pertencer a uma equipe por evento. Restrito a participantes aprovados (PARTICIPANT) do evento.",
+          "operationId": "TeamsController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTeamDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TeamResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Cria uma equipe",
+          "tags": [
+            "teams"
+          ]
+        },
+        "get": {
+          "description": "Lista as equipes do hackathon, com filtro opcional de busca por nome. Acessível a qualquer membro aprovado do evento.",
+          "operationId": "TeamsController_findAll",
+          "parameters": [
+            {
+              "name": "search",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TeamResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista as equipes do evento",
+          "tags": [
+            "teams"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams/{teamId}": {
+        "get": {
+          "description": "Retorna os dados completos de uma equipe (membros, desafios e mentores). Acessível a qualquer membro aprovado do evento.",
+          "operationId": "TeamsController_findOne",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TeamResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Detalha uma equipe",
+          "tags": [
+            "teams"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams/{teamId}/challenges": {
+        "post": {
+          "description": "Define os desafios em que a equipe vai trabalhar. Restrito a participantes aprovados do evento (regras de líder/membro validadas no serviço).",
+          "operationId": "TeamsController_selectChallenges",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectChallengesDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TeamResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Seleciona os desafios da equipe",
+          "tags": [
+            "teams"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams/{teamId}/members/{userId}": {
+        "delete": {
+          "description": "Remove um membro da equipe (o líder tira alguém do time ou o próprio membro sai). Restrito a participantes aprovados do evento (permissões validadas no serviço).",
+          "operationId": "TeamsController_removeMember",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MessageResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Remove um membro da equipe",
+          "tags": [
+            "teams"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/challenges": {
+        "get": {
+          "description": "Retorna todos os desafios (trilhas/temas) do hackathon. Acessível a qualquer membro aprovado do evento.",
+          "operationId": "ChallengesController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ChallengeResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista os desafios do evento",
+          "tags": [
+            "challenges"
+          ]
+        },
+        "post": {
+          "description": "Cria um novo desafio dentro do hackathon. Restrito ao ORGANIZER do evento.",
+          "operationId": "ChallengesController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateChallengeDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChallengeResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Cria um desafio",
+          "tags": [
+            "challenges"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/challenges/{challengeId}": {
+        "get": {
+          "description": "Retorna os dados completos de um desafio do evento. Acessível a qualquer membro aprovado (formulário do organizador e página do participante).",
+          "operationId": "ChallengesController_findOne",
+          "parameters": [
+            {
+              "name": "challengeId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChallengeResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Detalha um desafio",
+          "tags": [
+            "challenges"
+          ]
+        },
+        "patch": {
+          "description": "Edita os dados de um desafio do evento. Restrito ao ORGANIZER do evento.",
+          "operationId": "ChallengesController_update",
+          "parameters": [
+            {
+              "name": "challengeId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateChallengeDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ChallengeResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Atualiza um desafio",
+          "tags": [
+            "challenges"
+          ]
+        },
+        "delete": {
+          "description": "Exclui um desafio do evento. Responde 204 sem conteúdo. Restrito ao ORGANIZER do evento.",
+          "operationId": "ChallengesController_remove",
+          "parameters": [
+            {
+              "name": "challengeId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Desafio removido."
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Remove um desafio",
+          "tags": [
+            "challenges"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams/{teamId}/invites": {
+        "post": {
+          "description": "A equipe convida um participante do evento para entrar no time. Restrito a participantes aprovados do evento (tipicamente o líder).",
+          "operationId": "InvitesController_send",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInviteDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InviteResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Envia convite de equipe",
+          "tags": [
+            "invites"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/invites/received": {
+        "get": {
+          "description": "Retorna os convites de equipe pendentes recebidos pelo usuário autenticado neste hackathon. Acessível a qualquer membro aprovado.",
+          "operationId": "InvitesController_listReceived",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/InviteResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista os convites recebidos",
+          "tags": [
+            "invites"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/invites/{id}/accept": {
+        "post": {
+          "description": "Aceita um convite recebido e entra na equipe correspondente. Restrito a participantes aprovados do evento.",
+          "operationId": "InvitesController_accept",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InviteResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Aceita um convite",
+          "tags": [
+            "invites"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/invites/{id}/decline": {
+        "post": {
+          "description": "Recusa um convite de equipe recebido. Restrito a participantes aprovados do evento.",
+          "operationId": "InvitesController_decline",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InviteResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Recusa um convite",
+          "tags": [
+            "invites"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/teams/{teamId}/join-requests": {
+        "post": {
+          "description": "O participante pede para entrar em uma equipe existente do evento. A solicitação fica pendente até o líder aprovar ou rejeitar. Restrito a participantes aprovados do evento.",
+          "operationId": "JoinRequestsController_create",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/JoinRequestResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Solicita entrada em uma equipe",
+          "tags": [
+            "join-requests"
+          ]
+        },
+        "get": {
+          "description": "Lista as solicitações de entrada pendentes de uma equipe, para o líder avaliar. Acessível a membros aprovados (a titularidade da equipe é validada no serviço).",
+          "operationId": "JoinRequestsController_listForTeam",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/JoinRequestResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista as solicitações de uma equipe",
+          "tags": [
+            "join-requests"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/join-requests/{id}/approve": {
+        "post": {
+          "description": "O líder aprova uma solicitação e o solicitante entra na equipe. Restrito a participantes aprovados do evento (líder validado no serviço).",
+          "operationId": "JoinRequestsController_approve",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/JoinRequestResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Aprova uma solicitação de entrada",
+          "tags": [
+            "join-requests"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/join-requests/{id}/reject": {
+        "post": {
+          "description": "O líder rejeita uma solicitação de entrada na equipe. Restrito a participantes aprovados do evento (líder validado no serviço).",
+          "operationId": "JoinRequestsController_reject",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/JoinRequestResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Rejeita uma solicitação de entrada",
+          "tags": [
+            "join-requests"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentor/teams": {
+        "get": {
+          "description": "Lista todas as equipes do hackathon para o mentor escolher quais acompanhar. Restrito a mentores aprovados (MENTOR) do evento.",
+          "operationId": "MentorController_listTeams",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TeamResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista as equipes para mentoria",
+          "tags": [
+            "mentor"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentor/teams/{teamId}/assign": {
+        "post": {
+          "description": "Associa o mentor autenticado a uma equipe, passando a mentorá-la. Bloqueia se o mentor já estiver associado àquela equipe. Restrito a mentores aprovados (MENTOR) do evento.",
+          "operationId": "MentorController_assign",
+          "parameters": [
+            {
+              "name": "teamId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TeamResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Assume a mentoria de uma equipe",
+          "tags": [
+            "mentor"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentorship": {
+        "post": {
+          "description": "A equipe do participante abre um ticket de mentoria (assunto/dúvida) para ser atendido por um mentor do evento. Restrito a participantes aprovados (PARTICIPANT) do evento.",
+          "operationId": "MentorshipController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMentorshipRequestDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MentorshipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Abre um pedido de mentoria",
+          "tags": [
+            "mentorship"
+          ]
+        },
+        "get": {
+          "description": "Lista os tickets de mentoria do hackathon, com filtros opcionais (ex.: status). Restrito a MENTOR e ORGANIZER do evento.",
+          "operationId": "MentorshipController_list",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MentorshipResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista os pedidos de mentoria do evento",
+          "tags": [
+            "mentorship"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentorship/mine": {
+        "get": {
+          "description": "Retorna os pedidos de mentoria relacionados ao usuário autenticado neste evento. Acessível a qualquer membro aprovado.",
+          "operationId": "MentorshipController_mine",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MentorshipResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Lista meus pedidos de mentoria",
+          "tags": [
+            "mentorship"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentorship/{requestId}/claim": {
+        "post": {
+          "description": "O mentor assume (claim) um ticket pendente, tornando-se responsável pelo atendimento. Restrito a mentores aprovados (MENTOR) do evento.",
+          "operationId": "MentorshipController_claim",
+          "parameters": [
+            {
+              "name": "requestId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MentorshipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Assume um pedido de mentoria",
+          "tags": [
+            "mentorship"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentorship/{requestId}/complete": {
+        "post": {
+          "description": "Marca o ticket de mentoria como concluído. Permitido ao mentor responsável pelo atendimento ou a um organizador (validado no serviço).",
+          "operationId": "MentorshipController_complete",
+          "parameters": [
+            {
+              "name": "requestId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MentorshipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Conclui um pedido de mentoria",
+          "tags": [
+            "mentorship"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/mentorship/{requestId}/cancel": {
+        "post": {
+          "description": "Cancela um ticket de mentoria. Permitido ao autor do pedido ou a um organizador (validado no serviço).",
+          "operationId": "MentorshipController_cancel",
+          "parameters": [
+            {
+              "name": "requestId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MentorshipResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Cancela um pedido de mentoria",
+          "tags": [
+            "mentorship"
+          ]
+        }
+      },
+      "/users/me": {
+        "patch": {
+          "description": "Atualiza os dados de perfil do usuário autenticado (dados pessoais, institucionais, links, endereço e contato de emergência). Requer autenticação Bearer.",
+          "operationId": "UsersController_updateProfile",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProfileDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserWrapperDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Atualiza o perfil do usuário",
+          "tags": [
+            "users"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/participants": {
+        "get": {
+          "description": "Busca participantes dentro de um hackathon (por nome/e-mail) para montar convites de equipe. Acessível a qualquer membro aprovado do evento.",
+          "operationId": "ParticipantsController_search",
+          "parameters": [
+            {
+              "name": "search",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PublicUserDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Busca participantes do evento",
+          "tags": [
+            "participants"
+          ]
+        }
+      },
+      "/hackathons/{hackathonId}/gamification/me": {
+        "get": {
+          "description": "Retorna o progresso de gamificação do usuário autenticado neste hackathon: XP, nível, conquistas e objetivos, calculados conforme o papel no evento (participante ou mentor). Acessível a qualquer membro aprovado.",
+          "operationId": "GamificationController_me",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GamificationResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Minha gamificação no evento",
+          "tags": [
+            "gamification"
+          ]
+        }
+      },
+      "/integrations/discord/link-code": {
+        "post": {
+          "description": "Gera um código temporário para o usuário autenticado usar no bot do Discord e concluir o vínculo da conta. Requer autenticação Bearer.",
+          "operationId": "DiscordLinkController_createLinkCode",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordLinkCodeDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Gera um código de vínculo com o Discord",
+          "tags": [
+            "discord"
+          ]
+        }
+      },
+      "/integrations/discord/link": {
+        "get": {
+          "description": "Informa se o usuário autenticado tem uma conta Discord vinculada e, em caso positivo, o nome de usuário do Discord. Requer autenticação Bearer.",
+          "operationId": "DiscordLinkController_status",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordLinkStatusDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Consulta o status do vínculo com o Discord",
+          "tags": [
+            "discord"
+          ]
+        },
+        "delete": {
+          "description": "Remove o vínculo entre a conta do usuário autenticado e o Discord. Responde 204 sem conteúdo. Requer autenticação Bearer.",
+          "operationId": "DiscordLinkController_unlink",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "Vínculo removido."
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Desfaz o vínculo com o Discord",
+          "tags": [
+            "discord"
+          ]
+        },
+        "post": {
+          "description": "Confirma o vínculo entre uma conta Discord e um usuário Hackahub a partir do código gerado no site (fluxo iniciado no Discord). Uso serviço-a-serviço pelo bot, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_link",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkDiscordDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordLinkResultDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Vincula uma conta Discord (bot)",
+          "tags": [
+            "discord"
+          ]
+        }
+      },
+      "/integrations/discord/token": {
+        "post": {
+          "description": "Gera um JWT de acesso (mesmo payload do login) para o usuário Hackahub vinculado a um discordUserId, para que o bot chame a API em nome dele. Uso serviço-a-serviço, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_token",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotTokenDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordTokenResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Emite um token para o usuário do Discord",
+          "tags": [
+            "discord"
+          ]
+        }
+      },
+      "/integrations/discord/guilds/{guildId}": {
+        "get": {
+          "description": "Retorna a configuração de um servidor (guild) Discord e o hackathon ao qual está associado, incluindo canais/categorias configurados. Uso serviço-a-serviço, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_getGuild",
+          "parameters": [
+            {
+              "name": "guildId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordGuildResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Consulta o vínculo de um servidor Discord",
+          "tags": [
+            "discord"
+          ]
+        },
+        "patch": {
+          "description": "Atualiza os canais/categorias do servidor (canal de mentores e categoria das equipes). Exige que o usuário Discord solicitante seja organizador do evento. Uso serviço-a-serviço, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_patchGuild",
+          "parameters": [
+            {
+              "name": "guildId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchGuildDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordGuildResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Atualiza a configuração de um servidor Discord",
+          "tags": [
+            "discord"
+          ]
+        }
+      },
+      "/integrations/discord/guilds": {
+        "post": {
+          "description": "Associa um servidor (guild) Discord a um hackathon pelo slug. Exige que o usuário Discord solicitante seja organizador do evento. Uso serviço-a-serviço, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_bindGuild",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BindGuildDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordGuildResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Vincula um servidor Discord a um hackathon",
+          "tags": [
+            "discord"
+          ]
+        }
+      },
+      "/integrations/discord/resolve": {
+        "post": {
+          "description": "Converte uma lista de IDs de usuário Hackahub nos respectivos discordUserIds (apenas os que têm conta vinculada), para o bot configurar permissões dos canais de equipe. Uso serviço-a-serviço, autenticado pelo header x-bot-key.",
+          "operationId": "DiscordBotController_resolve",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveAccountsDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DiscordResolveResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bot-key": []
+            }
+          ],
+          "summary": "Resolve contas Discord por usuários",
+          "tags": [
+            "discord"
+          ]
+        }
+      }
+    },
+    "info": {
+      "title": "Hackahub API",
+      "description": "SaaS multi-tenant para organização e gestão de hackathons: catálogo público, inscrições por evento, equipes, convites, mentoria e gamificação.",
+      "version": "2.0",
+      "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+      "securitySchemes": {
+        "bearer": {
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "type": "http"
+        }
+      },
+      "schemas": {
+        "AddressDto": {
+          "type": "object",
+          "properties": {
+            "cep": {
+              "type": "string"
+            },
+            "street": {
+              "type": "string"
+            },
+            "number": {
+              "type": "string"
+            },
+            "complement": {
+              "type": "string"
+            },
+            "neighborhood": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cep",
+            "street",
+            "number",
+            "neighborhood",
+            "city",
+            "state"
+          ]
+        },
+        "RegisterDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "minLength": 6
+            },
+            "documentType": {
+              "type": "string"
+            },
+            "documentId": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "birthDate": {
+              "type": "string"
+            },
+            "acceptedTerms": {
+              "type": "boolean"
+            },
+            "gender": {
+              "type": "string"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "course": {
+              "type": "string"
+            },
+            "githubUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "linkedinUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "shirtSize": {
+              "type": "string"
+            },
+            "emergencyName": {
+              "type": "string"
+            },
+            "emergencyPhone": {
+              "type": "string"
+            },
+            "address": {
+              "$ref": "#/components/schemas/AddressDto"
+            }
+          },
+          "required": [
+            "name",
+            "email",
+            "password",
+            "documentId",
+            "phone",
+            "birthDate",
+            "acceptedTerms"
+          ]
+        },
+        "AddressResponseDto": {
+          "type": "object",
+          "properties": {
+            "cep": {
+              "type": "string",
+              "example": "01001-000"
+            },
+            "street": {
+              "type": "string",
+              "example": "Praça da Sé"
+            },
+            "number": {
+              "type": "string",
+              "example": "100"
+            },
+            "complement": {
+              "type": "string",
+              "nullable": true,
+              "example": "Apto 12"
+            },
+            "neighborhood": {
+              "type": "string",
+              "example": "Sé"
+            },
+            "city": {
+              "type": "string",
+              "example": "São Paulo"
+            },
+            "state": {
+              "type": "string",
+              "example": "SP"
+            },
+            "country": {
+              "type": "string",
+              "nullable": true,
+              "example": "Brasil"
+            }
+          },
+          "required": [
+            "cep",
+            "street",
+            "number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country"
+          ]
+        },
+        "UserResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Ana Silva"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "ana@exemplo.com"
+            },
+            "documentType": {
+              "type": "string",
+              "nullable": true,
+              "example": "CPF"
+            },
+            "documentId": {
+              "type": "string",
+              "example": "123.456.789-00"
+            },
+            "phone": {
+              "type": "string",
+              "example": "+55 11 99999-0000"
+            },
+            "birthDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "acceptedTerms": {
+              "type": "boolean",
+              "example": true
+            },
+            "gender": {
+              "type": "string",
+              "nullable": true,
+              "example": "Feminino"
+            },
+            "institution": {
+              "type": "string",
+              "nullable": true,
+              "example": "USP"
+            },
+            "course": {
+              "type": "string",
+              "nullable": true,
+              "example": "Engenharia de Computação"
+            },
+            "githubUrl": {
+              "type": "string",
+              "nullable": true,
+              "example": "https://github.com/ana"
+            },
+            "linkedinUrl": {
+              "type": "string",
+              "nullable": true,
+              "example": "https://linkedin.com/in/ana"
+            },
+            "shirtSize": {
+              "type": "string",
+              "nullable": true,
+              "example": "M"
+            },
+            "emergencyName": {
+              "type": "string",
+              "nullable": true,
+              "example": "João Silva"
+            },
+            "emergencyPhone": {
+              "type": "string",
+              "nullable": true,
+              "example": "+55 11 98888-0000"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "address": {
+              "nullable": true,
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/AddressResponseDto"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "email",
+            "documentType",
+            "documentId",
+            "phone",
+            "birthDate",
+            "acceptedTerms",
+            "gender",
+            "institution",
+            "course",
+            "githubUrl",
+            "linkedinUrl",
+            "shirtSize",
+            "emergencyName",
+            "emergencyPhone",
+            "createdAt",
+            "address"
+          ]
+        },
+        "UserWrapperDto": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "$ref": "#/components/schemas/UserResponseDto"
+            }
+          },
+          "required": [
+            "user"
+          ]
+        },
+        "LoginDto": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "password"
+          ]
+        },
+        "AuthResponseDto": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "description": "JWT usado como Bearer nas rotas autenticadas.",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            "user": {
+              "$ref": "#/components/schemas/UserResponseDto"
+            }
+          },
+          "required": [
+            "accessToken",
+            "user"
+          ]
+        },
+        "CompleteDiscordSignupDto": {
+          "type": "object",
+          "properties": {
+            "ticket": {
+              "type": "string"
+            },
+            "documentType": {
+              "type": "string"
+            },
+            "documentId": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "birthDate": {
+              "type": "string"
+            },
+            "acceptedTerms": {
+              "type": "boolean"
+            },
+            "gender": {
+              "type": "string"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "course": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ticket",
+            "documentId",
+            "phone",
+            "birthDate",
+            "acceptedTerms"
+          ]
+        },
+        "CreateOrganizationDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "slug": {
+              "type": "string",
+              "maxLength": 60,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "name",
+            "slug"
+          ]
+        },
+        "OrganizationResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Hackahub"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "slug",
+            "createdAt"
+          ]
+        },
+        "CreateHackathonDto": {
+          "type": "object",
+          "properties": {
+            "organizationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 140
+            },
+            "slug": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "description": {
+              "type": "string"
+            },
+            "visibility": {
+              "type": "string",
+              "enum": [
+                "PUBLIC",
+                "UNLISTED",
+                "PRIVATE"
+              ]
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PUBLISHED",
+                "CLOSED",
+                "ARCHIVED"
+              ]
+            },
+            "registrationMode": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "APPROVAL",
+                "INVITE",
+                "CODE"
+              ]
+            },
+            "registrationCode": {
+              "type": "string"
+            },
+            "coverImage": {
+              "type": "string"
+            },
+            "startsAt": {
+              "type": "string",
+              "nullable": true
+            },
+            "endsAt": {
+              "type": "string",
+              "nullable": true
+            },
+            "teamMaxSize": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "maxParticipants": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 1
+            },
+            "maxMentors": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 1
+            },
+            "location": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 160
+            },
+            "price": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            }
+          },
+          "required": [
+            "organizationId",
+            "name",
+            "slug"
+          ]
+        },
+        "OrganizationRefDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Hackahub"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "slug"
+          ]
+        },
+        "HackathonVisibility": {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "UNLISTED",
+            "PRIVATE"
+          ]
+        },
+        "HackathonStatus": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PUBLISHED",
+            "CLOSED",
+            "ARCHIVED"
+          ]
+        },
+        "RegistrationMode": {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "APPROVAL",
+            "INVITE",
+            "CODE"
+          ]
+        },
+        "HackathonResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "organizationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "organization": {
+              "$ref": "#/components/schemas/OrganizationRefDto"
+            },
+            "name": {
+              "type": "string",
+              "example": "Hackahub 2026"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub-2026"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "example": "Um hackathon sobre o futuro."
+            },
+            "visibility": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/HackathonVisibility"
+                }
+              ]
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/HackathonStatus"
+                }
+              ]
+            },
+            "registrationMode": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/RegistrationMode"
+                }
+              ]
+            },
+            "coverImage": {
+              "type": "string",
+              "nullable": true,
+              "example": "https://cdn.exemplo.com/capa.png"
+            },
+            "startsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "endsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "teamMaxSize": {
+              "type": "number",
+              "example": 6,
+              "description": "Tamanho máximo de cada equipe."
+            },
+            "maxParticipants": {
+              "type": "number",
+              "nullable": true,
+              "example": 200,
+              "description": "Limite de participantes aprovados (null = ilimitado)."
+            },
+            "maxMentors": {
+              "type": "number",
+              "nullable": true,
+              "example": 20,
+              "description": "Limite de mentores aprovados (null = ilimitado)."
+            },
+            "location": {
+              "type": "string",
+              "nullable": true,
+              "example": "São Paulo, SP"
+            },
+            "price": {
+              "type": "number",
+              "nullable": true,
+              "example": 0,
+              "description": "Preço da inscrição (null = gratuito)."
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "organizationId",
+            "name",
+            "slug",
+            "description",
+            "visibility",
+            "status",
+            "registrationMode",
+            "coverImage",
+            "startsAt",
+            "endsAt",
+            "teamMaxSize",
+            "maxParticipants",
+            "maxMentors",
+            "location",
+            "price",
+            "createdAt",
+            "updatedAt"
+          ]
+        },
+        "UpdateHackathonDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 140
+            },
+            "slug": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "description": {
+              "type": "string"
+            },
+            "visibility": {
+              "enum": [
+                "PUBLIC",
+                "UNLISTED",
+                "PRIVATE"
+              ],
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "DRAFT",
+                "PUBLISHED",
+                "CLOSED",
+                "ARCHIVED"
+              ],
+              "type": "string"
+            },
+            "registrationMode": {
+              "enum": [
+                "OPEN",
+                "APPROVAL",
+                "INVITE",
+                "CODE"
+              ],
+              "type": "string"
+            },
+            "registrationCode": {
+              "type": "string"
+            },
+            "coverImage": {
+              "type": "string"
+            },
+            "startsAt": {
+              "type": "string",
+              "nullable": true
+            },
+            "endsAt": {
+              "type": "string",
+              "nullable": true
+            },
+            "teamMaxSize": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "maxParticipants": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 1
+            },
+            "maxMentors": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 1
+            },
+            "location": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 160
+            },
+            "price": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            }
+          }
+        },
+        "JoinHackathonDto": {
+          "type": "object",
+          "properties": {
+            "registrationCode": {
+              "type": "string"
+            }
+          }
+        },
+        "MembershipRole": {
+          "type": "string",
+          "enum": [
+            "PARTICIPANT",
+            "MENTOR",
+            "ORGANIZER"
+          ]
+        },
+        "MembershipStatus": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "APPROVED",
+            "REJECTED"
+          ]
+        },
+        "PublicUserDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Ana Silva"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "ana@exemplo.com"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "email"
+          ]
+        },
+        "MentorProfileDto": {
+          "type": "object",
+          "properties": {
+            "expertise": {
+              "example": [
+                "Backend",
+                "Cloud"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "seniority": {
+              "type": "string",
+              "nullable": true,
+              "example": "Sênior"
+            },
+            "motivation": {
+              "type": "string",
+              "nullable": true,
+              "example": "Quero ajudar times iniciantes."
+            },
+            "maxTeams": {
+              "type": "number",
+              "nullable": true,
+              "example": 3
+            }
+          },
+          "required": [
+            "expertise",
+            "seniority",
+            "motivation",
+            "maxTeams"
+          ]
+        },
+        "MembershipResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "role": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MembershipRole"
+                }
+              ]
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MembershipStatus"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "user": {
+              "description": "Presente quando a membership é listada pelo organizador.",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PublicUserDto"
+                }
+              ]
+            },
+            "mentorProfile": {
+              "description": "Presente apenas em candidaturas de mentor.",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MentorProfileDto"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "userId",
+            "hackathonId",
+            "role",
+            "status",
+            "createdAt"
+          ]
+        },
+        "ApplyMentorDto": {
+          "type": "object",
+          "properties": {
+            "expertise": {
+              "maxItems": 20,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "seniority": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "motivation": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "maxTeams": {
+              "type": "number",
+              "minimum": 1
+            }
+          }
+        },
+        "OrganizationSummaryDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Hackahub"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub"
+            }
+          },
+          "required": [
+            "name",
+            "slug"
+          ]
+        },
+        "CatalogCardDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Hackahub 2026"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub-2026"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "description": "Resumo (até 240 caracteres) da descrição do evento."
+            },
+            "organization": {
+              "$ref": "#/components/schemas/OrganizationSummaryDto"
+            },
+            "registrationMode": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/RegistrationMode"
+                }
+              ]
+            },
+            "coverImage": {
+              "type": "string",
+              "nullable": true,
+              "example": "https://cdn.exemplo.com/capa.png"
+            },
+            "startsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "endsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "location": {
+              "type": "string",
+              "nullable": true,
+              "example": "São Paulo, SP"
+            },
+            "price": {
+              "type": "number",
+              "nullable": true,
+              "example": 0
+            },
+            "participantsCount": {
+              "type": "number",
+              "example": 128,
+              "description": "Total de participantes aprovados."
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "slug",
+            "description",
+            "organization",
+            "registrationMode",
+            "coverImage",
+            "startsAt",
+            "endsAt",
+            "location",
+            "price",
+            "participantsCount"
+          ]
+        },
+        "MembershipWithHackathonDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "role": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MembershipRole"
+                }
+              ]
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MembershipStatus"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "user": {
+              "description": "Presente quando a membership é listada pelo organizador.",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PublicUserDto"
+                }
+              ]
+            },
+            "mentorProfile": {
+              "description": "Presente apenas em candidaturas de mentor.",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MentorProfileDto"
+                }
+              ]
+            },
+            "hackathon": {
+              "$ref": "#/components/schemas/CatalogCardDto"
+            }
+          },
+          "required": [
+            "id",
+            "userId",
+            "hackathonId",
+            "role",
+            "status",
+            "createdAt",
+            "hackathon"
+          ]
+        },
+        "CatalogPageDto": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CatalogCardDto"
+              }
+            },
+            "page": {
+              "type": "number",
+              "example": 1
+            },
+            "pageSize": {
+              "type": "number",
+              "example": 12
+            },
+            "total": {
+              "type": "number",
+              "example": 57,
+              "description": "Total de eventos que casam o filtro."
+            }
+          },
+          "required": [
+            "data",
+            "page",
+            "pageSize",
+            "total"
+          ]
+        },
+        "CatalogChallengeDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "title": {
+              "type": "string",
+              "example": "Cidades Inteligentes"
+            },
+            "category": {
+              "type": "string",
+              "example": "Mobilidade"
+            },
+            "description": {
+              "type": "string",
+              "example": "Soluções de mobilidade urbana com dados abertos."
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "category",
+            "description"
+          ]
+        },
+        "CatalogDetailDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Hackahub 2026"
+            },
+            "slug": {
+              "type": "string",
+              "example": "hackahub-2026"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "description": "Descrição completa do evento (sem truncar)."
+            },
+            "organization": {
+              "$ref": "#/components/schemas/OrganizationSummaryDto"
+            },
+            "registrationMode": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/RegistrationMode"
+                }
+              ]
+            },
+            "coverImage": {
+              "type": "string",
+              "nullable": true,
+              "example": "https://cdn.exemplo.com/capa.png"
+            },
+            "startsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "endsAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time"
+            },
+            "location": {
+              "type": "string",
+              "nullable": true,
+              "example": "São Paulo, SP"
+            },
+            "price": {
+              "type": "number",
+              "nullable": true,
+              "example": 0
+            },
+            "participantsCount": {
+              "type": "number",
+              "example": 128,
+              "description": "Total de participantes aprovados."
+            },
+            "challenges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CatalogChallengeDto"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "slug",
+            "description",
+            "organization",
+            "registrationMode",
+            "coverImage",
+            "startsAt",
+            "endsAt",
+            "location",
+            "price",
+            "participantsCount",
+            "challenges"
+          ]
+        },
+        "CreateTeamDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "TeamMemberDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Ana Silva"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "ana@exemplo.com"
+            },
+            "joinedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "email",
+            "joinedAt"
+          ]
+        },
+        "ChallengeResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "title": {
+              "type": "string",
+              "example": "Cidades Inteligentes"
+            },
+            "description": {
+              "type": "string",
+              "example": "Soluções de mobilidade urbana com dados abertos."
+            },
+            "category": {
+              "type": "string",
+              "example": "Mobilidade"
+            }
+          },
+          "required": [
+            "id",
+            "hackathonId",
+            "title",
+            "description",
+            "category"
+          ]
+        },
+        "TeamResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Os Foguetes"
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "example": "Time focado em IA aplicada."
+            },
+            "leaderId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "leader": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TeamMemberDto"
+              }
+            },
+            "challenges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ChallengeResponseDto"
+              }
+            },
+            "mentors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PublicUserDto"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "hackathonId",
+            "name",
+            "description",
+            "leaderId",
+            "createdAt",
+            "leader",
+            "members",
+            "challenges",
+            "mentors"
+          ]
+        },
+        "SelectChallengesDto": {
+          "type": "object",
+          "properties": {
+            "challengeIds": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "required": [
+            "challengeIds"
+          ]
+        },
+        "MessageResponseDto": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Membro removido da equipe"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        },
+        "CreateChallengeDto": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "description": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string",
+              "maxLength": 80
+            }
+          },
+          "required": [
+            "title",
+            "description",
+            "category"
+          ]
+        },
+        "UpdateChallengeDto": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "description": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        },
+        "CreateInviteDto": {
+          "type": "object",
+          "properties": {
+            "toUserId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "toUserId"
+          ]
+        },
+        "InviteStatus": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "ACCEPTED",
+            "DECLINED",
+            "CANCELLED"
+          ]
+        },
+        "TeamRefDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "example": "Os Foguetes"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        },
+        "InviteResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/InviteStatus"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "team": {
+              "$ref": "#/components/schemas/TeamRefDto"
+            },
+            "fromUser": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            },
+            "toUser": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            }
+          },
+          "required": [
+            "id",
+            "status",
+            "createdAt",
+            "team",
+            "fromUser",
+            "toUser"
+          ]
+        },
+        "JoinRequestStatus": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "APPROVED",
+            "REJECTED"
+          ]
+        },
+        "JoinRequestResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/JoinRequestStatus"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "team": {
+              "$ref": "#/components/schemas/TeamRefDto"
+            },
+            "user": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            }
+          },
+          "required": [
+            "id",
+            "status",
+            "createdAt",
+            "team",
+            "user"
+          ]
+        },
+        "CreateMentorshipRequestDto": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 120
+            },
+            "description": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 2000
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ]
+        },
+        "MentorshipStatus": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "IN_PROGRESS",
+            "COMPLETED",
+            "CANCELLED"
+          ]
+        },
+        "MentorshipResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "title": {
+              "type": "string",
+              "example": "Dúvida sobre deploy"
+            },
+            "description": {
+              "type": "string",
+              "example": "Precisamos de ajuda para publicar a API."
+            },
+            "status": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/MentorshipStatus"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "claimedAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time",
+              "description": "Quando um mentor assumiu o ticket."
+            },
+            "closedAt": {
+              "type": "string",
+              "nullable": true,
+              "format": "date-time",
+              "description": "Quando o ticket foi concluído ou cancelado."
+            },
+            "user": {
+              "description": "Autor do pedido.",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PublicUserDto"
+                }
+              ]
+            },
+            "mentor": {
+              "nullable": true,
+              "description": "Mentor responsável (null enquanto não assumido).",
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PublicUserDto"
+                }
+              ]
+            },
+            "team": {
+              "nullable": true,
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/TeamRefDto"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "hackathonId",
+            "title",
+            "description",
+            "status",
+            "createdAt",
+            "claimedAt",
+            "closedAt",
+            "user",
+            "mentor",
+            "team"
+          ]
+        },
+        "UpdateProfileDto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "birthDate": {
+              "type": "string"
+            },
+            "gender": {
+              "type": "string"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "course": {
+              "type": "string"
+            },
+            "githubUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "linkedinUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "shirtSize": {
+              "type": "string"
+            },
+            "emergencyName": {
+              "type": "string"
+            },
+            "emergencyPhone": {
+              "type": "string"
+            },
+            "address": {
+              "$ref": "#/components/schemas/AddressDto"
+            }
+          }
+        },
+        "AchievementProgressDto": {
+          "type": "object",
+          "properties": {
+            "current": {
+              "type": "number",
+              "example": 2
+            },
+            "target": {
+              "type": "number",
+              "example": 6
+            }
+          },
+          "required": [
+            "current",
+            "target"
+          ]
+        },
+        "AchievementDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "perfil-completo"
+            },
+            "title": {
+              "type": "string",
+              "example": "Identidade Estelar"
+            },
+            "description": {
+              "type": "string",
+              "example": "Preencheu todos os dados do perfil"
+            },
+            "icon": {
+              "type": "string",
+              "example": "fa-solid fa-id-badge"
+            },
+            "points": {
+              "type": "number",
+              "example": 75,
+              "description": "XP concedido ao desbloquear."
+            },
+            "unlocked": {
+              "type": "boolean",
+              "example": false
+            },
+            "progress": {
+              "$ref": "#/components/schemas/AchievementProgressDto"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "description",
+            "icon",
+            "points",
+            "unlocked"
+          ]
+        },
+        "ObjectiveDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "completar-perfil"
+            },
+            "title": {
+              "type": "string",
+              "example": "Completar o perfil"
+            },
+            "description": {
+              "type": "string",
+              "example": "Preencha todos os dados na página Perfil"
+            },
+            "current": {
+              "type": "number",
+              "example": 2
+            },
+            "target": {
+              "type": "number",
+              "example": 6
+            },
+            "completed": {
+              "type": "boolean",
+              "example": false
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "description",
+            "current",
+            "target",
+            "completed"
+          ]
+        },
+        "GamificationResponseDto": {
+          "type": "object",
+          "properties": {
+            "xp": {
+              "type": "number",
+              "example": 150,
+              "description": "XP acumulado."
+            },
+            "maxXp": {
+              "type": "number",
+              "example": 500,
+              "description": "XP máximo possível no papel."
+            },
+            "level": {
+              "type": "number",
+              "example": 2
+            },
+            "levelName": {
+              "type": "string",
+              "example": "Explorador"
+            },
+            "nextLevelXp": {
+              "type": "number",
+              "nullable": true,
+              "example": 225,
+              "description": "XP para o próximo nível (null no nível máximo)."
+            },
+            "achievements": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            },
+            "objectives": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ObjectiveDto"
+              }
+            }
+          },
+          "required": [
+            "xp",
+            "maxXp",
+            "level",
+            "levelName",
+            "nextLevelXp",
+            "achievements",
+            "objectives"
+          ]
+        },
+        "DiscordLinkCodeDto": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "example": "A1B2C3D4",
+              "description": "Código de uso único."
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "code",
+            "expiresAt"
+          ]
+        },
+        "DiscordLinkStatusDto": {
+          "type": "object",
+          "properties": {
+            "linked": {
+              "type": "boolean",
+              "example": true
+            },
+            "discordUsername": {
+              "type": "string",
+              "nullable": true,
+              "example": "ana#1234"
+            }
+          },
+          "required": [
+            "linked",
+            "discordUsername"
+          ]
+        },
+        "LinkDiscordDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "DiscordLinkResultDto": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            }
+          },
+          "required": [
+            "user"
+          ]
+        },
+        "BotTokenDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "DiscordTokenResponseDto": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "description": "JWT de acesso do usuário vinculado."
+            },
+            "user": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            }
+          },
+          "required": [
+            "accessToken",
+            "user"
+          ]
+        },
+        "DiscordGuildResponseDto": {
+          "type": "object",
+          "properties": {
+            "guildId": {
+              "type": "string",
+              "example": "123456789012345678"
+            },
+            "hackathonId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "mentorsChannelId": {
+              "type": "string",
+              "nullable": true,
+              "example": "987654321098765432"
+            },
+            "teamsCategoryId": {
+              "type": "string",
+              "nullable": true,
+              "example": "111222333444555666"
+            },
+            "hackathon": {
+              "$ref": "#/components/schemas/HackathonResponseDto"
+            }
+          },
+          "required": [
+            "guildId",
+            "hackathonId",
+            "mentorsChannelId",
+            "teamsCategoryId",
+            "hackathon"
+          ]
+        },
+        "BindGuildDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "PatchGuildDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "ResolveAccountsDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "DiscordAccountRefDto": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "discordUserId": {
+              "type": "string",
+              "example": "123456789012345678"
+            }
+          },
+          "required": [
+            "userId",
+            "discordUserId"
+          ]
+        },
+        "DiscordResolveResponseDto": {
+          "type": "object",
+          "properties": {
+            "accounts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/DiscordAccountRefDto"
+              }
+            }
+          },
+          "required": [
+            "accounts"
+          ]
+        }
+      }
+    }
+  }

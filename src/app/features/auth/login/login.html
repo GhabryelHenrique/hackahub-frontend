@@ -22,6 +22,9 @@
         <app-button type="submit" [block]="true" [loading]="submitting()">Entrar</app-button>
       </form>
 
+      <div class="auth__divider"><span>ou</span></div>
+      <app-discord-button [returnUrl]="returnUrl()" />
+
       <p class="auth__foot">
         Não tem conta? <a routerLink="/cadastro">Criar conta</a>
       </p>

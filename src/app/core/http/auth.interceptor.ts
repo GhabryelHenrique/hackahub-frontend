@@ -4,7 +4,7 @@ import { TokenStorage } from '../auth/token-storage';
 import { environment } from '../../../environments/environment';
 
 /** Rotas públicas que NÃO devem receber token (docs §6, SSR-friendly). */
-const PUBLIC_PREFIXES = ['/catalog', '/auth/login', '/auth/register'];
+const PUBLIC_PREFIXES = ['/catalog', '/auth/login', '/auth/register', '/auth/discord'];
 
 /** Injeta `Authorization: Bearer <token>` nas rotas autenticadas da API. */
 export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {

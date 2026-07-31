@@ -1,0 +1,168 @@
+<!-- Minuta de MVP — revisar com jurídico antes de produção. -->
+<section class="legal">
+  <div class="container legal__inner">
+    <header class="legal__header">
+      <span class="legal__eyebrow">Documentos legais</span>
+      <h1 class="legal__title">Termos de Serviço</h1>
+      <p class="legal__meta">Última atualização: {{ updatedAt }}</p>
+    </header>
+
+    <nav class="legal__toc" aria-label="Sumário">
+      <h2>Sumário</h2>
+      <ol>
+        <li><a href="#aceitacao">Aceitação dos termos</a></li>
+        <li><a href="#servico">Descrição do serviço</a></li>
+        <li><a href="#conta">Conta e cadastro</a></li>
+        <li><a href="#papeis">Papéis nos eventos</a></li>
+        <li><a href="#conduta">Conduta do usuário</a></li>
+        <li><a href="#conteudo">Conteúdo e propriedade intelectual</a></li>
+        <li><a href="#organizadores">Responsabilidades dos organizadores</a></li>
+        <li><a href="#integracoes">Integrações de terceiros</a></li>
+        <li><a href="#responsabilidade">Limitação de responsabilidade</a></li>
+        <li><a href="#encerramento">Suspensão e encerramento</a></li>
+        <li><a href="#alteracoes">Alterações nos termos</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ol>
+    </nav>
+
+    <div class="legal__body">
+      <p class="text-muted">
+        Estes Termos de Serviço ("Termos") regem o uso da plataforma Hackahub ("Plataforma", "nós"), um
+        serviço para descoberta, organização e participação em hackathons. Ao criar uma conta ou utilizar a
+        Plataforma, você concorda com estes Termos e com a nossa
+        <a routerLink="/privacidade">Política de Privacidade</a>.
+      </p>
+
+      <section id="aceitacao" class="legal__section">
+        <h2>1. Aceitação dos termos</h2>
+        <p>
+          Ao acessar ou usar a Plataforma, você declara ter pelo menos 18 anos ou possuir autorização de um
+          responsável legal, e concorda em cumprir estes Termos. Caso não concorde, não utilize o serviço.
+        </p>
+      </section>
+
+      <section id="servico" class="legal__section">
+        <h2>2. Descrição do serviço</h2>
+        <p>
+          A Hackahub conecta participantes, mentores e organizadores em torno de eventos de hackathon. A
+          Plataforma permite descobrir eventos, inscrever-se, formar equipes, submeter-se a desafios,
+          solicitar mentoria e gerenciar eventos como organizador.
+        </p>
+        <p>
+          O serviço é oferecido no modelo "como está" (as is). Podemos adicionar, alterar ou remover
+          funcionalidades a qualquer momento durante o período de MVP.
+        </p>
+      </section>
+
+      <section id="conta" class="legal__section">
+        <h2>3. Conta e cadastro</h2>
+        <p>
+          Para usar a maior parte das funcionalidades, é necessário criar uma conta fornecendo dados como
+          nome, e-mail, documento de identificação, telefone e data de nascimento. Você é responsável por:
+        </p>
+        <ul>
+          <li>Fornecer informações verdadeiras, precisas e atualizadas;</li>
+          <li>Manter a confidencialidade da sua senha e credenciais de acesso;</li>
+          <li>Todas as atividades realizadas a partir da sua conta.</li>
+        </ul>
+        <p>
+          Notifique-nos imediatamente em caso de uso não autorizado da sua conta.
+        </p>
+      </section>
+
+      <section id="papeis" class="legal__section">
+        <h2>4. Papéis nos eventos</h2>
+        <p>
+          Em cada evento você pode atuar como <strong>participante</strong>, <strong>mentor</strong> ou
+          <strong>organizador</strong>. Cada usuário pode assumir apenas um papel por evento. A aprovação em
+          um papel depende dos critérios definidos pelo organizador do respectivo evento.
+        </p>
+      </section>
+
+      <section id="conduta" class="legal__section">
+        <h2>5. Conduta do usuário</h2>
+        <p>Você concorda em não utilizar a Plataforma para:</p>
+        <ul>
+          <li>Violar leis, direitos de terceiros ou estes Termos;</li>
+          <li>Publicar conteúdo ilícito, ofensivo, difamatório ou que incite discriminação;</li>
+          <li>Assediar, ameaçar ou prejudicar outros usuários;</li>
+          <li>Tentar acessar áreas restritas, burlar mecanismos de segurança ou sobrecarregar o serviço;</li>
+          <li>Enviar spam, malware ou realizar engenharia reversa não autorizada.</li>
+        </ul>
+      </section>
+
+      <section id="conteudo" class="legal__section">
+        <h2>6. Conteúdo e propriedade intelectual</h2>
+        <p>
+          Você mantém a titularidade dos projetos, códigos e materiais que submete durante os eventos. Ao
+          publicá-los na Plataforma, você concede à Hackahub uma licença não exclusiva para armazenar e exibir
+          esse conteúdo conforme necessário para operar o serviço.
+        </p>
+        <p>
+          As marcas, o design e o software da Plataforma pertencem à Hackahub e não podem ser utilizados sem
+          autorização. Regras específicas de premiação e direitos sobre projetos podem ser definidas por cada
+          organizador no regulamento do evento.
+        </p>
+      </section>
+
+      <section id="organizadores" class="legal__section">
+        <h2>7. Responsabilidades dos organizadores</h2>
+        <p>
+          Organizadores são responsáveis pelas informações, regras, prazos e premiações dos eventos que criam,
+          bem como pelo tratamento adequado dos dados dos participantes aos quais têm acesso, em conformidade
+          com a legislação aplicável.
+        </p>
+      </section>
+
+      <section id="integracoes" class="legal__section">
+        <h2>8. Integrações de terceiros</h2>
+        <p>
+          A Plataforma oferece integrações opcionais, como login e vínculo de conta via Discord. Ao utilizá-las,
+          você também fica sujeito aos termos e políticas desses serviços. Detalhes sobre os dados envolvidos
+          estão na nossa <a routerLink="/privacidade">Política de Privacidade</a>.
+        </p>
+      </section>
+
+      <section id="responsabilidade" class="legal__section">
+        <h2>9. Limitação de responsabilidade</h2>
+        <p>
+          Na máxima extensão permitida em lei, a Hackahub não se responsabiliza por danos indiretos,
+          incidentais ou lucros cessantes decorrentes do uso ou da impossibilidade de uso da Plataforma, nem
+          pela conduta de outros usuários ou organizadores.
+        </p>
+      </section>
+
+      <section id="encerramento" class="legal__section">
+        <h2>10. Suspensão e encerramento</h2>
+        <p>
+          Podemos suspender ou encerrar o acesso de contas que violem estes Termos. Você pode encerrar sua
+          conta a qualquer momento; dados serão tratados conforme a
+          <a routerLink="/privacidade">Política de Privacidade</a> e a legislação vigente.
+        </p>
+      </section>
+
+      <section id="alteracoes" class="legal__section">
+        <h2>11. Alterações nos termos</h2>
+        <p>
+          Podemos atualizar estes Termos periodicamente. Alterações relevantes serão comunicadas pela
+          Plataforma. O uso continuado após a publicação da nova versão representa concordância com os Termos
+          revisados.
+        </p>
+      </section>
+
+      <section id="contato" class="legal__section">
+        <h2>12. Contato</h2>
+        <p>
+          Dúvidas sobre estes Termos podem ser enviadas para
+          <a href="mailto:contato@hackahub.com">contato&#64;hackahub.com</a>.
+        </p>
+      </section>
+    </div>
+
+    <footer class="legal__footer">
+      <span>© 2026 Hackahub.</span>
+      <a routerLink="/privacidade">Política de Privacidade</a>
+      <a routerLink="/">Voltar para a página inicial</a>
+    </footer>
+  </div>
+</section>

@@ -28,9 +28,10 @@ import { BrandLogo } from '../brand-logo/brand-logo';
           </div>
           <div class="footer__col">
             <h4>Recursos</h4>
-            <!-- TODO: páginas institucionais (fora do MVP) -->
+            <!-- TODO: página de ajuda (fora do MVP) -->
             <a class="is-soon" aria-disabled="true">Ajuda <span>em breve</span></a>
-            <a class="is-soon" aria-disabled="true">Termos e privacidade <span>em breve</span></a>
+            <a routerLink="/termos">Termos de Serviço</a>
+            <a routerLink="/privacidade">Política de Privacidade</a>
           </div>
         </nav>
       </div>

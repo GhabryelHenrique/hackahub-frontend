@@ -34,6 +34,7 @@ export interface CurrentUser {
   id: string;
   name: string;
   email: string;
+  avatarUrl?: string | null;
   documentType?: string | null;
   documentId: string;
   phone: string;
@@ -64,6 +65,14 @@ export interface OrganizationRef {
   id?: string;
   name: string;
   slug: string;
+}
+
+/** Organização/tenant (OrganizationResponseDto). Dona dos hackathons criados sob ela. */
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: string;
 }
 
 /**
@@ -252,6 +261,36 @@ export interface CatalogQuery {
   page?: number;
 }
 
+/** Criação de organização (POST /organizations). `slug` casa `^[a-z0-9]+(?:-[a-z0-9]+)*$`. */
+export interface CreateOrganizationPayload {
+  name: string;
+  slug: string;
+}
+
+/**
+ * Criação de evento pelo organizador (POST /hackathons). Requer `organizationId`,
+ * `name` e `slug`; o restante é opcional e assume os defaults do backend.
+ * `null` em campos opcionais = sem limite / gratuito / data a definir.
+ */
+export interface CreateHackathonPayload {
+  organizationId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  visibility?: HackathonVisibility;
+  status?: HackathonStatus;
+  registrationMode?: RegistrationMode;
+  registrationCode?: string;
+  coverImage?: string | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  teamMaxSize?: number;
+  maxParticipants?: number | null;
+  maxMentors?: number | null;
+  location?: string | null;
+  price?: number | null;
+}
+
 /**
  * Edição do evento pelo organizador (PATCH /hackathons/:id).
  * `undefined` mantém o valor; `null` limpa o campo no backend.
@@ -264,6 +303,7 @@ export interface UpdateHackathonPayload {
   status?: HackathonStatus;
   registrationMode?: RegistrationMode;
   registrationCode?: string;
+  coverImage?: string | null;
   startsAt?: string | null;
   endsAt?: string | null;
   teamMaxSize?: number;

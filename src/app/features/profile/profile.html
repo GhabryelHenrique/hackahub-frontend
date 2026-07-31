@@ -4,7 +4,7 @@
   @if (auth.user(); as u) {
     <div class="profile__grid">
       <app-card class="profile__identity">
-        <app-avatar [name]="u.name" [size]="72" />
+        <app-avatar [name]="u.name" [image]="u.avatarUrl" [size]="72" />
         <h2 class="profile__name">{{ u.name }}</h2>
         <p class="profile__email"><app-icon name="mail" [size]="15" /> {{ u.email }}</p>
         <dl class="profile__facts">

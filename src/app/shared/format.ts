@@ -71,3 +71,16 @@ export function isoToLocalInput(iso: string | null): string {
 export function localInputToIso(value: string): string | null {
   return value ? new Date(value).toISOString() : null;
 }
+
+/**
+ * Gera um slug no formato aceito pela API (`^[a-z0-9]+(?:-[a-z0-9]+)*$`):
+ * minúsculas, sem acentos, separado por hífen. Usado ao criar organização/evento.
+ */
+export function slugify(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '') // remove acentos
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // não-alfanumérico → hífen
+    .replace(/^-+|-+$/g, ''); // sem hífen nas pontas
+}

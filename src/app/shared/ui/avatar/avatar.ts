@@ -1,18 +1,31 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-/** Avatar com iniciais e cor derivada (docs §5). */
+/** Avatar: mostra a foto (`image`) quando houver; senão, iniciais + cor derivada (docs §5). */
 @Component({
   selector: 'app-avatar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<span
-    class="avatar"
-    [style.width.px]="size()"
-    [style.height.px]="size()"
-    [style.background]="bg()"
-    [style.fontSize.px]="size() * 0.4"
-    [attr.title]="name()"
-    aria-hidden="true"
-  >{{ initials() }}</span>`,
+  template: `
+    @if (image()) {
+      <img
+        class="avatar avatar--img"
+        [src]="image()"
+        [style.width.px]="size()"
+        [style.height.px]="size()"
+        [attr.alt]="name()"
+        [attr.title]="name()"
+      />
+    } @else {
+      <span
+        class="avatar"
+        [style.width.px]="size()"
+        [style.height.px]="size()"
+        [style.background]="bg()"
+        [style.fontSize.px]="size() * 0.4"
+        [attr.title]="name()"
+        aria-hidden="true"
+      >{{ initials() }}</span>
+    }
+  `,
   styles: [
     `:host { display: inline-flex; }
      .avatar {
@@ -20,13 +33,16 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
        border-radius: 50%; color: #fff; font-weight: 600;
        font-family: var(--font-display); letter-spacing: 0.02em;
        flex: none; user-select: none;
-     }`,
+     }
+     .avatar--img { object-fit: cover; background: var(--surface-2, #e5e7eb); }`,
   ],
 })
 export class Avatar {
   readonly name = input('');
   readonly color = input<string | undefined>(undefined);
   readonly size = input(40);
+  /** URL da foto de perfil; quando ausente, cai nas iniciais. */
+  readonly image = input<string | null | undefined>(undefined);
 
   protected readonly initials = computed(() => {
     const parts = this.name().trim().split(/\s+/).filter(Boolean);

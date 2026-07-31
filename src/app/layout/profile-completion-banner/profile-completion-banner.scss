@@ -1,0 +1,43 @@
+:host { display: block; }
+
+.pcb {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.pcb__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: var(--container, 1120px);
+  margin: 0 auto;
+  padding: var(--sp-3) var(--gutter);
+}
+.pcb__icon { color: var(--brand-orange); flex: none; }
+.pcb__text { margin: 0; font-size: var(--fs-sm); color: var(--text); }
+
+.pcb__cta {
+  margin-left: auto;
+  flex: none;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--brand-blue);
+  white-space: nowrap;
+}
+.pcb__cta:hover { text-decoration: underline; }
+
+.pcb__close {
+  flex: none;
+  display: inline-flex;
+  padding: var(--sp-1);
+  color: var(--text-subtle);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.pcb__close:hover { color: var(--text); background: var(--surface-inset); }
+
+@media (max-width: 560px) {
+  .pcb__inner { flex-wrap: wrap; }
+  .pcb__cta { margin-left: 0; }
+}

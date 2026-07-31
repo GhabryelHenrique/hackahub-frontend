@@ -4,9 +4,14 @@
       <h1>Meus eventos</h1>
       <p class="text-muted">Seus hackathons como participante e como mentor.</p>
     </div>
-    <app-button variant="outline" routerLink="/">
-      <app-icon slot="icon" name="compass" [size]="18" /> Descobrir eventos
-    </app-button>
+    <div class="me__actions">
+      <app-button variant="outline" routerLink="/">
+        <app-icon slot="icon" name="compass" [size]="18" /> Descobrir eventos
+      </app-button>
+      <app-button routerLink="/app/eventos/novo">
+        <app-icon slot="icon" name="plus" [size]="18" /> Criar evento
+      </app-button>
+    </div>
   </header>
 
   @if (memberships().length) {

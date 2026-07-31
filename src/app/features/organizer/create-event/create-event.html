@@ -1,0 +1,200 @@
+<div class="container create">
+  <header class="create__head">
+    <a class="create__back" routerLink="/app">
+      <app-icon name="arrow-left" [size]="16" /> Meus eventos
+    </a>
+    <h1>Criar evento</h1>
+    <p>Cadastre a organização promotora e o seu hackathon. Você poderá ajustar tudo e publicar depois.</p>
+  </header>
+
+  <form class="create__form" [formGroup]="form" (ngSubmit)="create()">
+    <app-card>
+      <h2 class="create__section">Organização promotora</h2>
+      <p class="create__hint">Quem realiza o evento. Vira a dona do hackathon no seu espaço.</p>
+      <div class="create__fields">
+        <app-form-field
+          label="Nome da organização"
+          [required]="true"
+          [error]="form.controls.orgName.touched && form.controls.orgName.invalid ? 'Informe o nome (máx. 120 caracteres).' : ''"
+        >
+          <input class="control" formControlName="orgName" placeholder="Ex.: Comunidade DevBR" />
+        </app-form-field>
+
+        <app-form-field
+          label="Identificador (slug)"
+          [required]="true"
+          hint="Gerado a partir do nome. Use letras minúsculas, números e hífens."
+          [error]="orgSlugError() || (form.controls.orgSlug.touched && form.controls.orgSlug.invalid ? 'Use apenas letras minúsculas, números e hífens (ex.: comunidade-devbr).' : '')"
+        >
+          <input class="control" formControlName="orgSlug" (input)="onSlugInput('orgSlug')" placeholder="comunidade-devbr" />
+        </app-form-field>
+      </div>
+    </app-card>
+
+    <app-card>
+      <h2 class="create__section">Informações básicas</h2>
+      <div class="create__fields">
+        <app-form-field
+          label="Nome do evento"
+          [required]="true"
+          [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe o nome (máx. 140 caracteres).' : ''"
+        >
+          <input class="control" formControlName="name" placeholder="Ex.: Hackathon Cidades Inteligentes 2026" />
+        </app-form-field>
+
+        <app-form-field
+          label="Identificador (slug)"
+          [required]="true"
+          hint="Compõe o link público do evento. Gerado do nome e editável."
+          [error]="slugError() || (form.controls.slug.touched && form.controls.slug.invalid ? 'Use apenas letras minúsculas, números e hífens (ex.: cidades-inteligentes-2026).' : '')"
+        >
+          <input class="control" formControlName="slug" (input)="onSlugInput('slug')" placeholder="cidades-inteligentes-2026" />
+        </app-form-field>
+
+        <app-form-field label="Sobre o evento" hint="Descrição completa mostrada aos participantes.">
+          <textarea class="control" rows="6" formControlName="description" placeholder="Conte o que é o evento, para quem é e o que esperar…"></textarea>
+        </app-form-field>
+
+        <app-form-field label="Local" hint="Deixe em branco para eventos online.">
+          <input class="control" formControlName="location" placeholder="Ex.: Centro de Convenções — São Paulo/SP" />
+        </app-form-field>
+
+        <div class="create__row">
+          <app-form-field label="Início">
+            <input class="control" type="datetime-local" formControlName="startsAt" />
+          </app-form-field>
+          <app-form-field
+            label="Encerramento"
+            [error]="form.errors?.['dateOrder'] ? 'O encerramento não pode ser antes do início.' : ''"
+          >
+            <input class="control" type="datetime-local" formControlName="endsAt" />
+          </app-form-field>
+        </div>
+      </div>
+    </app-card>
+
+    <app-card>
+      <h2 class="create__section">Imagens</h2>
+      <p class="create__hint">Uma boa capa destaca seu evento no catálogo. A foto de perfil aparece na sua conta.</p>
+      <div class="create__images">
+        <!-- Foto de capa do evento -->
+        <div class="imgpick">
+          <span class="imgpick__label">Foto de capa do evento</span>
+          <div
+            class="imgpick__cover"
+            [style.backgroundImage]="coverImageUrl() ? 'url(' + coverImageUrl() + ')' : null"
+          >
+            @if (!coverImageUrl() && !uploadingCover()) {
+              <app-icon name="image" [size]="28" />
+              <span class="imgpick__placeholder">Nenhuma capa enviada</span>
+            }
+            @if (uploadingCover()) {
+              <div class="imgpick__loading"><app-spinner [size]="24" /></div>
+            }
+          </div>
+          <div class="imgpick__actions">
+            <label class="imgpick__btn">
+              <app-icon name="upload" [size]="16" />
+              {{ coverImageUrl() ? 'Trocar capa' : 'Enviar capa' }}
+              <input type="file" accept="image/*" hidden (change)="onCoverSelected($event)" />
+            </label>
+            @if (coverImageUrl()) {
+              <button type="button" class="imgpick__remove" (click)="removeCover()">Remover</button>
+            }
+          </div>
+          <p class="imgpick__hint">PNG, JPG, WEBP ou GIF · até 5 MB.</p>
+        </div>
+
+        <!-- Foto de perfil do organizador -->
+        <div class="imgpick">
+          <span class="imgpick__label">Sua foto de perfil</span>
+          <div class="imgpick__avatar">
+            <app-avatar [name]="auth.user()?.name ?? ''" [image]="avatarUrl()" [size]="96" />
+            @if (uploadingAvatar()) {
+              <div class="imgpick__loading imgpick__loading--round"><app-spinner [size]="22" /></div>
+            }
+          </div>
+          <div class="imgpick__actions">
+            <label class="imgpick__btn">
+              <app-icon name="upload" [size]="16" />
+              {{ avatarUrl() ? 'Trocar foto' : 'Enviar foto' }}
+              <input type="file" accept="image/*" hidden (change)="onAvatarSelected($event)" />
+            </label>
+          </div>
+          <p class="imgpick__hint">Atualiza a foto do seu perfil ao criar o evento.</p>
+        </div>
+      </div>
+    </app-card>
+
+    <app-card>
+      <h2 class="create__section">Inscrições e limites</h2>
+      <div class="create__fields">
+        <div class="create__row">
+          <app-form-field label="Modo de inscrição" [required]="true">
+            <select class="control" formControlName="registrationMode">
+              @for (opt of REGISTRATION_OPTIONS; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </app-form-field>
+          <app-form-field label="Preço da inscrição (R$)" hint="Deixe em branco se o evento for gratuito.">
+            <input class="control" type="number" min="0" step="0.01" formControlName="price" placeholder="0,00" />
+          </app-form-field>
+        </div>
+
+        @if (form.controls.registrationMode.value === 'CODE') {
+          <app-form-field label="Código de inscrição" hint="Os participantes usam este código para entrar.">
+            <input class="control" formControlName="registrationCode" placeholder="Ex.: MEUEVENTO2026" />
+          </app-form-field>
+        }
+
+        <div class="create__row create__row--3">
+          <app-form-field label="Máx. de participantes" hint="Em branco = ilimitado.">
+            <input class="control" type="number" min="1" formControlName="maxParticipants" />
+          </app-form-field>
+          <app-form-field label="Máx. de mentores" hint="Em branco = ilimitado.">
+            <input class="control" type="number" min="1" formControlName="maxMentors" />
+          </app-form-field>
+          <app-form-field
+            label="Tamanho do time"
+            [required]="true"
+            [error]="form.controls.teamMaxSize.touched && form.controls.teamMaxSize.invalid ? 'Entre 1 e 50.' : ''"
+          >
+            <input class="control" type="number" min="1" max="50" formControlName="teamMaxSize" />
+          </app-form-field>
+        </div>
+      </div>
+    </app-card>
+
+    <app-card>
+      <h2 class="create__section">Publicação</h2>
+      <div class="create__fields">
+        <div class="create__row">
+          <app-form-field label="Status" [required]="true" hint="Somente eventos publicados aceitam inscrições.">
+            <select class="control" formControlName="status">
+              @for (opt of EVENT_STATUS_OPTIONS; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </app-form-field>
+          <app-form-field label="Visibilidade" [required]="true">
+            <select class="control" formControlName="visibility">
+              @for (opt of VISIBILITY_OPTIONS; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </app-form-field>
+        </div>
+      </div>
+    </app-card>
+
+    <div class="create__actions">
+      <app-button variant="ghost" routerLink="/app">Cancelar</app-button>
+      <app-button
+        type="submit"
+        [loading]="saving()"
+        [disabled]="uploadingCover() || uploadingAvatar()"
+      >Criar evento</app-button>
+    </div>
+  </form>
+</div>

@@ -31,6 +31,30 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
         title: 'Criar conta — Hackahub',
       },
+      // SSO Discord: retorno do OAuth (login) e conclusão de cadastro (usuário novo).
+      {
+        path: 'auth/discord/callback',
+        loadComponent: () =>
+          import('./features/auth/discord-callback/discord-callback').then((m) => m.DiscordCallback),
+        title: 'Entrando com o Discord — Hackahub',
+      },
+      {
+        path: 'cadastro/discord',
+        loadComponent: () =>
+          import('./features/auth/discord-register/discord-register').then((m) => m.DiscordRegister),
+        title: 'Completar cadastro — Hackahub',
+      },
+      // Páginas institucionais/legais
+      {
+        path: 'termos',
+        loadComponent: () => import('./features/legal/terms/terms').then((m) => m.Terms),
+        title: 'Termos de Serviço — Hackahub',
+      },
+      {
+        path: 'privacidade',
+        loadComponent: () => import('./features/legal/privacy/privacy').then((m) => m.Privacy),
+        title: 'Política de Privacidade — Hackahub',
+      },
     ],
   },
 
@@ -54,6 +78,12 @@ export const routes: Routes = [
         path: 'candidaturas',
         loadComponent: () => import('./features/mentor/my-applications/my-applications').then((m) => m.MyApplications),
         title: 'Minhas candidaturas — Hackahub',
+      },
+      // Criar evento (organização + hackathon). Antes de ':hackathonId'.
+      {
+        path: 'eventos/novo',
+        loadComponent: () => import('./features/organizer/create-event/create-event').then((m) => m.CreateEvent),
+        title: 'Criar evento — Hackahub',
       },
       // Contexto de evento
       {

@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models';
 import { Button, FormField, Icon } from '../../../shared/ui';
 import { BrandLogo } from '../../../layout/brand-logo/brand-logo';
+import { DiscordButton } from '../discord-button/discord-button';
 
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo],
+  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo, DiscordButton],
   templateUrl: './login.html',
   styleUrls: ['../auth.shared.scss', './login.scss'],
 })
@@ -20,9 +21,20 @@ export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly submitting = signal(false);
   protected readonly error = signal('');
+
+  constructor() {
+    // Falha/cancelamento vindo do redirect do SSO do Discord (?discord=...).
+    const discord = this.route.snapshot.queryParamMap.get('discord');
+    if (discord === 'erro') {
+      this.error.set('Não foi possível entrar com o Discord. Tente novamente.');
+    } else if (discord === 'cancelado') {
+      this.error.set('Login com o Discord cancelado.');
+    }
+  }
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

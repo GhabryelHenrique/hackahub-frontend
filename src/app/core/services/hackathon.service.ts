@@ -6,6 +6,7 @@ import {
   ApplyMentorPayload,
   Challenge,
   ChallengePayload,
+  CreateHackathonPayload,
   Hackathon,
   Membership,
   UpdateHackathonPayload,
@@ -16,6 +17,11 @@ import {
 export class HackathonService {
   private readonly http = inject(HttpClient);
   private readonly base = environment.apiBaseUrl;
+
+  /** Cria um evento sob uma organização e torna o autor ORGANIZER (docs §8). */
+  create(payload: CreateHackathonPayload): Observable<Hackathon> {
+    return this.http.post<Hackathon>(`${this.base}/hackathons`, payload);
+  }
 
   /** Detalhe autenticado (inclui teamMaxSize). Requer membership aprovada. */
   detail(hackathonId: string): Observable<Hackathon> {

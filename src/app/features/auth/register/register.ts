@@ -5,11 +5,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models';
 import { Button, FormField, Icon } from '../../../shared/ui';
 import { BrandLogo } from '../../../layout/brand-logo/brand-logo';
+import { DiscordButton } from '../discord-button/discord-button';
 
 @Component({
   selector: 'app-register',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo],
+  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo, DiscordButton],
   templateUrl: './register.html',
   styleUrls: ['../auth.shared.scss', './register.scss'],
 })

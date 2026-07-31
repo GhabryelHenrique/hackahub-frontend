@@ -1,0 +1,16 @@
+<div class="auth">
+  <div class="auth__card">
+    <div class="auth__strip"></div>
+    <div class="auth__inner auth__center">
+      <div class="auth__brand"><app-brand-logo /></div>
+
+      @if (error()) {
+        <div class="auth__error"><app-icon name="alert-circle" [size]="18" /> {{ error() }}</div>
+        <p class="auth__foot"><a routerLink="/login">Voltar para o login</a></p>
+      } @else {
+        <app-spinner [size]="28" />
+        <p class="auth__sub">Entrando com o Discord…</p>
+      }
+    </div>
+  </div>
+</div>

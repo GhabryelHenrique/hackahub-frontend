@@ -8,6 +8,7 @@
   flex-wrap: wrap;
   margin-bottom: var(--sp-6);
 }
+.me__actions { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
 .me__tabs { margin-bottom: var(--sp-6); }
 
 .me__grid {

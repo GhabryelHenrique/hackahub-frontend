@@ -42,8 +42,8 @@
         <label class="auth__terms">
           <input type="checkbox" formControlName="acceptedTerms" />
           <span>
-            Li e aceito os <a href="#" (click)="$event.preventDefault()">termos de uso</a> e a política de
-            privacidade (LGPD).
+            Li e aceito os <a routerLink="/termos" target="_blank">termos de uso</a> e a
+            <a routerLink="/privacidade" target="_blank">política de privacidade</a> (LGPD).
           </span>
         </label>
         @if (field('acceptedTerms')) {
@@ -52,6 +52,9 @@
 
         <app-button type="submit" [block]="true" [loading]="submitting()">Criar conta</app-button>
       </form>
+
+      <div class="auth__divider"><span>ou</span></div>
+      <app-discord-button [returnUrl]="returnUrl()" label="Cadastrar com o Discord" />
 
       <p class="auth__foot">Já tem conta? <a routerLink="/login">Entrar</a></p>
     </div>

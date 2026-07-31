@@ -18,6 +18,7 @@
           Meus eventos
         </a>
         <a class="nav__link" routerLink="/">Descobrir eventos</a>
+        <a class="nav__link" routerLink="/app/eventos/novo" routerLinkActive="is-active">Criar evento</a>
       } @else {
         <a class="nav__link" routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
           Eventos
@@ -36,7 +37,7 @@
               (click)="userMenuOpen.set(!userMenuOpen()); $event.stopPropagation()"
               [attr.aria-expanded]="userMenuOpen()"
             >
-              <app-avatar [name]="auth.user()!.name" [size]="32" />
+              <app-avatar [name]="auth.user()!.name" [image]="auth.user()!.avatarUrl" [size]="32" />
               <span class="usermenu__name">{{ auth.user()!.name }}</span>
               <app-icon name="chevron-down" [size]="16" />
             </button>
