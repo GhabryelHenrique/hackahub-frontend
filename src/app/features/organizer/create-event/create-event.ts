@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { HackathonService } from '../../../core/services/hackathon.service';
 import { OrganizationService } from '../../../core/services/organization.service';
-import { UploadService } from '../../../core/services/upload.service';
+import { IMAGE_ACCEPT, IMAGE_MAX_BYTES, IMAGE_MIME_TYPES, UploadService } from '../../../core/services/upload.service';
 import { UserService } from '../../../core/services/user.service';
 import { ToastService } from '../../../core/toast/toast.service';
 import {
@@ -13,6 +13,7 @@ import {
   CreateHackathonPayload,
   HackathonStatus,
   HackathonVisibility,
+  Organization,
   RegistrationMode,
 } from '../../../core/models';
 import { Avatar, Button, Card, FormField, Icon, Spinner } from '../../../shared/ui';
@@ -57,6 +58,7 @@ export class CreateEvent {
 
   protected readonly saving = signal(false);
   /** URL da capa do evento (enviada via /uploads). null = sem capa. */
+  protected readonly IMAGE_ACCEPT = IMAGE_ACCEPT;
   protected readonly coverImageUrl = signal<string | null>(null);
   /** URL da foto de perfil do organizador; parte do valor atual e pode ser trocada. */
   protected readonly avatarUrl = signal<string | null>(null);
@@ -75,8 +77,13 @@ export class CreateEvent {
    */
   private readonly createdOrg = signal<{ id: string; slug: string } | null>(null);
 
+  /** Organizações onde o usuário pode criar eventos (a API recusa as alheias com 403). */
+  protected readonly myOrgs = signal<Organization[]>([]);
+  protected readonly orgMode = signal<'existing' | 'new'>('new');
+
   protected readonly form = this.fb.nonNullable.group(
     {
+      orgId: [''],
       orgName: ['', [Validators.required, Validators.maxLength(120)]],
       orgSlug: ['', [Validators.required, Validators.maxLength(60), Validators.pattern(SLUG_PATTERN)]],
       name: ['', [Validators.required, Validators.maxLength(140)]],
@@ -101,6 +108,18 @@ export class CreateEvent {
     // Parte da foto de perfil já existente — trocar é opcional.
     this.avatarUrl.set(this.auth.user()?.avatarUrl ?? null);
 
+    // Quem já organiza algo começa reaproveitando a própria organização.
+    this.orgs.mine().subscribe({
+      next: (list) => {
+        this.myOrgs.set(list);
+        if (list.length) {
+          this.form.controls.orgId.setValue(list[0].id);
+          this.setOrgMode('existing');
+        }
+      },
+      error: () => {},
+    });
+
     // Slug acompanha o nome até o usuário editá-lo manualmente.
     this.form.controls.orgName.valueChanges.pipe(takeUntilDestroyed()).subscribe((v) => {
       if (!this.orgSlugLocked()) {
@@ -112,6 +131,22 @@ export class CreateEvent {
         this.form.controls.slug.setValue(slugify(v), { emitEvent: false });
       }
     });
+  }
+
+  /** Alterna entre reaproveitar uma organização sua e criar uma nova (valida só os campos do modo). */
+  protected setOrgMode(mode: 'existing' | 'new'): void {
+    this.orgMode.set(mode);
+    const { orgId, orgName, orgSlug } = this.form.controls;
+    if (mode === 'existing') {
+      orgId.setValidators(Validators.required);
+      orgName.disable();
+      orgSlug.disable();
+    } else {
+      orgId.clearValidators();
+      orgName.enable();
+      orgSlug.enable();
+    }
+    orgId.updateValueAndValidity();
   }
 
   /** Normaliza o slug digitado e passa a respeitar a edição manual. */
@@ -145,11 +180,11 @@ export class CreateEvent {
     const file = input.files?.[0];
     input.value = ''; // permite reenviar o mesmo arquivo depois
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      this.toast.error('Selecione um arquivo de imagem.');
+    if (!IMAGE_MIME_TYPES.includes(file.type)) {
+      this.toast.error('Use uma imagem PNG, JPG, WEBP ou GIF.');
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > IMAGE_MAX_BYTES) {
       this.toast.error('A imagem deve ter no máximo 5 MB.');
       return;
     }
@@ -171,8 +206,19 @@ export class CreateEvent {
     this.orgSlugError.set('');
     this.slugError.set('');
     const v = this.form.getRawValue();
+    // Modo CODE sem código = ninguém consegue entrar (a API também recusa).
+    if (v.registrationMode === 'CODE' && !v.registrationCode.trim()) {
+      this.form.controls.registrationCode.setErrors({ required: true });
+      this.form.controls.registrationCode.markAsTouched();
+      return;
+    }
 
     this.saving.set(true);
+
+    if (this.orgMode() === 'existing') {
+      this.createHackathon(v.orgId);
+      return;
+    }
 
     // Reaproveita a organização criada numa tentativa anterior (mesmo slug).
     const existing = this.createdOrg();
@@ -189,7 +235,12 @@ export class CreateEvent {
       error: (err: ApiError) => {
         this.saving.set(false);
         if (err.statusCode === 409) {
-          this.orgSlugError.set('Já existe uma organização com este identificador.');
+          const mine = this.myOrgs().some((o) => o.slug === v.orgSlug);
+          this.orgSlugError.set(
+            mine
+              ? 'Esta organização já é sua — escolha “Usar uma organização sua”.'
+              : 'Já existe uma organização com este identificador.',
+          );
           this.form.controls.orgSlug.setErrors({ taken: true });
         }
       },

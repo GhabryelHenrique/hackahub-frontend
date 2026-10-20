@@ -1,24 +1,36 @@
-<section class="event-head" [style.--hue]="hue()">
-  <div class="container">
+<section
+  class="event-head cover-art"
+  [class.has-photo]="!!head()?.coverImage"
+  [style.--hue]="hue()"
+  [style.backgroundImage]="photo()"
+>
+  <div class="container event-head__inner">
     <a class="event-head__back" routerLink="/app">
       <app-icon name="arrow-left" [size]="16" /> Meus eventos
     </a>
 
     @if (head(); as ev) {
       <div class="event-head__top">
-        <div class="stack gap-2">
+        <div class="event-head__text">
           <span class="event-head__org">{{ ev.organization.name }}</span>
           <h1 class="event-head__title">{{ ev.name }}</h1>
-          <div class="row wrap gap-3 event-head__meta">
-            <span class="row gap-1"><app-icon name="calendar" [size]="16" /> {{ dateRange(ev.startsAt, ev.endsAt) }}</span>
-            <span class="row gap-1"><app-icon name="users" [size]="16" /> {{ ev.participantsCount }} participantes</span>
-          </div>
+          <ul class="event-head__meta">
+            <li><app-icon name="calendar" [size]="16" /> {{ dateRange(ev.startsAt, ev.endsAt) }}</li>
+            <li><app-icon [name]="ev.location ? 'map-pin' : 'globe'" [size]="16" /> {{ ev.location || 'Online' }}</li>
+            <li><app-icon name="users" [size]="16" /> {{ ev.participantsCount }} participantes</li>
+          </ul>
         </div>
         <div class="event-head__roles">
           @for (m of memberships(); track m.id) {
-            <app-badge [tone]="STATUS_TONE[m.status]" [dot]="true">
+            <span class="glass-chip">
+              <span class="event-head__dot" [attr.data-status]="m.status"></span>
               {{ ROLE_LABEL[m.role] }} · {{ STATUS_LABEL[m.status] }}
-            </app-badge>
+            </span>
+          }
+          @if (eventStatus(); as st) {
+            @if (st !== 'PUBLISHED') {
+              <span class="glass-chip"><app-icon name="info" [size]="13" /> Evento {{ EVENT_STATUS_LABEL[st].toLowerCase() }}</span>
+            }
           }
         </div>
       </div>
@@ -35,7 +47,7 @@
 
 <nav class="event-nav" aria-label="Seções do evento">
   <div class="container event-nav__inner">
-    @for (item of navItems(); track item.label) {
+    @for (item of navItems(); track item.link.join('/')) {
       <a
         class="event-nav__link"
         [routerLink]="item.link"
@@ -44,6 +56,9 @@
       >
         <app-icon [name]="item.icon" [size]="17" />
         {{ item.label }}
+        @if (item.count) {
+          <span class="event-nav__count" [attr.aria-label]="item.count + ' pendentes'">{{ item.count }}</span>
+        }
       </a>
     }
   </div>

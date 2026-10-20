@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Invite, JoinRequest, PublicUser, Team } from '../models';
 
@@ -33,8 +33,9 @@ export class TeamService {
     return this.http.post<Team>(`${this.hb(hackathonId)}/teams/${teamId}/challenges`, { challengeIds });
   }
 
-  removeMember(hackathonId: string, teamId: string, userId: string): Observable<Team> {
-    return this.http.delete<Team>(`${this.hb(hackathonId)}/teams/${teamId}/members/${userId}`);
+  /** A API responde `{ message }` (não o time) — recarregar a lista depois. */
+  removeMember(hackathonId: string, teamId: string, userId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.hb(hackathonId)}/teams/${teamId}/members/${userId}`);
   }
 
   /** Busca de participantes do evento (para convidar). */
@@ -52,8 +53,11 @@ export class TeamService {
     return this.http.post<JoinRequest>(`${this.hb(hackathonId)}/teams/${teamId}/join-requests`, {});
   }
 
+  /** A API devolve o histórico (todos os status); só PENDING aceita ação. */
   teamJoinRequests(hackathonId: string, teamId: string): Observable<JoinRequest[]> {
-    return this.http.get<JoinRequest[]>(`${this.hb(hackathonId)}/teams/${teamId}/join-requests`);
+    return this.http
+      .get<JoinRequest[]>(`${this.hb(hackathonId)}/teams/${teamId}/join-requests`)
+      .pipe(map((list) => list.filter((r) => r.status === 'PENDING')));
   }
 
   approveRequest(hackathonId: string, requestId: string): Observable<JoinRequest> {
@@ -65,8 +69,11 @@ export class TeamService {
   }
 
   // ---- Convites recebidos (docs §4.6) — escopados por hackathon ------------
+  /** Idem: só convites PENDING (aceitos/recusados voltariam com botões e dariam 409). */
   receivedInvites(hackathonId: string): Observable<Invite[]> {
-    return this.http.get<Invite[]>(`${this.hb(hackathonId)}/invites/received`);
+    return this.http
+      .get<Invite[]>(`${this.hb(hackathonId)}/invites/received`)
+      .pipe(map((list) => list.filter((i) => i.status === 'PENDING')));
   }
 
   acceptInvite(hackathonId: string, inviteId: string): Observable<Invite> {

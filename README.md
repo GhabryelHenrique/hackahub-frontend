@@ -69,7 +69,7 @@ core/
   auth/            AuthService (signals), TokenStorage
   http/            interceptors (auth, error)
   guards/          authGuard, membershipGuard(role, status)
-  services/        CatalogService, HackathonService, TeamService, MentorService, UserService, DiscordService
+  services/        CatalogService, HackathonService, TeamService, MentorService, MentorshipService, UserService, DiscordService
   event-context/   EventContextService (evento ativo + papel derivado)
   data/mock/       backend em memória (interceptor + seed) — reproduz os mappers da API
   models/          contrato de tipos (alinhado a src/common/mappers do backend)
@@ -102,12 +102,32 @@ Como as rotas-filho herdam o `:hackathonId` do pai, o roteador usa
 
 ## Área do organizador
 
-`membershipGuard('ORGANIZER','APPROVED')` protege `/app/eventos/:id/gerenciar`:
-edição do evento (nome, sobre, local, preço, limites de participantes/mentores, datas,
-inscrição, status/visibilidade) e CRUD de desafios (cada um com tela de detalhe).
-Aparece como abas no shell do evento só para organizadores aprovados.
+`membershipGuard('ORGANIZER','APPROVED')` protege `/app/eventos/:id/gerenciar/**`
+(abas no shell do evento, só para organizadores aprovados):
+
+- `gerenciar` — **Painel**: KPIs com ocupação de vagas (participantes/mentores vs.
+  limite), tendência de inscrições, fila de aprovação, desafios mais escolhidos,
+  status dos pedidos de mentoria e tabela de times, mais um checklist de prontidão
+  do evento. Gráficos em `shared/components/charts/` (SVG/CSS, sem biblioteca).
+- `gerenciar/inscricoes` — aprova/recusa participantes (modo APPROVAL) e
+  candidaturas de mentor; a aba mostra o nº de pendências.
+- `gerenciar/configuracoes` — edição do evento (nome, sobre, capa, local, preço,
+  limites, datas, inscrição, status/visibilidade). O modo CODE exige código.
+- `gerenciar/desafios` — CRUD de desafios.
+
+## Mentoria (web + Discord)
+
+Os pedidos de ajuda são a **mesma fila** do `/mentoria` do bot Discord
+(`MentorshipService`): o participante pede/cancela na visão geral do evento; o mentor
+assume (claim atômico — 409 se outro mentor pegou antes) e conclui no painel de
+mentoria, que também lista todos os times com "Mentorar este time".
+
+## Capas de evento
+
+Sem imagem enviada, as capas usam a classe global `.cover-art` (navy da marca +
+brilho tingido por `coverHue(slug)`, faixa ciano→índigo). Com foto, `coverImage()`
+monta o `background-image` (com véu escuro quando há texto por cima).
 
 ## Fora de escopo
 
-Billing, white-label, submissões, julgamento, matchmaking, fluxo *push* de mentor e
-analytics. Há ganchos/TODOs onde faz sentido.
+Billing, white-label, submissões, julgamento, matchmaking e fluxo *push* de mentor. Há ganchos/TODOs onde faz sentido.

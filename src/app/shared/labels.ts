@@ -5,6 +5,7 @@ import {
   HackathonVisibility,
   MembershipRole,
   MembershipStatus,
+  MentorshipStatus,
   RegistrationMode,
 } from '../core/models';
 import { BadgeTone } from './ui/badge/badge';
@@ -13,21 +14,18 @@ export const REGISTRATION_LABEL: Record<RegistrationMode, string> = {
   OPEN: 'Inscrição aberta',
   APPROVAL: 'Sujeito a aprovação',
   CODE: 'Por código',
-  INVITE: 'Somente convite',
 };
 
 export const REGISTRATION_TONE: Record<RegistrationMode, BadgeTone> = {
   OPEN: 'success',
   APPROVAL: 'info',
   CODE: 'warning',
-  INVITE: 'neutral',
 };
 
 export const REGISTRATION_OPTIONS: { value: RegistrationMode; label: string }[] = [
   { value: 'OPEN', label: 'Inscrição aberta' },
   { value: 'APPROVAL', label: 'Sujeito a aprovação' },
   { value: 'CODE', label: 'Por código' },
-  { value: 'INVITE', label: 'Somente convite' },
 ];
 
 export const ROLE_LABEL: Record<MembershipRole, string> = {
@@ -64,3 +62,32 @@ export const VISIBILITY_OPTIONS: { value: HackathonVisibility; label: string }[]
   { value: 'UNLISTED', label: 'Não listado (acesso por link)' },
   { value: 'PRIVATE', label: 'Privado' },
 ];
+
+export const EVENT_STATUS_LABEL: Record<HackathonStatus, string> = {
+  DRAFT: 'Rascunho',
+  PUBLISHED: 'Publicado',
+  CLOSED: 'Encerrado',
+  ARCHIVED: 'Arquivado',
+};
+
+export const EVENT_STATUS_TONE: Record<HackathonStatus, BadgeTone> = {
+  DRAFT: 'neutral',
+  PUBLISHED: 'success',
+  CLOSED: 'warning',
+  ARCHIVED: 'neutral',
+};
+
+/** Tickets de mentoria (mesmos estados do bot Discord). */
+export const MENTORSHIP_LABEL: Record<MentorshipStatus, string> = {
+  PENDING: 'Na fila',
+  IN_PROGRESS: 'Em atendimento',
+  COMPLETED: 'Concluído',
+  CANCELLED: 'Cancelado',
+};
+
+export const MENTORSHIP_TONE: Record<MentorshipStatus, BadgeTone> = {
+  PENDING: 'warning',
+  IN_PROGRESS: 'info',
+  COMPLETED: 'success',
+  CANCELLED: 'neutral',
+};

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
@@ -9,6 +9,8 @@ import {
   CreateHackathonPayload,
   Hackathon,
   Membership,
+  MembershipRole,
+  MembershipStatus,
   UpdateHackathonPayload,
 } from '../models';
 
@@ -61,6 +63,28 @@ export class HackathonService {
 
   deleteChallenge(hackathonId: string, challengeId: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/hackathons/${hackathonId}/challenges/${challengeId}`);
+  }
+
+  // ---- Inscrições (ORGANIZER) ----------------------------------------------
+
+  /** Participações do evento (participantes e mentores), com filtros opcionais. */
+  memberships(
+    hackathonId: string,
+    filter: { role?: MembershipRole; status?: MembershipStatus } = {},
+  ): Observable<Membership[]> {
+    let params = new HttpParams();
+    if (filter.role) params = params.set('role', filter.role);
+    if (filter.status) params = params.set('status', filter.status);
+    return this.http.get<Membership[]>(`${this.base}/hackathons/${hackathonId}/memberships`, { params });
+  }
+
+  /** Aprova inscrição/candidatura PENDING (revalida o limite de vagas → 409 se lotado). */
+  approveMembership(hackathonId: string, membershipId: string): Observable<Membership> {
+    return this.http.post<Membership>(`${this.base}/hackathons/${hackathonId}/memberships/${membershipId}/approve`, {});
+  }
+
+  rejectMembership(hackathonId: string, membershipId: string): Observable<Membership> {
+    return this.http.post<Membership>(`${this.base}/hackathons/${hackathonId}/memberships/${membershipId}/reject`, {});
   }
 
   /** Minhas participações neste evento (não exige aprovação). */

@@ -39,7 +39,7 @@ export function registrationState(h: Pick<HackathonSummary, 'registrationMode' |
     return { open: false, label: 'Encerrado', tone: 'neutral' };
   }
   return {
-    open: h.registrationMode !== 'INVITE',
+    open: true,
     label: REGISTRATION_LABEL[h.registrationMode],
     tone: REGISTRATION_TONE[h.registrationMode],
   };
@@ -52,7 +52,59 @@ export function hueFromString(s: string): number {
   return Math.abs(hash) % 360;
 }
 
-const priceFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+/**
+ * Matiz da capa gerada (`.cover-art`), restrito à faixa fria da marca
+ * (190 ciano → 250 índigo) para não destoar do navy/laranja.
+ */
+export function coverHue(s: string): number {
+  return 190 + (hueFromString(s) % 61);
+}
+
+/** `background-image` para capa com foto; `veil` escurece para texto por cima. */
+export function coverImage(url: string | null | undefined, veil = false): string | null {
+  if (!url) return null;
+  const safe = `url("${url.replace(/"/g, '%22')}")`;
+  return veil ? `linear-gradient(180deg, rgba(11, 27, 48, 0.35), rgba(11, 27, 48, 0.82)), ${safe}` : safe;
+}
+
+const dayFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' });
+
+/** Bloco de data da capa: { day: '14', month: 'NOV' } — null se sem data. */
+export function dateBlock(iso: string | null): { day: string; month: string } | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  return { day: dayFmt.format(d), month: month(d).toUpperCase() };
+}
+
+const relFmt = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
+
+/** "há 3 horas", "ontem"… — para filas (tickets, inscrições). */
+export function timeAgo(iso: string): string {
+  const diff = (new Date(iso).getTime() - Date.now()) / 1000;
+  const steps: [Intl.RelativeTimeFormatUnit, number][] = [
+    ['second', 60],
+    ['minute', 60],
+    ['hour', 24],
+    ['day', 30],
+    ['month', 12],
+    ['year', Infinity],
+  ];
+  let value = diff;
+  for (const [unit, size] of steps) {
+    if (Math.abs(value) < size) return relFmt.format(Math.round(value), unit);
+    value /= size;
+  }
+  return relFmt.format(Math.round(value), 'year');
+}
+
+const compactFmt = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
+
+/** 1.284 → "1,3 mil" (stat tiles). */
+export function compact(n: number): string {
+  return n < 10000 ? n.toLocaleString('pt-BR') : compactFmt.format(n);
+}
+
+const priceFmt =new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 /** `null`/`0` = gratuito (preço é opcional no evento). */
 export function formatPrice(price: number | null | undefined): string {

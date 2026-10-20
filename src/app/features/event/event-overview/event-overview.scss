@@ -54,6 +54,34 @@
 .ov__action-text { flex: 1; display: flex; flex-direction: column; }
 .ov__action-text small { color: var(--text-subtle); font-size: var(--fs-sm); }
 
+/* ---- Pedir mentoria ---- */
+.ov__help { display: flex; flex-direction: column; gap: var(--sp-4); }
+.ov__help-head { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.ov__help-head h3 { font-size: var(--fs-lg); }
+.ov__help-head p { color: var(--text-muted); font-size: var(--fs-sm); margin-top: 2px; }
+.ov__help-head code { font-size: 0.85em; background: var(--surface-inset); padding: 1px 5px; border-radius: var(--radius-sm); }
+.ov__help-icon {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 40px; height: 40px; border-radius: var(--radius);
+  background: var(--brand-gradient-soft); color: var(--brand-blue);
+}
+.ov__req {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: var(--sp-3); border-radius: var(--radius); background: var(--surface-muted); border: 1px solid var(--border);
+}
+.ov__req strong { font-size: var(--fs-sm); }
+.ov__req span { font-size: var(--fs-xs); color: var(--text-subtle); }
+.ov__req-cancel {
+  border: 0; background: none; padding: 0; margin-top: 4px; cursor: pointer;
+  color: var(--danger); font-size: var(--fs-xs); font-weight: 600;
+}
+.ov__req-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+.ov__history summary { cursor: pointer; font-size: var(--fs-sm); color: var(--text-muted); font-weight: 500; }
+.ov__history ul { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-3); }
+.ov__history li { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); min-width: 0; }
+.ov__history li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ov__help-form { display: flex; flex-direction: column; gap: var(--sp-4); }
+
 .ov__facts h3 { font-size: var(--fs-lg); margin-bottom: var(--sp-3); }
 .ov__facts dl { display: flex; flex-direction: column; gap: var(--sp-3); }
 .ov__facts dl > div { display: flex; justify-content: space-between; gap: var(--sp-4); font-size: var(--fs-sm); }

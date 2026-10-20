@@ -1,0 +1,284 @@
+<header class="page-head">
+  <div>
+    <h2>Painel do evento</h2>
+    <p>Inscrições, times, desafios e mentoria em tempo real.</p>
+  </div>
+  <div class="dash__actions">
+    @if (ctx.full(); as f) {
+      <app-badge [tone]="EVENT_STATUS_TONE[f.status]" [dot]="true">{{ EVENT_STATUS_LABEL[f.status] }}</app-badge>
+    }
+    @if (publicLink(); as link) {
+      <app-button variant="outline" size="sm" [routerLink]="link">
+        <app-icon slot="icon" name="external-link" [size]="16" /> Página pública
+      </app-button>
+    }
+    <app-button variant="ghost" size="sm" [disabled]="loading()" (click)="load()">
+      <app-icon slot="icon" name="refresh" [size]="16" /> Atualizar
+    </app-button>
+  </div>
+</header>
+
+@if (loading() && !data().memberships) {
+  <div class="dash__kpis">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <app-skeleton height="132px" radius="var(--radius-lg)" />
+    }
+  </div>
+  <app-skeleton height="280px" radius="var(--radius-lg)" />
+} @else {
+  <!-- Prontidão: some quando tudo estiver feito. -->
+  @if (checklistDone() < checklist().length) {
+    <app-card class="ready">
+      <div class="ready__head">
+        <div>
+          <h3>Prepare seu evento</h3>
+          <p>{{ checklistDone() }} de {{ checklist().length }} etapas concluídas</p>
+        </div>
+        <div
+          class="ready__ring"
+          [style.--p]="(checklistDone() / checklist().length) * 100"
+          role="img"
+          [attr.aria-label]="checklistDone() + ' de ' + checklist().length + ' etapas concluídas'"
+        >
+          <span>{{ checklistDone() }}/{{ checklist().length }}</span>
+        </div>
+      </div>
+      <ul class="ready__list">
+        @for (c of checklist(); track c.label) {
+          <li [class.is-done]="c.done">
+            @if (c.done) {
+              <span class="ready__check"><app-icon name="check" [size]="13" /></span>
+              <span>{{ c.label }}</span>
+            } @else {
+              <span class="ready__check"></span>
+              <a [routerLink]="c.link">{{ c.label }} <app-icon name="arrow-right" [size]="13" /></a>
+            }
+          </li>
+        }
+      </ul>
+    </app-card>
+  }
+
+  <!-- KPIs -->
+  <section class="dash__kpis" aria-label="Indicadores">
+    <app-stat-tile
+      label="Participantes"
+      icon="users"
+      [value]="participants().approved"
+      [max]="ctx.full()?.maxParticipants"
+      [sub]="participants().pending ? participants().pending + ' aguardando aprovação' : ctx.full()?.maxParticipants ? '' : 'Vagas ilimitadas'"
+    />
+    <app-stat-tile
+      label="Mentores"
+      icon="lightbulb"
+      [value]="mentors().approved"
+      [max]="ctx.full()?.maxMentors"
+      [sub]="mentors().pending ? mentors().pending + ' candidatura(s) pendente(s)' : ctx.full()?.maxMentors ? '' : 'Vagas ilimitadas'"
+    />
+    <app-stat-tile
+      label="Times formados"
+      icon="layers"
+      [value]="teamStats().count"
+      [sub]="teamStats().count ? teamStats().avg + ' por time em média · ' + teamStats().withoutTeam + ' sem time' : teamStats().withoutTeam + ' participante(s) sem time'"
+    />
+    <app-stat-tile
+      label="Pedidos de mentoria abertos"
+      icon="help-circle"
+      [value]="openTickets()"
+      [sub]="data().tickets === null ? 'Indisponível' : tickets().length + ' no total'"
+    />
+  </section>
+
+  <div class="dash__grid">
+    <!-- Tendência de inscrições -->
+    <app-card class="panel panel--wide">
+      <div class="panel__head">
+        <div>
+          <h3>Inscrições recebidas</h3>
+          <p>Participantes e mentores, acumulado por dia</p>
+        </div>
+        @if (trend().length) {
+          <button type="button" class="panel__link" (click)="showTrendTable.set(!showTrendTable())">
+            {{ showTrendTable() ? 'Ver gráfico' : 'Ver dados' }}
+          </button>
+        }
+      </div>
+      @if (data().memberships === null) {
+        <p class="panel__empty">Não foi possível carregar as inscrições.</p>
+      } @else if (!trend().length) {
+        <app-empty-state icon="trending-up" title="Nenhuma inscrição ainda" description="Assim que alguém se inscrever, a evolução aparece aqui." />
+      } @else if (showTrendTable()) {
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Dia</th><th class="num">Novas</th><th class="num">Acumulado</th></tr></thead>
+            <tbody>
+              @for (p of trendRows(); track p.date) {
+                <tr><td>{{ p.date.split('-').reverse().join('/') }}</td><td class="num">{{ p.delta }}</td><td class="num">{{ p.value }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <app-trend-chart [points]="trend()" unit="inscrições" />
+      }
+    </app-card>
+
+    <!-- Fila de aprovação -->
+    <app-card class="panel">
+      <div class="panel__head">
+        <div>
+          <h3>Aguardando aprovação</h3>
+          <p>{{ pending().length }} {{ pending().length === 1 ? 'pedido' : 'pedidos' }}</p>
+        </div>
+        <a class="panel__link" [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'inscricoes']">Ver todas</a>
+      </div>
+      @if (pending().length) {
+        <ul class="queue">
+          @for (m of pending().slice(0, 5); track m.id) {
+            <li class="queue__item">
+              <app-avatar [name]="m.user?.name ?? '?'" [size]="34" />
+              <div class="queue__info">
+                <strong>{{ m.user?.name }}</strong>
+                <span>{{ ROLE_LABEL[m.role] }} · {{ timeAgo(m.createdAt) }}</span>
+              </div>
+              <div class="queue__actions">
+                <button
+                  type="button"
+                  class="icon-btn icon-btn--reject"
+                  [disabled]="busyId() === m.id"
+                  (click)="decide(m, false)"
+                  [attr.aria-label]="'Recusar ' + m.user?.name"
+                  title="Recusar"
+                >
+                  <app-icon name="x" [size]="16" />
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn icon-btn--approve"
+                  [disabled]="busyId() === m.id"
+                  (click)="decide(m, true)"
+                  [attr.aria-label]="'Aprovar ' + m.user?.name"
+                  title="Aprovar"
+                >
+                  <app-icon name="check" [size]="16" />
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+        @if (pending().length > 5) {
+          <p class="panel__more">e mais {{ pending().length - 5 }} na fila</p>
+        }
+      } @else {
+        <div class="panel__zero">
+          <app-icon name="check-circle" [size]="22" />
+          <span>Tudo em dia — nenhuma inscrição pendente.</span>
+        </div>
+      }
+    </app-card>
+
+    <!-- Desafios mais escolhidos -->
+    <app-card class="panel panel--wide">
+      <div class="panel__head">
+        <div>
+          <h3>Desafios mais escolhidos</h3>
+          <p>Times por desafio</p>
+        </div>
+      </div>
+      @if (data().challenges === null) {
+        <p class="panel__empty">Não foi possível carregar os desafios.</p>
+      } @else if (!challengeBars().length) {
+        <app-empty-state icon="target" title="Nenhum desafio cadastrado">
+          <app-button size="sm" [routerLink]="['/app/eventos', hackathonId(), 'gerenciar', 'desafios', 'novo']">Criar desafio</app-button>
+        </app-empty-state>
+      } @else {
+        @if (!anyChallengePicked()) {
+          <p class="panel__hint"><app-icon name="info" [size]="14" /> Nenhum time escolheu desafio ainda.</p>
+        }
+        <app-bar-list [items]="challengeBars()" unit="times" />
+      }
+    </app-card>
+
+    <!-- Mentoria -->
+    <app-card class="panel">
+      <div class="panel__head">
+        <div>
+          <h3>Mentoria</h3>
+          <p>Pedidos de ajuda dos times (web e Discord)</p>
+        </div>
+      </div>
+      @if (data().tickets === null) {
+        <p class="panel__empty">Não foi possível carregar os pedidos de mentoria.</p>
+      } @else if (!tickets().length) {
+        <app-empty-state icon="help-circle" title="Nenhum pedido de mentoria" description="Os times pedem ajuda pelo app ou pelo /mentoria no Discord." />
+      } @else {
+        <app-segment-bar [segments]="ticketSegments()" />
+        <ul class="tickets">
+          @for (t of tickets().slice(0, 4); track t.id) {
+            <li>
+              <app-badge [tone]="MENTORSHIP_TONE[t.status]">{{ MENTORSHIP_LABEL[t.status] }}</app-badge>
+              <span class="tickets__title">{{ t.title }}</span>
+              <span class="tickets__meta">{{ t.team?.name ?? t.user.name }} · {{ timeAgo(t.createdAt) }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </app-card>
+
+    <!-- Times -->
+    <app-card class="panel panel--full">
+      <div class="panel__head">
+        <div>
+          <h3>Times</h3>
+          <p>{{ teamStats().inTeams }} de {{ participants().approved }} participantes em times</p>
+        </div>
+      </div>
+      @if (data().teams === null) {
+        <p class="panel__empty">Não foi possível carregar os times.</p>
+      } @else if (!sortedTeams().length) {
+        <app-empty-state icon="users" title="Nenhum time formado ainda" description="Participantes aprovados criam times na aba “Meu time”." />
+      } @else {
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Líder</th>
+                <th>Integrantes</th>
+                <th>Desafio</th>
+                <th class="num">Mentores</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of sortedTeams(); track t.id) {
+                <tr>
+                  <td><strong>{{ t.name }}</strong></td>
+                  <td>
+                    <span class="table__user"><app-avatar [name]="t.leader.name" [size]="24" /> {{ t.leader.name }}</span>
+                  </td>
+                  <td>
+                    <span class="fill" [attr.aria-label]="t.members.length + ' de ' + (ctx.teamMaxSize() ?? '?')">
+                      <span class="fill__track">
+                        <span class="fill__bar" [style.width.%]="ctx.teamMaxSize() ? (t.members.length / ctx.teamMaxSize()!) * 100 : 100"></span>
+                      </span>
+                      <span class="fill__num">{{ t.members.length }}@if (ctx.teamMaxSize()) {/{{ ctx.teamMaxSize() }}}</span>
+                    </span>
+                  </td>
+                  <td>
+                    @if (t.challenges.length) {
+                      <span class="table__chip" [title]="t.challenges[0].title">{{ t.challenges[0].title }}</span>
+                      @if (t.challenges.length > 1) { <span class="text-subtle fs-xs"> +{{ t.challenges.length - 1 }}</span> }
+                    } @else {
+                      <span class="text-subtle">—</span>
+                    }
+                  </td>
+                  <td class="num">{{ t.mentors.length }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </app-card>
+  </div>
+}

@@ -66,6 +66,49 @@
       </div>
     }
 
+    @if (ctx.isParticipantApproved()) {
+      <app-card class="ov__help">
+        <div class="ov__help-head">
+          <span class="ov__help-icon"><app-icon name="help-circle" [size]="20" /></span>
+          <div>
+            <h3>Precisa de ajuda?</h3>
+            <p>Peça orientação a um mentor do evento — também funciona pelo <code>/mentoria</code> no Discord.</p>
+          </div>
+        </div>
+        @if (openRequest(); as r) {
+          <div class="ov__req">
+            <app-badge [tone]="MENTORSHIP_TONE[r.status]" [dot]="true">{{ MENTORSHIP_LABEL[r.status] }}</app-badge>
+            <strong>{{ r.title }}</strong>
+            <span>
+              @if (r.mentor) { Com {{ r.mentor.name }} · } {{ timeAgo(r.createdAt) }}
+            </span>
+            @if (r.status === 'PENDING') {
+              <button type="button" class="ov__req-cancel" [disabled]="cancellingId() === r.id" (click)="cancelRequest(r)">
+                Cancelar pedido
+              </button>
+            }
+          </div>
+        } @else {
+          <app-button [block]="true" variant="secondary" (click)="openHelp()">
+            <app-icon slot="icon" name="lightbulb" [size]="16" /> Pedir mentoria
+          </app-button>
+        }
+        @if (myRequests().length > (openRequest() ? 1 : 0)) {
+          <details class="ov__history">
+            <summary>Histórico de pedidos ({{ myRequests().length }})</summary>
+            <ul>
+              @for (r of myRequests(); track r.id) {
+                <li>
+                  <app-badge [tone]="MENTORSHIP_TONE[r.status]">{{ MENTORSHIP_LABEL[r.status] }}</app-badge>
+                  <span>{{ r.title }}</span>
+                </li>
+              }
+            </ul>
+          </details>
+        }
+      </app-card>
+    }
+
     @if (ctx.summary(); as s) {
       <app-card class="ov__facts">
         <h3>Informações</h3>
@@ -89,3 +132,29 @@
     }
   </aside>
 </div>
+
+<app-modal [open]="helpOpen()" title="Pedir mentoria" (close)="helpOpen.set(false)">
+  <form class="ov__help-form" [formGroup]="helpForm" (ngSubmit)="sendHelp()">
+    <app-form-field
+      label="Assunto"
+      [required]="true"
+      for="help-title"
+      [error]="helpForm.controls.title.touched && helpForm.controls.title.invalid ? 'Resuma em 3 a 120 caracteres.' : ''"
+    >
+      <input id="help-title" class="control" formControlName="title" placeholder="Ex.: Deploy falhando na Vercel" maxlength="120" />
+    </app-form-field>
+    <app-form-field
+      label="O que está acontecendo?"
+      [required]="true"
+      for="help-desc"
+      hint="Conte o contexto, o que já tentaram e onde travou."
+      [error]="helpForm.controls.description.touched && helpForm.controls.description.invalid ? 'Descreva com 10 a 2000 caracteres.' : ''"
+    >
+      <textarea id="help-desc" class="control" rows="5" formControlName="description" maxlength="2000"></textarea>
+    </app-form-field>
+  </form>
+  <div slot="footer">
+    <app-button variant="ghost" (click)="helpOpen.set(false)">Cancelar</app-button>
+    <app-button [loading]="sending()" (click)="sendHelp()">Enviar pedido</app-button>
+  </div>
+</app-modal>

@@ -31,22 +31,11 @@
 }
 .me-card:hover { text-decoration: none; box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: var(--border-strong); }
 
-.me-card__cover {
-  position: relative;
-  height: 84px;
-  background: linear-gradient(135deg, hsl(var(--hue) 68% 46%) 0%, hsl(calc(var(--hue) - 45) 74% 48%) 55%, var(--brand-orange) 135%);
-}
+.me-card__cover { height: 96px; }
 .me-card__role {
   position: absolute;
-  bottom: var(--sp-2);
+  bottom: var(--sp-3);
   left: var(--sp-3);
-  background: rgba(11, 27, 48, 0.5);
-  color: #fff;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  backdrop-filter: blur(4px);
 }
 
 .me-card__body { padding: var(--sp-4); display: flex; flex-direction: column; gap: 6px; flex: 1; }

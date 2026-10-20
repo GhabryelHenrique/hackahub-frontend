@@ -127,6 +127,18 @@ export const routes: Routes = [
             children: [
               {
                 path: '',
+                loadComponent: () =>
+                  import('./features/organizer/dashboard/organizer-dashboard').then((m) => m.OrganizerDashboard),
+                title: 'Painel do evento — Hackahub',
+              },
+              {
+                path: 'inscricoes',
+                loadComponent: () =>
+                  import('./features/organizer/registrations/registrations').then((m) => m.Registrations),
+                title: 'Inscrições — Hackahub',
+              },
+              {
+                path: 'configuracoes',
                 loadComponent: () => import('./features/organizer/event-settings/event-settings').then((m) => m.EventSettings),
                 title: 'Configurações do evento — Hackahub',
               },

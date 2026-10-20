@@ -18,8 +18,7 @@ import { BrandLogo } from '../brand-logo/brand-logo';
             <h4>Plataforma</h4>
             <a routerLink="/">Eventos</a>
             <a routerLink="/app">Meus eventos</a>
-            <!-- TODO: área do organizador (fora do MVP, docs §8) -->
-            <a class="is-soon" aria-disabled="true">Para organizadores <span>em breve</span></a>
+            <a routerLink="/app/eventos/novo">Criar um evento</a>
           </div>
           <div class="footer__col">
             <h4>Conta</h4>
@@ -37,7 +36,7 @@ import { BrandLogo } from '../brand-logo/brand-logo';
       </div>
       <div class="container footer__bar">
         <span>© 2026 Hackahub. Todos os direitos reservados.</span>
-        <span class="footer__mvp">MVP</span>
+        <span class="footer__made">Feito para comunidades de inovação</span>
       </div>
     </footer>
   `,

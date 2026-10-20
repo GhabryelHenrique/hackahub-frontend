@@ -37,6 +37,8 @@ export class EventContextService {
   readonly isMentorApproved = computed(() => this.mentor()?.status === 'APPROVED');
   readonly isOrganizerApproved = computed(() => this.organizer()?.status === 'APPROVED');
   readonly teamMaxSize = computed(() => this.full()?.teamMaxSize ?? null);
+  /** Inscrições/candidaturas aguardando o organizador (badge na aba "Inscrições"). */
+  readonly pendingCount = signal<number | null>(null);
 
   setActive(hackathonId: string): void {
     if (this.activeId() === hackathonId && this.detail()) return;
@@ -44,6 +46,7 @@ export class EventContextService {
     this.error.set(null);
     this.detail.set(null);
     this.full.set(null);
+    this.pendingCount.set(null);
 
     const summary = this.auth.membershipsFor(hackathonId)[0]?.hackathon ?? null;
     this.summary.set(summary);
@@ -68,6 +71,17 @@ export class EventContextService {
         error: () => {},
       });
     }
+    this.refreshPendingCount();
+  }
+
+  /** Recarrega o contador de pendências (só para organizador aprovado). */
+  refreshPendingCount(): void {
+    const id = this.activeId();
+    if (!id || !this.isOrganizerApproved()) return;
+    this.hackathons.memberships(id, { status: 'PENDING' }).subscribe({
+      next: (list) => this.pendingCount.set(list.length),
+      error: () => {},
+    });
   }
 
   /** Reflete um PATCH do organizador nos signals sem refetch. */
@@ -108,5 +122,6 @@ export class EventContextService {
     this.summary.set(null);
     this.detail.set(null);
     this.full.set(null);
+    this.pendingCount.set(null);
   }
 }
