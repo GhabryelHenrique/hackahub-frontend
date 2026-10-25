@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 export interface Segment {
   key: string;
@@ -14,7 +14,6 @@ export interface Segment {
  */
 @Component({
   selector: 'app-segment-bar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (total() > 0) {
       <div class="seg" role="img" [attr.aria-label]="ariaLabel()">

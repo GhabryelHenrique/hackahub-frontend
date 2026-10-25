@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Spinner } from '../spinner/spinner';
@@ -12,7 +12,6 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
  */
 @Component({
   selector: 'app-button',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '[class.is-block]': 'block()' },
   imports: [RouterLink, Spinner, NgTemplateOutlet],
   template: `

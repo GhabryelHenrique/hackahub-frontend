@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 export interface BarItem {
   label: string;
@@ -11,7 +11,6 @@ export interface BarItem {
  */
 @Component({
   selector: 'app-bar-list',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ul class="bars" role="list">
       @for (b of rows(); track b.label) {

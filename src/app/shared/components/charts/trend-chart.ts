@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, input, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, input, signal, viewChild } from '@angular/core';
 
 export interface TrendPoint {
   /** Dia (ISO `YYYY-MM-DD`). */
@@ -29,7 +29,6 @@ function niceStep(max: number, ticks = 4): number {
  */
 @Component({
   selector: 'app-trend-chart',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="trend">
       <div

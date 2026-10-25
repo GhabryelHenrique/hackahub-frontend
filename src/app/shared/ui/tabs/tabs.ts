@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 
 export interface TabItem {
   id: string;
@@ -9,7 +9,6 @@ export interface TabItem {
 /** Segmented tabs; o conteúdo é trocado pelo pai via `@switch` no `active`. */
 @Component({
   selector: 'app-tabs',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="tabs" role="tablist">
       @for (t of tabs(); track t.id) {

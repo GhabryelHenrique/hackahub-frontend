@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MyMembership } from '../../../core/models';
@@ -8,7 +8,6 @@ import { coverHue, coverImage, dateRange } from '../../../shared/format';
 
 @Component({
   selector: 'app-my-events',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Button, EmptyState, Icon, Tabs],
   templateUrl: './my-events.html',
   styleUrl: './my-events.scss',

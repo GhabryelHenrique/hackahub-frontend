@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { EventContextService } from '../../../core/event-context/event-context.service';
@@ -25,7 +25,6 @@ function dateOrderValidator(group: AbstractControl): ValidationErrors | null {
 /** Configurações do evento — edição completa pelo organizador (docs §8). */
 @Component({
   selector: 'app-event-settings',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, Button, Card, FormField, Icon, Skeleton, Spinner],
   templateUrl: './event-settings.html',
   styleUrl: './event-settings.scss',

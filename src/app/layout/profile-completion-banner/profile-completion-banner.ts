@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { Icon } from '../../shared/ui';
@@ -12,7 +12,6 @@ const DISMISS_KEY = 'hackahub.profileBannerDismissed';
  */
 @Component({
   selector: 'app-profile-completion-banner',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Icon],
   templateUrl: './profile-completion-banner.html',
   styleUrl: './profile-completion-banner.scss',

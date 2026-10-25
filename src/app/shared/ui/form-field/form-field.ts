@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /**
@@ -7,7 +7,6 @@ import { Icon } from '../icon/icon';
  */
 @Component({
   selector: 'app-form-field',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     <div class="field">

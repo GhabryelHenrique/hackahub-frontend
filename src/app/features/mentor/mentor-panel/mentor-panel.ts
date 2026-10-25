@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { MentorService } from '../../../core/services/mentor.service';
 import { MentorshipService } from '../../../core/services/mentorship.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -15,7 +15,6 @@ import { timeAgo } from '../../../shared/format';
  */
 @Component({
   selector: 'app-mentor-panel',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Avatar, Badge, Button, Card, EmptyState, Icon, Skeleton, Tabs],
   templateUrl: './mentor-panel.html',
   styleUrl: './mentor-panel.scss',

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../navbar/navbar';
 import { ProfileCompletionBanner } from '../profile-completion-banner/profile-completion-banner';
@@ -6,7 +6,6 @@ import { ProfileCompletionBanner } from '../profile-completion-banner/profile-co
 /** Shell autenticado (docs §2.2 / §3.2). */
 @Component({
   selector: 'app-app-layout',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, Navbar, ProfileCompletionBanner],
   template: `
     <app-navbar variant="app" />

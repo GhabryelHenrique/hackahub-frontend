@@ -1,5 +1,5 @@
 import { environment } from '../../../../environments/environment';
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -10,7 +10,6 @@ import { DiscordButton } from '../discord-button/discord-button';
 
 @Component({
   selector: 'app-login',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo, DiscordButton],
   templateUrl: './login.html',
   styleUrls: ['../auth.shared.scss', './login.scss'],

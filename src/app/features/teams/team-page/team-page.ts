@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TeamService } from '../../../core/services/team.service';
@@ -10,7 +10,6 @@ import { Avatar, Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skelet
 
 @Component({
   selector: 'app-team-page',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ReactiveFormsModule, Avatar, Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton],
   templateUrl: './team-page.html',
   styleUrl: './team-page.scss',

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /** Estado vazio com ícone, título, descrição e ações projetadas (docs §5). */
 @Component({
   selector: 'app-empty-state',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     <div class="empty">

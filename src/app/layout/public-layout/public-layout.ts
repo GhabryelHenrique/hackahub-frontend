@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../navbar/navbar';
 import { Footer } from '../footer/footer';
@@ -6,7 +6,6 @@ import { Footer } from '../footer/footer';
 /** Shell público (docs §2.2) — catálogo, detalhe de evento, auth. */
 @Component({
   selector: 'app-public-layout',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, Navbar, Footer],
   template: `
     <app-navbar variant="public" />

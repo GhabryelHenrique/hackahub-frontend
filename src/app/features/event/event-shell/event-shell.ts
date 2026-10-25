@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -18,7 +18,6 @@ interface NavItem {
 /** Layout de contexto de evento (docs §3.2). Define o evento ativo e a nav. */
 @Component({
   selector: 'app-event-shell',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Skeleton],
   templateUrl: './event-shell.html',
   styleUrl: './event-shell.scss',

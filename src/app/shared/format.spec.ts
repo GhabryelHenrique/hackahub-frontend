@@ -4,6 +4,9 @@ import {
   coverImage,
   dateBlock,
   dateRange,
+  digitsOnly,
+  formatCpf,
+  formatPhone,
   formatPrice,
   fullDate,
   hueFromString,
@@ -247,6 +250,53 @@ describe('format', () => {
     it('string sem alfanuméricos vira vazia', () => {
       expect(slugify('')).toBe('');
       expect(slugify('—!!!—')).toBe('');
+    });
+  });
+
+  describe('digitsOnly', () => {
+    it('remove máscara, espaços e letras; null/undefined → vazio', () => {
+      expect(digitsOnly('(11) 98765-4321')).toBe('11987654321');
+      expect(digitsOnly('529.982.247-25')).toBe('52998224725');
+      expect(digitsOnly('abc 1 x 2')).toBe('12');
+      expect(digitsOnly(null)).toBe('');
+      expect(digitsOnly(undefined)).toBe('');
+    });
+  });
+
+  describe('formatCpf', () => {
+    it('formata progressivamente enquanto digita', () => {
+      expect(formatCpf('')).toBe('');
+      expect(formatCpf('529')).toBe('529');
+      expect(formatCpf('5299')).toBe('529.9');
+      expect(formatCpf('5299822')).toBe('529.982.2');
+      expect(formatCpf('5299822472')).toBe('529.982.247-2');
+      expect(formatCpf('52998224725')).toBe('529.982.247-25');
+    });
+
+    it('ignora caracteres não numéricos e corta no 11º dígito', () => {
+      expect(formatCpf('529.982.247-25')).toBe('529.982.247-25');
+      expect(formatCpf('52998224725999')).toBe('529.982.247-25');
+    });
+  });
+
+  describe('formatPhone', () => {
+    it('formata DDD e número progressivamente', () => {
+      expect(formatPhone('')).toBe('');
+      expect(formatPhone('1')).toBe('(1');
+      expect(formatPhone('11')).toBe('(11');
+      expect(formatPhone('113')).toBe('(11) 3');
+      expect(formatPhone('113456')).toBe('(11) 3456');
+      expect(formatPhone('1134567')).toBe('(11) 3456-7');
+    });
+
+    it('fixo (10 dígitos) usa 4+4; celular (11 dígitos) usa 5+4', () => {
+      expect(formatPhone('1134567890')).toBe('(11) 3456-7890');
+      expect(formatPhone('11987654321')).toBe('(11) 98765-4321');
+    });
+
+    it('ignora caracteres não numéricos e corta no 11º dígito', () => {
+      expect(formatPhone('(11) 98765-4321')).toBe('(11) 98765-4321');
+      expect(formatPhone('119876543210000')).toBe('(11) 98765-4321');
     });
   });
 });

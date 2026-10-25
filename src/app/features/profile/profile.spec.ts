@@ -76,23 +76,24 @@ describe('Profile', () => {
   it('preenche o formulário com o usuário da sessão (nulos viram vazio)', async () => {
     await render();
     expect(control('name').value).toBe('Ana Souza');
-    expect(control('phone').value).toBe('11999990000');
+    expect(control('phone').value).toBe('(11) 99999-0000'); // exibido com máscara
     expect(control('course').value).toBe('');
     expect(control('linkedinUrl').value).toBe('');
     expect(text(el.querySelector('.profile__identity'))).toContain('ana@hackahub.local');
   });
 
   it('salvar envia só os campos editáveis e reflete na sessão', async () => {
-    const updated = { ...user, course: 'Computação', phone: '11888887777' };
+    const updated = { ...user, course: 'Computação', phone: '11988887777' };
     users.updateProfile.mockReturnValue(of(updated));
     await render();
     await type('course', 'Computação');
-    await type('phone', '11888887777');
+    await type('phone', '(11) 98888-7777');
     await save();
 
+    expect(control('phone').value).toBe('(11) 98888-7777');
     expect(users.updateProfile).toHaveBeenCalledWith({
       name: 'Ana Souza',
-      phone: '11888887777',
+      phone: '11988887777', // a API recebe só os dígitos
       institution: 'USP',
       course: 'Computação',
       githubUrl: 'https://github.com/ana',
@@ -100,6 +101,15 @@ describe('Profile', () => {
     });
     expect(auth.applyUser).toHaveBeenCalledWith(updated);
     expect(toast.success).toHaveBeenCalledWith('Perfil atualizado.');
+  });
+
+  it('telefone inválido bloqueia o envio e mostra o erro', async () => {
+    await render();
+    await type('phone', '119888');
+    control('phone').dispatchEvent(new Event('blur'));
+    await save();
+    expect(users.updateProfile).not.toHaveBeenCalled();
+    expect(text(el.querySelector('.profile__form'))).toContain('Telefone inválido');
   });
 
   it('nome vazio bloqueia o envio', async () => {

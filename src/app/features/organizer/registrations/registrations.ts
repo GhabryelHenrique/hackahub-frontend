@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { HackathonService } from '../../../core/services/hackathon.service';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { ToastService } from '../../../core/toast/toast.service';
@@ -16,7 +16,6 @@ type Filter = 'PENDING' | 'PARTICIPANT' | 'MENTOR' | 'REJECTED';
  */
 @Component({
   selector: 'app-registrations',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Avatar, Badge, Button, Card, EmptyState, Icon, Skeleton, Tabs],
   templateUrl: './registrations.html',
   styleUrl: './registrations.scss',

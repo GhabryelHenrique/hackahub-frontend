@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Icon } from '../../ui';
 import { compact } from '../../format';
 
@@ -9,7 +9,6 @@ import { compact } from '../../format';
  */
 @Component({
   selector: 'app-stat-tile',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     <div class="tile">

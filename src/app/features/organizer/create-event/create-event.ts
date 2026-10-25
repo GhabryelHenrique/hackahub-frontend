@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
+import { Component, WritableSignal, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -37,7 +37,6 @@ function dateOrderValidator(group: AbstractControl): ValidationErrors | null {
  */
 @Component({
   selector: 'app-create-event',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, Avatar, Button, Card, FormField, Icon, Spinner],
   templateUrl: './create-event.html',
   styleUrl: './create-event.scss',

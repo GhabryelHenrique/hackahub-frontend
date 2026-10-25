@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HackathonSummary } from '../../../core/models';
 import { Badge, Icon } from '../../ui';
@@ -7,7 +7,6 @@ import { coverHue, coverImage, dateBlock, dateRange, formatPrice, registrationSt
 /** Card de evento do catálogo (docs §4.1). Reutilizado em "Meus eventos". */
 @Component({
   selector: 'app-event-card',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Icon],
   template: `
     <a class="card" [routerLink]="['/eventos', event().slug]">

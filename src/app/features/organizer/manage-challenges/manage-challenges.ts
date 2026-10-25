@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HackathonService } from '../../../core/services/hackathon.service';
 import { ToastService } from '../../../core/toast/toast.service';
@@ -8,7 +8,6 @@ import { Badge, Button, EmptyState, Icon, Modal, Skeleton } from '../../../share
 /** Gestão de desafios do evento (ORGANIZER): lista + criar/editar/excluir. */
 @Component({
   selector: 'app-manage-challenges',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Button, EmptyState, Icon, Modal, Skeleton],
   templateUrl: './manage-challenges.html',
   styleUrl: './manage-challenges.scss',

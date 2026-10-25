@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /** Conjunto de ícones (estilo Lucide, docs §5) — traços em `currentColor`. */
@@ -62,7 +62,6 @@ const ICONS: Record<string, string> = {
 
 @Component({
   selector: 'app-icon',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<span class="icon" [style.width.px]="size()" [style.height.px]="size()" [innerHTML]="svg()"></span>`,
   styles: [
     `:host { display: inline-flex; line-height: 0; }

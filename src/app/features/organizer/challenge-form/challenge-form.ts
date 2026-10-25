@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -13,7 +13,6 @@ import { Button, Card, FormField, Icon, Skeleton } from '../../../shared/ui';
  */
 @Component({
   selector: 'app-challenge-form',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, Button, Card, FormField, Icon, Skeleton],
   templateUrl: './challenge-form.html',
   styleUrl: './challenge-form.scss',

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /** Indicador de etapas — usado na candidatura de mentor (docs §5 / §4.8). */
 @Component({
   selector: 'app-stepper',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     <ol class="stepper">

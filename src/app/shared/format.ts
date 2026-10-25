@@ -136,3 +136,35 @@ export function slugify(value: string): string {
     .replace(/[^a-z0-9]+/g, '-') // não-alfanumérico → hífen
     .replace(/^-+|-+$/g, ''); // sem hífen nas pontas
 }
+
+// ---- Documentos BR (CPF/telefone) -------------------------------------------
+// A API guarda só os dígitos; a máscara existe apenas na exibição/digitação.
+
+/** Remove tudo que não for dígito: "(11) 98765-4321" → "11987654321". */
+export function digitsOnly(value: string | null | undefined): string {
+  return (value ?? '').replace(/\D/g, '');
+}
+
+/** Formata progressivamente (serve para digitação parcial): "12345678909" → "123.456.789-09". */
+export function formatCpf(value: string | null | undefined): string {
+  const d = digitsOnly(value).slice(0, 11);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `${d.slice(0, 3)}.${d.slice(3)}`;
+  if (d.length <= 9) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`;
+  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
+}
+
+/**
+ * Formata progressivamente com DDD: fixo (10 dígitos) "(11) 3456-7890" ou
+ * celular (11 dígitos) "(11) 98765-4321".
+ */
+export function formatPhone(value: string | null | undefined): string {
+  const d = digitsOnly(value).slice(0, 11);
+  if (!d) return '';
+  if (d.length <= 2) return `(${d}`;
+  const ddd = `(${d.slice(0, 2)}) `;
+  const rest = d.slice(2);
+  // Até 8 dígitos após o DDD divide 4+4; com 9 (celular) divide 5+4.
+  const split = rest.length > 8 ? 5 : 4;
+  return rest.length <= split ? ddd + rest : `${ddd}${rest.slice(0, split)}-${rest.slice(split)}`;
+}

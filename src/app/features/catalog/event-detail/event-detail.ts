@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,7 +20,6 @@ type ViewState =
 
 @Component({
   selector: 'app-event-detail',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.scss',

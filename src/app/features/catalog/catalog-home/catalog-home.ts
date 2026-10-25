@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, startWith, switchMap, map } from 'rxjs';
@@ -15,7 +15,6 @@ type ViewState =
 
 @Component({
   selector: 'app-catalog-home',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [EventCard, Button, EmptyState, Icon, Pagination, Skeleton],
   templateUrl: './catalog-home.html',
   styleUrl: './catalog-home.scss',

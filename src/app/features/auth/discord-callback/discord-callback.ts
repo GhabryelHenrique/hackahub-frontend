@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, afterNextRender, inject, signal } from '@angular/core';
+import { Component, afterNextRender, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { BrandLogo } from '../../../layout/brand-logo/brand-logo';
@@ -11,7 +11,6 @@ import { Icon, Spinner } from '../../../shared/ui';
  */
 @Component({
   selector: 'app-discord-callback',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Icon, Spinner, BrandLogo],
   templateUrl: './discord-callback.html',
   styleUrls: ['../auth.shared.scss'],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventContextService } from '../../../core/event-context/event-context.service';
@@ -18,7 +18,6 @@ interface ActionCard {
 
 @Component({
   selector: 'app-event-overview',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, FormField, Icon, Modal, Skeleton],
   templateUrl: './event-overview.html',
   styleUrl: './event-overview.scss',

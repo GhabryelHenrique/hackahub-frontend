@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { HackathonService } from '../../../core/services/hackathon.service';
@@ -38,7 +38,6 @@ const isoDay = (d: Date) => d.toISOString().slice(0, 10);
  */
 @Component({
   selector: 'app-organizer-dashboard',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Avatar, Badge, Button, Card, EmptyState, Icon, Skeleton, StatTile, TrendChart, BarList, SegmentBar],
   templateUrl: './organizer-dashboard.html',
   styleUrl: './organizer-dashboard.scss',

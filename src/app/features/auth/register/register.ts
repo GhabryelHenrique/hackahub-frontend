@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models';
-import { Button, FormField, Icon } from '../../../shared/ui';
+import { Button, FormField, Icon, InputMask } from '../../../shared/ui';
+import { cpfValidator, phoneValidator } from '../../../shared/validators';
 import { BrandLogo } from '../../../layout/brand-logo/brand-logo';
 import { DiscordButton } from '../discord-button/discord-button';
 
 @Component({
   selector: 'app-register',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, BrandLogo, DiscordButton],
+  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, InputMask, BrandLogo, DiscordButton],
   templateUrl: './register.html',
   styleUrls: ['../auth.shared.scss', './register.scss'],
 })
@@ -29,8 +29,9 @@ export class Register {
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    documentId: ['', Validators.required],
-    phone: ['', Validators.required],
+    // Só dígitos — a máscara (appMask) formata apenas a exibição.
+    documentId: ['', [Validators.required, cpfValidator]],
+    phone: ['', [Validators.required, phoneValidator]],
     birthDate: ['', Validators.required],
     acceptedTerms: [false, Validators.requiredTrue],
   });
@@ -63,6 +64,8 @@ export class Register {
     if (c.errors?.['requiredTrue']) return 'É necessário aceitar os termos.';
     if (c.errors?.['email']) return 'E-mail inválido.';
     if (c.errors?.['minlength']) return 'Mínimo de 6 caracteres.';
+    if (c.errors?.['cpf']) return 'CPF inválido.';
+    if (c.errors?.['phone']) return 'Telefone inválido — informe DDD + número.';
     return 'Valor inválido.';
   }
 }

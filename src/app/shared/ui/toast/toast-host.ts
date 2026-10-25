@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ToastService, ToastType } from '../../../core/toast/toast.service';
 import { Icon } from '../icon/icon';
 
@@ -12,7 +12,6 @@ const ICON: Record<ToastType, string> = {
 /** Container de notificações (docs §5). Lê o `ToastService` (signals). */
 @Component({
   selector: 'app-toast-host',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     <div class="toasts" aria-live="polite" aria-atomic="false">

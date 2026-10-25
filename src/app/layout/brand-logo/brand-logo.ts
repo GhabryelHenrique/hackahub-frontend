@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 /** Marca Hackahub: símbolo com gradiente + wordmark "Hacka"(navy) + "hub"(laranja). */
 @Component({
   selector: 'app-brand-logo',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
     <a class="brand" [routerLink]="href()" [class.brand--invert]="invert()" aria-label="Hackahub — início">

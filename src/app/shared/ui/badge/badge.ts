@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 export type BadgeTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'brand';
 
 /** Badge de status (evento/membership) — docs §5. */
 @Component({
   selector: 'app-badge',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<span [class]="'badge badge--' + tone()">
     @if (dot()) { <span class="badge__dot"></span> }
     <ng-content />

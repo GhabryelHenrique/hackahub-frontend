@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /** Paginação simples (docs §5). */
 @Component({
   selector: 'app-pagination',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
     @if (totalPages() > 1) {

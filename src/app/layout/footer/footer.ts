@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BrandLogo } from '../brand-logo/brand-logo';
 
 @Component({
   selector: 'app-footer',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, BrandLogo],
   template: `
     <footer class="footer">
