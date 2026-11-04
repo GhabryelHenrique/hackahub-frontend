@@ -43,7 +43,9 @@ jobs:
             echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
             echo "WEB_BUCKET=$(p /hackahub/web/bucket)"
             echo "SSR_FUNCTION=$(p /hackahub/web/function)"
-            echo "DISTRIBUTION_ID=$(p /hackahub/web/distribution-id)"
+            # Vazio com EnableCloudFront=false na stack: S3 e Lambda são publicados
+            # mesmo assim e o site entra no ar quando o CloudFront for criado.
+            echo "DISTRIBUTION_ID=$(p /hackahub/web/distribution-id 2>/dev/null || true)"
             echo "API_URL=https://$(p /hackahub/infra/api-domain)"
             echo "WEB_URL=$(p /hackahub/infra/web-url)"
           } >> "$GITHUB_ENV"
@@ -76,12 +78,20 @@ jobs:
             --zip-file "fileb://$zip" --query CodeSize --output text
           aws lambda wait function-updated --function-name "$SSR_FUNCTION"
 
+      - name: Sem CloudFront ainda
+        if: env.DISTRIBUTION_ID == ''
+        run: |
+          echo "::notice::S3 e Lambda publicados; o CloudFront ainda não existe (EnableCloudFront=false na stack)."
+          echo "S3 e Lambda publicados. O site entra no ar quando o CloudFront for criado na stack." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Invalidação do CloudFront
+        if: env.DISTRIBUTION_ID != ''
         run: |
           aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" \
             --paths '/*' --query Invalidation.Id --output text
 
       - name: Conferir
+        if: env.DISTRIBUTION_ID != ''
         run: |
           code=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-all-errors "$WEB_URL/")
           echo "GET $WEB_URL/ → $code"
