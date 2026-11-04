@@ -1,0 +1,4 @@
+# Arquivos que rodam no Linux (runners do GitHub, Lambda) sempre com LF.
+* text=auto
+*.sh text eol=lf
+*.mjs text eol=lf

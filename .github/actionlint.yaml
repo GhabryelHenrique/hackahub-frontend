@@ -1,0 +1,4 @@
+# Labels do runner self-hosted da EC2 (hackahub-api/deploy/ec2/install-runner.sh).
+self-hosted-runner:
+  labels:
+    - hackahub-prod
