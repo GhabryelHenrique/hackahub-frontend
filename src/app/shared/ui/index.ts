@@ -16,3 +16,5 @@ export type { TabItem } from './tabs/tabs';
 export { Pagination } from './pagination/pagination';
 export { Stepper } from './stepper/stepper';
 export { ToastHost } from './toast/toast-host';
+export { InputMask } from './input-mask/input-mask';
+export type { MaskKind } from './input-mask/input-mask';

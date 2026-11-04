@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 /** Placeholder com shimmer para evitar layout shift (docs §4.1 / §7). */
 @Component({
   selector: 'app-skeleton',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: ``,
   host: {
     class: 'skeleton',

@@ -11,9 +11,10 @@ export type MembershipStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export type HackathonVisibility = 'PUBLIC' | 'UNLISTED' | 'PRIVATE';
 export type HackathonStatus = 'DRAFT' | 'PUBLISHED' | 'CLOSED' | 'ARCHIVED';
-export type RegistrationMode = 'OPEN' | 'APPROVAL' | 'INVITE' | 'CODE';
+export type RegistrationMode = 'OPEN' | 'APPROVAL' | 'CODE';
 
 export type InviteStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'CANCELLED';
+export type MentorshipStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 export type JoinRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 // ---- Usuário / identidade -------------------------------------------------
@@ -73,6 +74,8 @@ export interface Organization {
   name: string;
   slug: string;
   createdAt: string;
+  /** Quem criou — só ele (ou organizadores dos eventos dela) cria eventos sob ela. */
+  ownerId: string | null;
 }
 
 /**
@@ -211,6 +214,28 @@ export interface JoinRequest {
   createdAt: string;
   team: TeamRef;
   user: PublicUser;
+}
+
+// ---- Mentoria (tickets de ajuda) ------------------------------------------
+
+/** Ticket de mentoria (toMentorshipResponse) — o mesmo que o bot Discord usa. */
+export interface MentorshipRequest {
+  id: string;
+  hackathonId: string;
+  title: string;
+  description: string;
+  status: MentorshipStatus;
+  createdAt: string;
+  claimedAt: string | null;
+  closedAt: string | null;
+  user: PublicUser;
+  mentor: PublicUser | null;
+  team: TeamRef | null;
+}
+
+export interface MentorshipPayload {
+  title: string; // 3–120
+  description: string; // 10–2000
 }
 
 // ---- Paginação / erros ----------------------------------------------------

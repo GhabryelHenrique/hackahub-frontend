@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+/** Tipos aceitos pela API (`uploads.constants.ts`) — manter em sincronia. */
+export const IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+export const IMAGE_ACCEPT = IMAGE_MIME_TYPES.join(',');
+export const IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+
 /** Resposta do POST /uploads. */
 export interface UploadResult {
   url: string;

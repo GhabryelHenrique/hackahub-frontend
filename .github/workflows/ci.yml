@@ -1,0 +1,38 @@
+name: CI
+
+# PRs e branches de trabalho. Na `main`/`master` quem chama este workflow é o deploy.yml
+# (workflow_call), para os testes rodarem uma vez só antes de publicar.
+on:
+  pull_request:
+  push:
+    branches-ignore: [main, master]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Vitest + jsdom: não precisa de navegador.
+      - name: Testes
+        run: npx ng test --watch=false
+
+      - name: Build (SSR)
+        run: npx ng build
+
+      # O adaptador do Lambda precisa carregar o bundle do servidor e responder.
+      - name: Smoke test do adaptador Lambda
+        run: node lambda/smoke-test.mjs dist/hackahub-frontend

@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 /** Avatar: mostra a foto (`image`) quando houver; senão, iniciais + cor derivada (docs §5). */
 @Component({
   selector: 'app-avatar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (image()) {
       <img
@@ -34,7 +33,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
        font-family: var(--font-display); letter-spacing: 0.02em;
        flex: none; user-select: none;
      }
-     .avatar--img { object-fit: cover; background: var(--surface-2, #e5e7eb); }`,
+     .avatar--img { object-fit: cover; background: var(--surface-inset); }`,
   ],
 })
 export class Avatar {

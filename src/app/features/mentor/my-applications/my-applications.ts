@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Badge, Button, EmptyState, Icon } from '../../../shared/ui';
@@ -7,7 +7,6 @@ import { dateRange } from '../../../shared/format';
 
 @Component({
   selector: 'app-my-applications',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Button, EmptyState, Icon],
   templateUrl: './my-applications.html',
   styleUrl: './my-applications.scss',

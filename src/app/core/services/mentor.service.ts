@@ -13,8 +13,16 @@ export class MentorService {
   private readonly http = inject(HttpClient);
   private readonly base = environment.apiBaseUrl;
 
-  /** Times mentorados naquele evento (mentor aprovado). */
-  mentoredTeams(hackathonId: string): Observable<Team[]> {
+  /**
+   * TODOS os times do evento (mentor aprovado) — o mentor escolhe quais
+   * acompanhar. Os que ele já mentora trazem o próprio id em `team.mentors`.
+   */
+  teams(hackathonId: string): Observable<Team[]> {
     return this.http.get<Team[]>(`${this.base}/hackathons/${hackathonId}/mentor/teams`);
+  }
+
+  /** Passa a mentorar o time (409 se já associado). */
+  assign(hackathonId: string, teamId: string): Observable<Team> {
+    return this.http.post<Team>(`${this.base}/hackathons/${hackathonId}/mentor/teams/${teamId}/assign`, {});
   }
 }

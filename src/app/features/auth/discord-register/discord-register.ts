@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, afterNextRender, inject, signal } from '@angular/core';
+import { Component, afterNextRender, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models';
 import { DiscordAuthService, DiscordTicketInfo } from '../../../core/services/discord-auth.service';
 import { BrandLogo } from '../../../layout/brand-logo/brand-logo';
-import { Button, FormField, Icon, Spinner } from '../../../shared/ui';
+import { Button, FormField, Icon, InputMask, Spinner } from '../../../shared/ui';
+import { cpfValidator, phoneValidator } from '../../../shared/validators';
 
 /**
  * Conclusão do cadastro via Discord (usuário novo). Recebe o `ticket` no
@@ -14,8 +15,7 @@ import { Button, FormField, Icon, Spinner } from '../../../shared/ui';
  */
 @Component({
   selector: 'app-discord-register',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, Spinner, BrandLogo],
+  imports: [ReactiveFormsModule, RouterLink, Button, FormField, Icon, InputMask, Spinner, BrandLogo],
   templateUrl: './discord-register.html',
   styleUrls: ['../auth.shared.scss'],
 })
@@ -34,8 +34,9 @@ export class DiscordRegister {
   protected readonly error = signal('');
 
   protected readonly form = this.fb.nonNullable.group({
-    documentId: ['', Validators.required],
-    phone: ['', Validators.required],
+    // Só dígitos — a máscara (appMask) formata apenas a exibição.
+    documentId: ['', [Validators.required, cpfValidator]],
+    phone: ['', [Validators.required, phoneValidator]],
     birthDate: ['', Validators.required],
     acceptedTerms: [false, Validators.requiredTrue],
   });
@@ -98,6 +99,8 @@ export class DiscordRegister {
     if (!c.touched || c.valid) return '';
     if (c.errors?.['required']) return 'Campo obrigatório.';
     if (c.errors?.['requiredTrue']) return 'É necessário aceitar os termos.';
+    if (c.errors?.['cpf']) return 'CPF inválido.';
+    if (c.errors?.['phone']) return 'Telefone inválido — informe DDD + número.';
     return 'Valor inválido.';
   }
 }

@@ -325,7 +325,6 @@ function joinHackathon(req: HttpRequest<unknown>, h: HackRow) {
     case 'CODE':
       if (String(body['registrationCode'] ?? '').trim() !== h.registrationCode) throw new Fault(400, 'Código de inscrição inválido.');
       status = 'APPROVED'; break;
-    case 'INVITE': throw new Fault(403, 'Este evento é somente por convite.', 'Forbidden');
     default: status = 'PENDING';
   }
   const m: MembershipRow = { id: nextId('m'), userId: uid, hackathonId: h.id, role: 'PARTICIPANT', status, mentorExpertise: [], mentorSeniority: null, mentorMotivation: null, mentorMaxTeams: null, createdAt: new Date().toISOString() };
@@ -384,7 +383,7 @@ function catalog(search: string | null, registrationMode: string | null, page: n
 
   // Inscrição aberta e mais próximos primeiro (backend §catálogo).
   const now = Date.now();
-  const isOpen = (h: HackRow) => (!h.endsAt || new Date(h.endsAt).getTime() >= now) && h.registrationMode !== 'INVITE';
+  const isOpen = (h: HackRow) => (!h.endsAt || new Date(h.endsAt).getTime() >= now);
   items = [...items].sort((a, b) => {
     const oa = isOpen(a) ? 0 : 1;
     const ob = isOpen(b) ? 0 : 1;

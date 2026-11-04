@@ -39,7 +39,7 @@ export function registrationState(h: Pick<HackathonSummary, 'registrationMode' |
     return { open: false, label: 'Encerrado', tone: 'neutral' };
   }
   return {
-    open: h.registrationMode !== 'INVITE',
+    open: true,
     label: REGISTRATION_LABEL[h.registrationMode],
     tone: REGISTRATION_TONE[h.registrationMode],
   };
@@ -52,7 +52,59 @@ export function hueFromString(s: string): number {
   return Math.abs(hash) % 360;
 }
 
-const priceFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+/**
+ * Matiz da capa gerada (`.cover-art`), restrito à faixa fria da marca
+ * (190 ciano → 250 índigo) para não destoar do navy/laranja.
+ */
+export function coverHue(s: string): number {
+  return 190 + (hueFromString(s) % 61);
+}
+
+/** `background-image` para capa com foto; `veil` escurece para texto por cima. */
+export function coverImage(url: string | null | undefined, veil = false): string | null {
+  if (!url) return null;
+  const safe = `url("${url.replace(/"/g, '%22')}")`;
+  return veil ? `linear-gradient(180deg, rgba(11, 27, 48, 0.35), rgba(11, 27, 48, 0.82)), ${safe}` : safe;
+}
+
+const dayFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' });
+
+/** Bloco de data da capa: { day: '14', month: 'NOV' } — null se sem data. */
+export function dateBlock(iso: string | null): { day: string; month: string } | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  return { day: dayFmt.format(d), month: month(d).toUpperCase() };
+}
+
+const relFmt = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
+
+/** "há 3 horas", "ontem"… — para filas (tickets, inscrições). */
+export function timeAgo(iso: string): string {
+  const diff = (new Date(iso).getTime() - Date.now()) / 1000;
+  const steps: [Intl.RelativeTimeFormatUnit, number][] = [
+    ['second', 60],
+    ['minute', 60],
+    ['hour', 24],
+    ['day', 30],
+    ['month', 12],
+    ['year', Infinity],
+  ];
+  let value = diff;
+  for (const [unit, size] of steps) {
+    if (Math.abs(value) < size) return relFmt.format(Math.round(value), unit);
+    value /= size;
+  }
+  return relFmt.format(Math.round(value), 'year');
+}
+
+const compactFmt = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
+
+/** 1.284 → "1,3 mil" (stat tiles). */
+export function compact(n: number): string {
+  return n < 10000 ? n.toLocaleString('pt-BR') : compactFmt.format(n);
+}
+
+const priceFmt =new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 /** `null`/`0` = gratuito (preço é opcional no evento). */
 export function formatPrice(price: number | null | undefined): string {
@@ -83,4 +135,36 @@ export function slugify(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-') // não-alfanumérico → hífen
     .replace(/^-+|-+$/g, ''); // sem hífen nas pontas
+}
+
+// ---- Documentos BR (CPF/telefone) -------------------------------------------
+// A API guarda só os dígitos; a máscara existe apenas na exibição/digitação.
+
+/** Remove tudo que não for dígito: "(11) 98765-4321" → "11987654321". */
+export function digitsOnly(value: string | null | undefined): string {
+  return (value ?? '').replace(/\D/g, '');
+}
+
+/** Formata progressivamente (serve para digitação parcial): "12345678909" → "123.456.789-09". */
+export function formatCpf(value: string | null | undefined): string {
+  const d = digitsOnly(value).slice(0, 11);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `${d.slice(0, 3)}.${d.slice(3)}`;
+  if (d.length <= 9) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`;
+  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
+}
+
+/**
+ * Formata progressivamente com DDD: fixo (10 dígitos) "(11) 3456-7890" ou
+ * celular (11 dígitos) "(11) 98765-4321".
+ */
+export function formatPhone(value: string | null | undefined): string {
+  const d = digitsOnly(value).slice(0, 11);
+  if (!d) return '';
+  if (d.length <= 2) return `(${d}`;
+  const ddd = `(${d.slice(0, 2)}) `;
+  const rest = d.slice(2);
+  // Até 8 dígitos após o DDD divide 4+4; com 9 (celular) divide 5+4.
+  const split = rest.length > 8 ? 5 : 4;
+  return rest.length <= split ? ddd + rest : `${ddd}${rest.slice(0, split)}-${rest.slice(split)}`;
 }

@@ -28,10 +28,10 @@
 
         <div class="auth__row">
           <app-form-field label="CPF" for="documentId" [required]="true" [error]="field('documentId')">
-            <input id="documentId" class="control" formControlName="documentId" placeholder="000.000.000-00" />
+            <input id="documentId" class="control" formControlName="documentId" appMask="cpf" placeholder="000.000.000-00" />
           </app-form-field>
           <app-form-field label="Telefone" for="phone" [required]="true" [error]="field('phone')">
-            <input id="phone" class="control" formControlName="phone" autocomplete="tel" placeholder="(11) 90000-0000" />
+            <input id="phone" class="control" type="tel" formControlName="phone" appMask="phone" autocomplete="tel-national" placeholder="(11) 90000-0000" />
           </app-form-field>
         </div>
 

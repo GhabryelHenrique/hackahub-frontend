@@ -159,9 +159,9 @@ const hackSeeds: HackSeed[] = [
   },
   {
     id: 'h_health', orgId: 'org_inova', name: 'InovaLab HealthTech', slug: 'inovalab-healthtech',
-    summary: 'Inovação em saúde digital — somente por convite.',
+    summary: 'Inovação em saúde digital — inscrições com aprovação.',
     description: 'Programa fechado para times selecionados trabalharem em telemedicina e prontuários inteligentes. A participação é exclusivamente por convite da organização.',
-    registrationMode: 'INVITE', startsAt: '2026-09-20', endsAt: '2026-09-22', teamMaxSize: 5,
+    registrationMode: 'APPROVAL', startsAt: '2026-09-20', endsAt: '2026-09-22', teamMaxSize: 5,
   },
   {
     id: 'h_ai', orgId: 'org_devbr', name: 'DevBR AI Marathon', slug: 'devbr-ai-marathon',

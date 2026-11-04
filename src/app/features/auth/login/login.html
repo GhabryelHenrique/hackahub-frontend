@@ -29,9 +29,11 @@
         Não tem conta? <a routerLink="/cadastro">Criar conta</a>
       </p>
 
-      <div class="auth__demo">
-        Demo: <strong>ana&#64;hackahub.dev</strong> / <strong>123456</strong>
-      </div>
+      @if (showDemo) {
+        <div class="auth__demo">
+          Seed de desenvolvimento: <strong>ana&#64;hackahub.local</strong> / <strong>ana12345</strong>
+        </div>
+      }
     </div>
   </div>
 </div>

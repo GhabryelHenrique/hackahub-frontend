@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 /**
@@ -10,7 +10,6 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-privacy',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   templateUrl: './privacy.html',
   styleUrl: '../legal.shared.scss',

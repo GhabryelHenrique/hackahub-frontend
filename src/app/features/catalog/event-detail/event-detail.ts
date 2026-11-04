@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,8 +10,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ToastService } from '../../../core/toast/toast.service';
 import { HackathonDetail } from '../../../core/models';
 import { Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper } from '../../../shared/ui';
-import { REGISTRATION_LABEL, REGISTRATION_TONE, SENIORITY_OPTIONS } from '../../../shared/labels';
-import { dateRange, formatPrice, fullDate, hueFromString, registrationState } from '../../../shared/format';
+import { REGISTRATION_LABEL, REGISTRATION_TONE, ROLE_LABEL, SENIORITY_OPTIONS, STATUS_LABEL } from '../../../shared/labels';
+import { coverHue, coverImage, dateRange, formatPrice, fullDate, registrationState } from '../../../shared/format';
 
 type ViewState =
   | { status: 'loading' }
@@ -20,7 +20,6 @@ type ViewState =
 
 @Component({
   selector: 'app-event-detail',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.scss',
@@ -40,6 +39,9 @@ export class EventDetail {
   protected readonly REGISTRATION_LABEL = REGISTRATION_LABEL;
   protected readonly REGISTRATION_TONE = REGISTRATION_TONE;
   protected readonly SENIORITY_OPTIONS = SENIORITY_OPTIONS;
+  protected readonly ROLE_LABEL = ROLE_LABEL;
+  protected readonly STATUS_LABEL = STATUS_LABEL;
+  protected readonly coverImage = coverImage;
   protected readonly dateRange = dateRange;
   protected readonly fullDate = fullDate;
   protected readonly formatPrice = formatPrice;
@@ -64,17 +66,14 @@ export class EventDetail {
   });
   protected readonly hue = computed(() => {
     const e = this.event();
-    return e ? hueFromString(e.slug) : 205;
+    return e ? coverHue(e.slug) : 205;
   });
 
   protected readonly isAuthenticated = this.auth.isAuthenticated;
-  protected readonly participant = computed(() => {
+  /** Papel atual do usuário no evento (a API permite um só — `JA_PARTICIPA_OUTRO_PAPEL`). */
+  protected readonly myMembership = computed(() => {
     const e = this.event();
-    return e ? this.auth.membership(e.id, 'PARTICIPANT') : undefined;
-  });
-  protected readonly mentor = computed(() => {
-    const e = this.event();
-    return e ? this.auth.membership(e.id, 'MENTOR') : undefined;
+    return e ? (this.auth.membershipsFor(e.id)[0] ?? null) : null;
   });
 
   protected readonly joining = signal(false);

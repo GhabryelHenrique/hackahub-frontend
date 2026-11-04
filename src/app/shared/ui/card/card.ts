@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 /** Card base tematizado (docs §5). */
 @Component({
   selector: 'app-card',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.is-interactive]': 'interactive()',
     '[style.padding]': 'padded() ? null : "0"',

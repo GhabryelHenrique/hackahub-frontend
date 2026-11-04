@@ -1,16 +1,17 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { HackathonService } from '../../../core/services/hackathon.service';
 import { ToastService } from '../../../core/toast/toast.service';
+import { IMAGE_ACCEPT, IMAGE_MAX_BYTES, IMAGE_MIME_TYPES, UploadService } from '../../../core/services/upload.service';
 import {
   HackathonStatus,
   HackathonVisibility,
   RegistrationMode,
   UpdateHackathonPayload,
 } from '../../../core/models';
-import { Button, Card, FormField, Skeleton } from '../../../shared/ui';
+import { Button, Card, FormField, Icon, Skeleton, Spinner } from '../../../shared/ui';
 import { EVENT_STATUS_OPTIONS, REGISTRATION_OPTIONS, VISIBILITY_OPTIONS } from '../../../shared/labels';
 import { isoToLocalInput, localInputToIso } from '../../../shared/format';
 
@@ -24,8 +25,7 @@ function dateOrderValidator(group: AbstractControl): ValidationErrors | null {
 /** Configurações do evento — edição completa pelo organizador (docs §8). */
 @Component({
   selector: 'app-event-settings',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, Button, Card, FormField, Skeleton],
+  imports: [ReactiveFormsModule, Button, Card, FormField, Icon, Skeleton, Spinner],
   templateUrl: './event-settings.html',
   styleUrl: './event-settings.scss',
 })
@@ -37,13 +37,19 @@ export class EventSettings {
   private readonly ctx = inject(EventContextService);
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
+  private readonly uploads = inject(UploadService);
 
+  protected readonly IMAGE_ACCEPT = IMAGE_ACCEPT;
   protected readonly REGISTRATION_OPTIONS = REGISTRATION_OPTIONS;
   protected readonly EVENT_STATUS_OPTIONS = EVENT_STATUS_OPTIONS;
   protected readonly VISIBILITY_OPTIONS = VISIBILITY_OPTIONS;
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
+  protected readonly coverImageUrl = signal<string | null>(null);
+  protected readonly uploadingCover = signal(false);
+  /** Modo salvo: o código (write-only) só é exigido ao MUDAR para CODE. */
+  protected readonly savedMode = signal<RegistrationMode | null>(null);
 
   protected readonly form = this.fb.nonNullable.group(
     {
@@ -85,6 +91,8 @@ export class EventSettings {
             status: h.status,
             visibility: h.visibility,
           });
+          this.coverImageUrl.set(h.coverImage ?? null);
+          this.savedMode.set(h.registrationMode);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
@@ -98,6 +106,11 @@ export class EventSettings {
       return;
     }
     const v = this.form.getRawValue();
+    if (v.registrationMode === 'CODE' && this.savedMode() !== 'CODE' && !v.registrationCode.trim()) {
+      this.form.controls.registrationCode.setErrors({ required: true });
+      this.form.controls.registrationCode.markAsTouched();
+      return;
+    }
     const payload: UpdateHackathonPayload = {
       name: v.name.trim(),
       description: v.description.trim() || null,
@@ -111,6 +124,7 @@ export class EventSettings {
       teamMaxSize: v.teamMaxSize,
       status: v.status,
       visibility: v.visibility,
+      coverImage: this.coverImageUrl(),
     };
     // Write-only: a API nunca retorna o código — enviar '' apagaria o atual.
     if (v.registrationMode === 'CODE' && v.registrationCode.trim()) {
@@ -122,11 +136,35 @@ export class EventSettings {
       next: (updated) => {
         this.saving.set(false);
         this.form.controls.registrationCode.setValue('');
+        this.savedMode.set(updated.registrationMode);
         this.ctx.applyFull(updated);
         this.auth.refresh();
         this.toast.success('Evento atualizado.');
       },
       error: () => this.saving.set(false),
+    });
+  }
+
+  protected onCoverSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    if (!IMAGE_MIME_TYPES.includes(file.type)) {
+      this.toast.error('Use uma imagem PNG, JPG, WEBP ou GIF.');
+      return;
+    }
+    if (file.size > IMAGE_MAX_BYTES) {
+      this.toast.error('A imagem deve ter no máximo 5 MB.');
+      return;
+    }
+    this.uploadingCover.set(true);
+    this.uploads.upload(file).subscribe({
+      next: ({ url }) => {
+        this.coverImageUrl.set(url);
+        this.uploadingCover.set(false);
+      },
+      error: () => this.uploadingCover.set(false),
     });
   }
 

@@ -2,7 +2,7 @@
   <header class="me__head">
     <div>
       <h1>Meus eventos</h1>
-      <p class="text-muted">Seus hackathons como participante e como mentor.</p>
+      <p class="text-muted">Seus hackathons como participante, mentor e organizador.</p>
     </div>
     <div class="me__actions">
       <app-button variant="outline" routerLink="/">
@@ -23,8 +23,15 @@
       <div class="me__grid">
         @for (m of filtered(); track m.id) {
           <a class="me-card" [routerLink]="['/app/eventos', m.hackathonId]">
-            <div class="me-card__cover" [style.--hue]="hueFromString(m.hackathon.slug)">
-              <span class="me-card__role">{{ ROLE_LABEL[m.role] }}</span>
+            <div
+              class="me-card__cover cover-art"
+              [class.has-photo]="!!m.hackathon.coverImage"
+              [style.--hue]="coverHue(m.hackathon.slug)"
+              [style.backgroundImage]="coverImage(m.hackathon.coverImage)"
+            >
+              <span class="me-card__role glass-chip">
+                <app-icon [name]="ROLE_ICON[m.role]" [size]="13" /> {{ ROLE_LABEL[m.role] }}
+              </span>
             </div>
             <div class="me-card__body">
               <span class="me-card__org">{{ m.hackathon.organization.name }}</span>

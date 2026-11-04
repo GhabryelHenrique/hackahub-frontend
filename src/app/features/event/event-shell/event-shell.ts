@@ -1,23 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { Badge, Icon, Skeleton } from '../../../shared/ui';
-import { ROLE_LABEL, STATUS_LABEL, STATUS_TONE } from '../../../shared/labels';
-import { dateRange, hueFromString } from '../../../shared/format';
+import { Icon, Skeleton } from '../../../shared/ui';
+import { EVENT_STATUS_LABEL, ROLE_LABEL, STATUS_LABEL, STATUS_TONE } from '../../../shared/labels';
+import { coverHue, coverImage, dateRange } from '../../../shared/format';
 
 interface NavItem {
   label: string;
   icon: string;
   link: unknown[];
   exact: boolean;
+  /** Contador opcional (ex.: inscrições pendentes do organizador). */
+  count?: number;
 }
 
 /** Layout de contexto de evento (docs §3.2). Define o evento ativo e a nav. */
 @Component({
   selector: 'app-event-shell',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Badge, Icon, Skeleton],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Skeleton],
   templateUrl: './event-shell.html',
   styleUrl: './event-shell.scss',
 })
@@ -30,15 +31,19 @@ export class EventShell {
   protected readonly ROLE_LABEL = ROLE_LABEL;
   protected readonly STATUS_LABEL = STATUS_LABEL;
   protected readonly STATUS_TONE = STATUS_TONE;
+  protected readonly EVENT_STATUS_LABEL = EVENT_STATUS_LABEL;
   protected readonly dateRange = dateRange;
 
   /** Cabeçalho: detalhe (rico) quando disponível, senão o resumo (instantâneo). */
   protected readonly head = computed(() => this.ctx.detail() ?? this.ctx.summary());
   protected readonly hue = computed(() => {
     const slug = this.head()?.slug;
-    return slug ? hueFromString(slug) : 205;
+    return slug ? coverHue(slug) : 205;
   });
   protected readonly memberships = computed(() => this.auth.membershipsFor(this.hackathonId()));
+  protected readonly photo = computed(() => coverImage(this.head()?.coverImage, true));
+  /** Status de publicação só é conhecido pelo detalhe autenticado (`full`). */
+  protected readonly eventStatus = computed(() => this.ctx.full()?.status ?? null);
 
   protected readonly navItems = computed<NavItem[]>(() => {
     const id = this.hackathonId();
@@ -55,8 +60,17 @@ export class EventShell {
     }
     // Organizador não colide com as abas de participante (1 papel por evento).
     if (this.ctx.isOrganizerApproved()) {
-      items.push({ label: 'Configurações', icon: 'settings', link: ['/app/eventos', id, 'gerenciar'], exact: true });
-      items.push({ label: 'Desafios', icon: 'target', link: ['/app/eventos', id, 'gerenciar', 'desafios'], exact: false });
+      const g = ['/app/eventos', id, 'gerenciar'];
+      items.push({ label: 'Painel', icon: 'chart', link: g, exact: true });
+      items.push({
+        label: 'Inscrições',
+        icon: 'user-check',
+        link: [...g, 'inscricoes'],
+        exact: false,
+        count: this.ctx.pendingCount() ?? undefined,
+      });
+      items.push({ label: 'Desafios', icon: 'target', link: [...g, 'desafios'], exact: false });
+      items.push({ label: 'Configurações', icon: 'settings', link: [...g, 'configuracoes'], exact: false });
     }
     return items;
   });

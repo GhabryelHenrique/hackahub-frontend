@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { TeamService } from '../../../core/services/team.service';
 import { ToastService } from '../../../core/toast/toast.service';
 import { Invite } from '../../../core/models';
@@ -6,7 +6,6 @@ import { Avatar, Button, Card, EmptyState, Icon, Skeleton } from '../../../share
 
 @Component({
   selector: 'app-invites-page',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Avatar, Button, Card, EmptyState, Icon, Skeleton],
   templateUrl: './invites-page.html',
   styleUrl: './invites-page.scss',

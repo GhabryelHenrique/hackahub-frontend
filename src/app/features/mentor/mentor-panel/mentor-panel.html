@@ -1,25 +1,51 @@
 <div class="mp">
+  <!-- Fila de pedidos de ajuda (mesma do Discord) -->
   <section>
-    <h2 class="mp__title">Times que você mentora</h2>
-    @if (loading()) {
-      <app-skeleton width="100%" height="120px" radius="var(--radius-lg)" />
-    } @else if (teams().length) {
-      <div class="mp__teams">
-        @for (t of teams(); track t.id) {
-          <app-card class="mp-team">
-            <div class="mp-team__head">
-              <h3>{{ t.name }}</h3>
-              <app-badge tone="brand">{{ t.members.length }} integrantes</app-badge>
+    <header class="page-head">
+      <div>
+        <h2>Pedidos de ajuda</h2>
+        <p>A mesma fila do <code>/mentoria</code> no Discord — assumir aqui reflete lá.</p>
+      </div>
+      <app-button variant="ghost" size="sm" [disabled]="loadingTickets()" (click)="loadTickets()">
+        <app-icon slot="icon" name="refresh" [size]="16" /> Atualizar
+      </app-button>
+    </header>
+
+    <div class="mp__tabs"><app-tabs [tabs]="queueTabs()" [(active)]="queueTab" /></div>
+
+    @if (loadingTickets() && !tickets().length) {
+      <app-skeleton width="100%" height="96px" radius="var(--radius-lg)" />
+    } @else if (queue().length) {
+      <div class="mp__tickets">
+        @for (t of queue(); track t.id) {
+          <app-card class="ticket" [padded]="false">
+            <div class="ticket__body">
+              <div class="ticket__head">
+                <app-badge [tone]="MENTORSHIP_TONE[t.status]" [dot]="true">{{ MENTORSHIP_LABEL[t.status] }}</app-badge>
+                <span class="ticket__when">{{ timeAgo(t.createdAt) }}</span>
+              </div>
+              <h3 class="ticket__title">{{ t.title }}</h3>
+              <p class="ticket__desc">{{ t.description }}</p>
+              <div class="ticket__who">
+                <app-avatar [name]="t.user.name" [size]="24" />
+                <span>{{ t.user.name }}</span>
+                @if (t.team) { <span class="ticket__team">· {{ t.team.name }}</span> }
+              </div>
             </div>
-            @if (t.description) { <p class="mp-team__desc">{{ t.description }}</p> }
-            <div class="mp-team__members">
-              @for (m of t.members; track m.id) {
-                <span class="mp-avatar"><app-avatar [name]="m.name" [size]="30" /> {{ m.name }}</span>
-              }
-            </div>
-            @if (t.challenges.length) {
-              <div class="mp-team__chips">
-                @for (c of t.challenges; track c.id) { <span class="mp-chip">{{ c.title }}</span> }
+            @if (t.status === 'PENDING') {
+              <div class="ticket__foot">
+                <app-button size="sm" [loading]="busyId() === t.id" (click)="claim(t)">
+                  <app-icon slot="icon" name="lightbulb" [size]="15" /> Assumir
+                </app-button>
+              </div>
+            } @else if (t.status === 'IN_PROGRESS') {
+              <div class="ticket__foot">
+                <a class="ticket__mail" [href]="'mailto:' + t.user.email">
+                  <app-icon name="mail" [size]="15" /> {{ t.user.email }}
+                </a>
+                <app-button size="sm" variant="secondary" [loading]="busyId() === t.id" (click)="complete(t)">
+                  <app-icon slot="icon" name="check" [size]="15" /> Concluir
+                </app-button>
               </div>
             }
           </app-card>
@@ -27,22 +53,56 @@
       </div>
     } @else {
       <app-empty-state
-        icon="users"
-        title="Nenhum time atribuído ainda"
-        description="Quando a organização associar times a você, eles aparecerão aqui."
+        [icon]="queueTab() === 'PENDING' ? 'check-circle' : 'inbox'"
+        [title]="queueTab() === 'PENDING' ? 'Fila vazia' : queueTab() === 'MINE' ? 'Nenhum atendimento em andamento' : 'Nenhum atendimento concluído'"
+        [description]="queueTab() === 'PENDING' ? 'Quando um time pedir ajuda (aqui ou no Discord), o pedido aparece nesta fila.' : ''"
       />
     }
   </section>
 
-  <!-- Estrutura para V1 (docs §4.8 / §8) -->
-  <section class="mp__help">
-    <div class="mp__help-head">
-      <h2 class="mp__title">Pedidos de ajuda</h2>
-      <app-badge tone="neutral">Em breve</app-badge>
-    </div>
-    <div class="mp__help-empty">
-      <app-icon name="lightbulb" [size]="24" />
-      <p>A fila de pedidos de ajuda dos times chega na próxima versão. A estrutura já está preparada.</p>
-    </div>
+  <!-- Times -->
+  <section>
+    <header class="page-head">
+      <div>
+        <h2>Times do evento</h2>
+        <p>Você acompanha {{ myTeamsCount() }} de {{ teams().length }} {{ teams().length === 1 ? 'time' : 'times' }}.</p>
+      </div>
+    </header>
+    @if (loadingTeams()) {
+      <app-skeleton width="100%" height="120px" radius="var(--radius-lg)" />
+    } @else if (sortedTeams().length) {
+      <div class="mp__teams">
+        @for (t of sortedTeams(); track t.id) {
+          <app-card class="mp-team" [class.is-mine]="isMine(t)">
+            <div class="mp-team__head">
+              <h3>{{ t.name }}</h3>
+              @if (isMine(t)) {
+                <app-badge tone="success" [dot]="true">Você mentora</app-badge>
+              } @else {
+                <app-badge tone="neutral">{{ t.members.length }} {{ t.members.length === 1 ? 'integrante' : 'integrantes' }}</app-badge>
+              }
+            </div>
+            @if (t.description) { <p class="mp-team__desc">{{ t.description }}</p> }
+            <div class="mp-team__members">
+              @for (m of t.members; track m.id) {
+                <span class="mp-avatar" [title]="m.name"><app-avatar [name]="m.name" [size]="28" /></span>
+              }
+            </div>
+            @if (t.challenges.length) {
+              <div class="mp-team__chips">
+                @for (c of t.challenges; track c.id) { <span class="mp-chip">{{ c.title }}</span> }
+              </div>
+            }
+            @if (!isMine(t)) {
+              <app-button variant="outline" size="sm" [loading]="busyId() === t.id" (click)="assign(t)">
+                <app-icon slot="icon" name="user-plus" [size]="15" /> Mentorar este time
+              </app-button>
+            }
+          </app-card>
+        }
+      </div>
+    } @else {
+      <app-empty-state icon="users" title="Nenhum time formado ainda" description="Assim que os participantes criarem times, eles aparecem aqui para você acompanhar." />
+    }
   </section>
 </div>

@@ -1,7 +1,9 @@
 <div class="settings">
-  <header class="settings__head">
-    <h1>Configurações do evento</h1>
-    <p>Edite as informações, inscrições e publicação. As alterações valem na hora.</p>
+  <header class="page-head">
+    <div>
+      <h2>Configurações do evento</h2>
+      <p>Edite as informações, inscrições e publicação. As alterações valem ao salvar.</p>
+    </div>
   </header>
 
   @if (loading()) {
@@ -45,6 +47,31 @@
       </app-card>
 
       <app-card>
+        <h2 class="settings__section">Imagem de capa</h2>
+        <div class="imgpick">
+          <div class="imgpick__cover" [style.backgroundImage]="coverImageUrl() ? 'url(' + coverImageUrl() + ')' : null">
+            @if (!coverImageUrl() && !uploadingCover()) {
+              <app-icon name="image" [size]="28" />
+              <span class="imgpick__placeholder">Sem capa — o catálogo usa uma arte gerada com as cores da marca.</span>
+            }
+            @if (uploadingCover()) {
+              <div class="imgpick__loading"><app-spinner [size]="24" /></div>
+            }
+          </div>
+          <div class="imgpick__actions">
+            <label class="imgpick__btn">
+              <app-icon name="upload" [size]="16" />
+              {{ coverImageUrl() ? 'Trocar capa' : 'Enviar capa' }}
+              <input type="file" [accept]="IMAGE_ACCEPT" hidden (change)="onCoverSelected($event)" />
+            </label>
+            @if (coverImageUrl()) {
+              <button type="button" class="imgpick__remove" (click)="coverImageUrl.set(null)">Remover</button>
+            }
+            <span class="imgpick__hint">PNG, JPG, WEBP ou GIF · até 5 MB · salve para aplicar.</span>
+          </div>
+        </div>
+      </app-card>
+      <app-card>
         <h2 class="settings__section">Inscrições e limites</h2>
         <div class="settings__fields">
           <div class="settings__row">
@@ -63,7 +90,9 @@
           @if (form.controls.registrationMode.value === 'CODE') {
             <app-form-field
               label="Código de inscrição"
-              hint="Preencha para definir um novo código; em branco mantém o atual."
+              [required]="savedMode() !== 'CODE'"
+              [hint]="savedMode() === 'CODE' ? 'Preencha para definir um novo código; em branco mantém o atual.' : 'Os participantes usam este código para entrar.'"
+              [error]="form.controls.registrationCode.touched && form.controls.registrationCode.errors?.['required'] ? 'Defina o código — sem ele ninguém consegue se inscrever.' : ''"
             >
               <input class="control" formControlName="registrationCode" placeholder="Ex.: MEUEVENTO2026" />
             </app-form-field>

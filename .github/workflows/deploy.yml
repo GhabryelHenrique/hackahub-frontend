@@ -1,0 +1,99 @@
+name: Deploy
+
+# Push na main (ou master, a branch padrão deste repositório): CI (runners do GitHub) → build e publicação no runner self-hosted da
+# EC2 (papel IAM da instância; nenhuma credencial da AWS no GitHub):
+#   estáticos → S3 · SSR → Lambda hackahub-web-ssr · invalidação do CloudFront.
+# A infraestrutura (CloudFront, Lambda, S3) vem do CloudFormation da hackahub-api
+# (deploy/README.md); os nomes saem de /hackahub/web/* no Parameter Store.
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hackahub-frontend
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Publicar na AWS
+    needs: ci
+    runs-on: [self-hosted, hackahub-prod]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Parâmetros da stack
+        run: |
+          # AWS_DEFAULT_REGION, gravado pelo bootstrap da instância.
+          set -a; . /etc/hackahub.env; set +a
+          p() { aws ssm get-parameter --name "$1" --query Parameter.Value --output text; }
+          {
+            echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
+            echo "WEB_BUCKET=$(p /hackahub/web/bucket)"
+            echo "SSR_FUNCTION=$(p /hackahub/web/function)"
+            # Vazio com EnableCloudFront=false na stack: S3 e Lambda são publicados
+            # mesmo assim e o site entra no ar quando o CloudFront for criado.
+            echo "DISTRIBUTION_ID=$(p /hackahub/web/distribution-id 2>/dev/null || true)"
+            echo "API_URL=https://$(p /hackahub/infra/api-domain)"
+            echo "WEB_URL=$(p /hackahub/infra/web-url)"
+          } >> "$GITHUB_ENV"
+
+      - run: npm ci
+
+      - name: Build
+        run: npx ng build --define "HACKAHUB_API_BASE_URL='$API_URL'"
+
+      # Antes do Lambda: o HTML novo só sai depois que os chunks dele já estão no S3.
+      - name: Estáticos no S3
+        run: |
+          out=dist/hackahub-frontend/browser
+          # Nomes com hash: cache de 1 ano. Sem --delete: quem está com a versão
+          # anterior aberta ainda baixa os chunks dela.
+          aws s3 sync "$out" "s3://$WEB_BUCKET/" --exclude '*.html' --exclude 'favicon.ico' \
+            --cache-control 'public,max-age=31536000,immutable' --only-show-errors
+          aws s3 cp "$out/favicon.ico" "s3://$WEB_BUCKET/favicon.ico" \
+            --cache-control 'public,max-age=86400' --only-show-errors
+
+      - name: SSR no Lambda
+        run: |
+          pkg=$(mktemp -d)
+          zip="$(mktemp -d)/ssr.zip"
+          trap 'rm -rf "$pkg" "$(dirname "$zip")"' EXIT
+          cp lambda/index.mjs "$pkg/"
+          cp -r dist/hackahub-frontend/server dist/hackahub-frontend/browser "$pkg/"
+          (cd "$pkg" && python3 -m zipfile -c "$zip" index.mjs server browser)
+          aws lambda update-function-code --function-name "$SSR_FUNCTION" \
+            --zip-file "fileb://$zip" --query CodeSize --output text
+          aws lambda wait function-updated --function-name "$SSR_FUNCTION"
+
+      - name: Sem CloudFront ainda
+        if: env.DISTRIBUTION_ID == ''
+        run: |
+          echo "::notice::S3 e Lambda publicados; o CloudFront ainda não existe (EnableCloudFront=false na stack)."
+          echo "S3 e Lambda publicados. O site entra no ar quando o CloudFront for criado na stack." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Invalidação do CloudFront
+        if: env.DISTRIBUTION_ID != ''
+        run: |
+          aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" \
+            --paths '/*' --query Invalidation.Id --output text
+
+      - name: Conferir
+        if: env.DISTRIBUTION_ID != ''
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-all-errors "$WEB_URL/")
+          echo "GET $WEB_URL/ → $code"
+          [ "$code" = 200 ]
+          echo "Frontend publicado em $WEB_URL" >> "$GITHUB_STEP_SUMMARY"

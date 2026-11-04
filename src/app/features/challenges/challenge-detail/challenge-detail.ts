@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HackathonService } from '../../../core/services/hackathon.service';
 import { Challenge } from '../../../core/models';
@@ -7,7 +7,6 @@ import { Badge, Button, EmptyState, Icon, Skeleton } from '../../../shared/ui';
 /** Página de leitura de um desafio (participante) — docs §8. */
 @Component({
   selector: 'app-challenge-detail',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Button, EmptyState, Icon, Skeleton],
   templateUrl: './challenge-detail.html',
   styleUrl: './challenge-detail.scss',

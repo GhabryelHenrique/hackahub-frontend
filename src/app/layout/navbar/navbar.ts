@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { BrandLogo } from '../brand-logo/brand-logo';
@@ -6,7 +6,6 @@ import { Avatar, Button, Icon } from '../../shared/ui';
 
 @Component({
   selector: 'app-navbar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, BrandLogo, Avatar, Button, Icon],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',

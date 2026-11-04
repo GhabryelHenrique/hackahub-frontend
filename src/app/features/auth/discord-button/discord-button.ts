@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { DiscordAuthService } from '../../../core/services/discord-auth.service';
 
 /**
@@ -7,7 +7,6 @@ import { DiscordAuthService } from '../../../core/services/discord-auth.service'
  */
 @Component({
   selector: 'app-discord-button',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button type="button" class="discord-btn" (click)="onClick()">
       <svg class="discord-btn__logo" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">

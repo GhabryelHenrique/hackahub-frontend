@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { HackathonService } from '../../../core/services/hackathon.service';
@@ -10,7 +10,6 @@ import { Badge, Button, EmptyState, Icon, Skeleton } from '../../../shared/ui';
 
 @Component({
   selector: 'app-challenges-page',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Badge, Button, EmptyState, Icon, Skeleton],
   templateUrl: './challenges-page.html',
   styleUrl: './challenges-page.scss',

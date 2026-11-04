@@ -1,17 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  input,
-  output,
-} from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /** Modal/Dialog acessível (docs §5). Fecha com ESC ou clique no backdrop. */
 @Component({
   selector: 'app-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
+  host: { '(document:keydown.escape)': 'onEsc()' },
   template: `
     @if (open()) {
       <div class="overlay" (click)="onBackdrop($event)">
@@ -41,7 +35,6 @@ export class Modal {
   readonly title = input('');
   readonly close = output<void>();
 
-  @HostListener('document:keydown.escape')
   onEsc(): void {
     if (this.open()) this.close.emit();
   }

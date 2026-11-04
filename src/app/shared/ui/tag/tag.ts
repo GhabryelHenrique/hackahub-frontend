@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 /** Chip/tag, opcionalmente removível ou selecionável (docs §5). */
 @Component({
   selector: 'app-tag',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   host: { '[class.is-selected]': 'selected()' },
   template: `

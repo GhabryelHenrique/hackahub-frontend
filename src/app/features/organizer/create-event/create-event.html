@@ -10,7 +10,44 @@
   <form class="create__form" [formGroup]="form" (ngSubmit)="create()">
     <app-card>
       <h2 class="create__section">Organização promotora</h2>
-      <p class="create__hint">Quem realiza o evento. Vira a dona do hackathon no seu espaço.</p>
+      <p class="create__hint">Quem realiza o evento. Só você (e quem organiza eventos dela) pode criar eventos sob ela.</p>
+
+      @if (myOrgs().length) {
+        <div class="orgpick" role="radiogroup" aria-label="Organização do evento">
+          <button
+            type="button"
+            role="radio"
+            class="orgpick__opt"
+            [class.is-active]="orgMode() === 'existing'"
+            [attr.aria-checked]="orgMode() === 'existing'"
+            (click)="setOrgMode('existing')"
+          >
+            <app-icon name="briefcase" [size]="18" />
+            <span><strong>Usar uma organização sua</strong><small>Nova edição ou outro evento da mesma organização</small></span>
+          </button>
+          <button
+            type="button"
+            role="radio"
+            class="orgpick__opt"
+            [class.is-active]="orgMode() === 'new'"
+            [attr.aria-checked]="orgMode() === 'new'"
+            (click)="setOrgMode('new')"
+          >
+            <app-icon name="plus" [size]="18" />
+            <span><strong>Criar nova organização</strong><small>Você será o dono dela</small></span>
+          </button>
+        </div>
+      }
+
+      @if (orgMode() === 'existing') {
+        <app-form-field label="Organização" [required]="true" for="orgId">
+          <select id="orgId" class="control" formControlName="orgId">
+            @for (o of myOrgs(); track o.id) {
+              <option [value]="o.id">{{ o.name }} ({{ o.slug }})</option>
+            }
+          </select>
+        </app-form-field>
+      } @else {
       <div class="create__fields">
         <app-form-field
           label="Nome da organização"
@@ -29,6 +66,7 @@
           <input class="control" formControlName="orgSlug" (input)="onSlugInput('orgSlug')" placeholder="comunidade-devbr" />
         </app-form-field>
       </div>
+      }
     </app-card>
 
     <app-card>
@@ -96,7 +134,7 @@
             <label class="imgpick__btn">
               <app-icon name="upload" [size]="16" />
               {{ coverImageUrl() ? 'Trocar capa' : 'Enviar capa' }}
-              <input type="file" accept="image/*" hidden (change)="onCoverSelected($event)" />
+              <input type="file" [accept]="IMAGE_ACCEPT" hidden (change)="onCoverSelected($event)" />
             </label>
             @if (coverImageUrl()) {
               <button type="button" class="imgpick__remove" (click)="removeCover()">Remover</button>
@@ -118,7 +156,7 @@
             <label class="imgpick__btn">
               <app-icon name="upload" [size]="16" />
               {{ avatarUrl() ? 'Trocar foto' : 'Enviar foto' }}
-              <input type="file" accept="image/*" hidden (change)="onAvatarSelected($event)" />
+              <input type="file" [accept]="IMAGE_ACCEPT" hidden (change)="onAvatarSelected($event)" />
             </label>
           </div>
           <p class="imgpick__hint">Atualiza a foto do seu perfil ao criar o evento.</p>
@@ -143,7 +181,12 @@
         </div>
 
         @if (form.controls.registrationMode.value === 'CODE') {
-          <app-form-field label="Código de inscrição" hint="Os participantes usam este código para entrar.">
+          <app-form-field
+            label="Código de inscrição"
+            [required]="true"
+            hint="Os participantes usam este código para entrar."
+            [error]="form.controls.registrationCode.touched && form.controls.registrationCode.errors?.['required'] ? 'Defina o código — sem ele ninguém consegue se inscrever.' : ''"
+          >
             <input class="control" formControlName="registrationCode" placeholder="Ex.: MEUEVENTO2026" />
           </app-form-field>
         }

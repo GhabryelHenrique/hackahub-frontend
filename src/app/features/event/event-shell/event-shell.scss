@@ -1,17 +1,13 @@
-:host { display: block; }
+/* Cola no topo do <main> (que tem padding-top) para a capa encostar na navbar. */
+:host { display: block; margin-top: calc(-1 * var(--sp-8)); }
 
-.event-head {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0) 60%, var(--surface-muted) 100%),
-    linear-gradient(135deg, hsl(var(--hue) 70% 42%) 0%, hsl(calc(var(--hue) - 40) 75% 46%) 55%, var(--brand-orange) 130%);
-  color: #fff;
-  padding-block: var(--sp-8) var(--sp-12);
-}
+.event-head { padding-block: var(--sp-6) var(--sp-8); }
+.event-head__inner { position: relative; }
 .event-head__back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.82);
   font-size: var(--fs-sm);
   font-weight: 500;
   text-decoration: none;
@@ -21,36 +17,47 @@
 
 .event-head__top {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   gap: var(--sp-6);
   flex-wrap: wrap;
 }
-.event-head__org { font-size: var(--fs-sm); font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.05em; }
-.event-head__title { color: #fff; font-size: var(--fs-4xl); max-width: 20ch; }
-.event-head__meta { color: rgba(255, 255, 255, 0.92); font-size: var(--fs-sm); }
-.event-head__roles { display: flex; flex-direction: column; gap: var(--sp-2); align-items: flex-end; }
+.event-head__text { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+.event-head__org {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand-cyan);
+}
+.event-head__title { color: #fff; font-size: clamp(1.75rem, 4vw, var(--fs-4xl)); max-width: 22ch; }
+.event-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-1);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: var(--fs-sm);
+}
+.event-head__meta li { display: inline-flex; align-items: center; gap: 6px; }
 
+.event-head__roles { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: flex-end; }
+.event-head__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--n-400); }
+.event-head__dot[data-status='APPROVED'] { background: #4ade80; }
+.event-head__dot[data-status='PENDING'] { background: #fbbf24; }
+.event-head__dot[data-status='REJECTED'] { background: #f87171; }
+
+/* ---- Abas do evento (grudam logo abaixo da navbar, que também é sticky) ---- */
 .event-nav {
   position: sticky;
-  top: 0;
+  top: var(--navbar-h);
   z-index: 30;
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
 }
-/* Desvanece o conteúdo que passa sob a barra fixa, em vez de um corte abrupto. */
-.event-nav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: var(--sp-6);
-  background: linear-gradient(to bottom, var(--surface), transparent);
-  pointer-events: none;
-}
-.event-nav__inner { display: flex; gap: var(--sp-2); overflow-x: auto; }
+.event-nav__inner { display: flex; gap: var(--sp-1); overflow-x: auto; scrollbar-width: none; }
+.event-nav__inner::-webkit-scrollbar { display: none; }
 .event-nav__link {
   display: inline-flex;
   align-items: center;
@@ -62,13 +69,26 @@
   text-decoration: none;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
 }
-.event-nav__link:hover { color: var(--text); text-decoration: none; }
+.event-nav__link:hover { color: var(--text); text-decoration: none; border-bottom-color: var(--border-strong); }
 .event-nav__link.is-active { color: var(--brand-navy); border-bottom-color: var(--brand-orange); }
+.event-nav__count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--brand-orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .event-body { padding-block: var(--sp-8); }
 
 @media (max-width: 640px) {
-  .event-head__roles { align-items: flex-start; }
-  .event-head__title { font-size: var(--fs-3xl); }
+  .event-head__roles { justify-content: flex-start; }
 }

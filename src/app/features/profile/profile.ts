@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 import {
@@ -8,13 +8,13 @@ import {
 } from '../../core/services/discord.service';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/toast/toast.service';
-import { Avatar, Badge, Button, Card, FormField, Icon } from '../../shared/ui';
-import { fullDate } from '../../shared/format';
+import { Avatar, Badge, Button, Card, FormField, Icon, InputMask } from '../../shared/ui';
+import { digitsOnly, formatCpf, fullDate } from '../../shared/format';
+import { phoneValidator } from '../../shared/validators';
 
 @Component({
   selector: 'app-profile',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, Avatar, Badge, Button, Card, FormField, Icon],
+  imports: [ReactiveFormsModule, Avatar, Badge, Button, Card, FormField, Icon, InputMask],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
@@ -25,11 +25,13 @@ export class Profile {
   protected readonly auth = inject(AuthService);
 
   protected readonly fullDate = fullDate;
+  protected readonly formatCpf = formatCpf;
   protected readonly saving = signal(false);
 
   protected readonly form = this.fb.nonNullable.group({
     name: ['', Validators.required],
-    phone: [''],
+    // Obrigatório na API (não aceita vazio); só dígitos — appMask formata a exibição.
+    phone: ['', [Validators.required, phoneValidator]],
     institution: [''],
     course: [''],
     githubUrl: [''],
@@ -41,7 +43,7 @@ export class Profile {
     if (u) {
       this.form.patchValue({
         name: u.name,
-        phone: u.phone ?? '',
+        phone: digitsOnly(u.phone),
         institution: u.institution ?? '',
         course: u.course ?? '',
         githubUrl: u.githubUrl ?? '',
@@ -49,6 +51,12 @@ export class Profile {
       });
     }
     this.loadDiscord();
+  }
+
+  protected phoneError(): string {
+    const c = this.form.controls.phone;
+    if (!c.touched || c.valid) return '';
+    return c.errors?.['required'] ? 'Informe seu telefone.' : 'Telefone inválido — informe DDD + número.';
   }
 
   protected save(): void {

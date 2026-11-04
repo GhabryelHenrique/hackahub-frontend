@@ -1,0 +1,99 @@
+<header class="page-head">
+  <div>
+    <h2>Inscrições</h2>
+    <p>Aprove participantes e candidaturas de mentor. A API revalida as vagas a cada aprovação.</p>
+  </div>
+  <app-button variant="ghost" size="sm" [disabled]="loading()" (click)="load()">
+    <app-icon slot="icon" name="refresh" [size]="16" /> Atualizar
+  </app-button>
+</header>
+
+<div class="reg__bar">
+  <app-tabs [tabs]="tabs()" [(active)]="filter" />
+  <label class="reg__search">
+    <app-icon name="search" [size]="16" />
+    <span class="sr-only">Buscar por nome ou e-mail</span>
+    <input
+      type="search"
+      placeholder="Buscar por nome ou e-mail"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+  </label>
+</div>
+
+@if (loading() && !all().length) {
+  <div class="reg__list">
+    @for (i of [1, 2, 3]; track i) {
+      <app-skeleton height="72px" radius="var(--radius-lg)" />
+    }
+  </div>
+} @else if (failed()) {
+  <app-empty-state icon="alert-circle" title="Não foi possível carregar as inscrições">
+    <app-button variant="outline" (click)="load()">Tentar de novo</app-button>
+  </app-empty-state>
+} @else if (visible().length) {
+  <div class="reg__list">
+    @for (m of visible(); track m.id) {
+      <app-card class="reg" [padded]="false">
+        <div class="reg__row">
+          <app-avatar [name]="m.user?.name ?? '?'" [size]="40" />
+          <div class="reg__who">
+            <strong>{{ m.user?.name }}</strong>
+            <span>{{ m.user?.email }}</span>
+          </div>
+          <div class="reg__tags">
+            <app-badge [tone]="m.role === 'MENTOR' ? 'brand' : 'neutral'">{{ ROLE_LABEL[m.role] }}</app-badge>
+            <app-badge [tone]="STATUS_TONE[m.status]" [dot]="true">{{ STATUS_LABEL[m.status] }}</app-badge>
+            <span class="reg__when" [title]="m.createdAt">{{ timeAgo(m.createdAt) }}</span>
+          </div>
+          <div class="reg__actions">
+            @if (m.mentorProfile) {
+              <app-button variant="ghost" size="sm" (click)="toggle(m.id)" [attr.aria-expanded]="expanded() === m.id">
+                {{ expanded() === m.id ? 'Ocultar perfil' : 'Ver perfil' }}
+              </app-button>
+            }
+            @if (m.status === 'PENDING') {
+              <app-button variant="outline" size="sm" [disabled]="busyId() === m.id" (click)="decide(m, false)">
+                <app-icon slot="icon" name="x" [size]="15" /> Recusar
+              </app-button>
+              <app-button size="sm" [loading]="busyId() === m.id" (click)="decide(m, true)">
+                <app-icon slot="icon" name="check" [size]="15" /> Aprovar
+              </app-button>
+            }
+          </div>
+        </div>
+
+        @if (m.mentorProfile && expanded() === m.id) {
+          <div class="reg__profile">
+            <dl>
+              <div>
+                <dt>Expertise</dt>
+                <dd class="reg__chips">
+                  @for (e of m.mentorProfile.expertise; track e) {
+                    <span class="reg__chip">{{ e }}</span>
+                  } @empty {
+                    <span class="text-subtle">Não informada</span>
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Senioridade</dt>
+                <dd>{{ m.mentorProfile.seniority || 'Não informada' }}</dd>
+              </div>
+            </dl>
+            @if (m.mentorProfile.motivation) {
+              <blockquote class="reg__motivation">{{ m.mentorProfile.motivation }}</blockquote>
+            }
+          </div>
+        }
+      </app-card>
+    }
+  </div>
+} @else if (search()) {
+  <app-empty-state icon="search" title="Ninguém encontrado" description="Ajuste a busca para ver mais inscrições." />
+} @else if (filter() === 'PENDING') {
+  <app-empty-state icon="check-circle" title="Nenhuma inscrição pendente" description="Novas inscrições em eventos com aprovação e candidaturas de mentor aparecem aqui." />
+} @else {
+  <app-empty-state icon="inbox" title="Nada por aqui ainda" />
+}

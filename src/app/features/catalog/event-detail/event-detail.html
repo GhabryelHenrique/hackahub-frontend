@@ -1,6 +1,6 @@
 @switch (view().status) {
   @case ('loading') {
-    <div class="detail-cover detail-cover--skeleton" [style.--hue]="hue()"></div>
+    <div class="detail-cover detail-cover--skeleton cover-art" [style.--hue]="hue()"></div>
     <div class="container detail-load">
       <app-skeleton width="50%" height="34px" />
       <app-skeleton width="30%" height="18px" />
@@ -21,9 +21,10 @@
   @case ('ok') {
     @if (event(); as ev) {
       <header
-        class="detail-cover"
+        class="detail-cover cover-art"
+        [class.has-photo]="!!ev.coverImage"
         [style.--hue]="hue()"
-        [style.backgroundImage]="ev.coverImage ? 'url(' + ev.coverImage + ')' : null"
+        [style.backgroundImage]="coverImage(ev.coverImage, true)"
       >
         <div class="container detail-cover__inner">
           <a class="detail-cover__back" routerLink="/"><app-icon name="arrow-left" [size]="16" /> Catálogo</a>
@@ -36,7 +37,12 @@
               <span class="row gap-1"><app-icon name="map-pin" [size]="18" /> {{ ev.location }}</span>
             }
             <span class="row gap-1"><app-icon name="ticket" [size]="18" /> {{ formatPrice(ev.price) }}</span>
-            <app-badge [tone]="registrationState(ev).tone" [dot]="true">{{ registrationState(ev).label }}</app-badge>
+          </div>
+          <div class="detail-cover__chips">
+            <span class="glass-chip">
+              <span class="detail-cover__dot" [class.is-open]="registrationState(ev).open"></span>
+              {{ registrationState(ev).label }}
+            </span>
           </div>
         </div>
       </header>
@@ -82,14 +88,28 @@
               <app-button [block]="true" (click)="join()">
                 <app-icon slot="icon" name="log-in" [size]="18" /> Entrar para participar
               </app-button>
-            } @else if (participant()?.status === 'APPROVED') {
-              <app-badge tone="success" [dot]="true">Você já participa</app-badge>
-              <app-button [block]="true" [routerLink]="['/app/eventos', ev.id]">
-                Acessar evento <app-icon slot="icon" name="arrow-right" [size]="18" />
-              </app-button>
-            } @else if (participant()?.status === 'PENDING') {
-              <app-badge tone="warning" [dot]="true">Solicitação pendente</app-badge>
-              <p class="cta__hint">Sua solicitação de participação aguarda aprovação da organização.</p>
+            } @else if (myMembership(); as me) {
+              <div class="cta__status" [attr.data-status]="me.status">
+                <app-icon [name]="me.status === 'APPROVED' ? 'check-circle' : me.status === 'PENDING' ? 'clock' : 'x-circle'" [size]="20" />
+                <div>
+                  <strong>{{ ROLE_LABEL[me.role] }} · {{ STATUS_LABEL[me.status] }}</strong>
+                  <p>
+                    @switch (me.status) {
+                      @case ('APPROVED') { Você já faz parte deste evento. }
+                      @case ('PENDING') {
+                        {{ me.role === 'MENTOR' ? 'Sua candidatura de mentor está em análise.' : 'Sua inscrição aguarda aprovação da organização.' }}
+                      }
+                      @default { A organização recusou {{ me.role === 'MENTOR' ? 'sua candidatura' : 'sua inscrição' }} neste evento. }
+                    }
+                  </p>
+                </div>
+              </div>
+              @if (me.status !== 'REJECTED') {
+                <app-button [block]="true" [routerLink]="['/app/eventos', ev.id]">
+                  Acessar área do evento <app-icon slot="icon" name="arrow-right" [size]="18" />
+                </app-button>
+              }
+              <p class="cta__note">Cada pessoa participa com um único papel por evento.</p>
             } @else {
               @switch (ev.registrationMode) {
                 @case ('OPEN') {
@@ -101,39 +121,23 @@
                   <app-button [block]="true" [loading]="joining()" (click)="join()">Solicitar participação</app-button>
                 }
                 @case ('CODE') {
-                  <app-form-field label="Código de inscrição" hint="Evento demo: use o código INOVA2026." for="code">
+                  <app-form-field label="Código de inscrição" hint="Fornecido pela organização do evento." for="code">
                     <input
                       id="code"
                       class="control"
                       placeholder="Digite o código"
+                      autocomplete="off"
                       [value]="code()"
                       (input)="code.set($any($event.target).value)"
                     />
                   </app-form-field>
                   <app-button [block]="true" [loading]="joining()" (click)="join()">Validar e participar</app-button>
                 }
-                @case ('INVITE') {
-                  <div class="cta__invite">
-                    <app-icon name="shield" [size]="18" />
-                    <span>Este evento é <strong>somente por convite</strong> da organização.</span>
-                  </div>
-                }
               }
-            }
 
-            <div class="cta__divider"></div>
+              <div class="cta__divider"><span>ou</span></div>
 
-            <!-- Fluxo pull de mentor (docs §4.8) -->
-            @if (mentor(); as me) {
-              <p class="cta__mentor-label">Mentoria</p>
-              @if (me.status === 'APPROVED') {
-                <app-badge tone="success" [dot]="true">Mentor aprovado</app-badge>
-              } @else if (me.status === 'PENDING') {
-                <app-badge tone="warning" [dot]="true">Candidatura de mentor pendente</app-badge>
-              } @else {
-                <app-badge tone="danger" [dot]="true">Candidatura recusada</app-badge>
-              }
-            } @else {
+              <!-- Fluxo pull de mentor (docs §4.8) -->
               <app-button variant="outline" [block]="true" (click)="openMentor()">
                 <app-icon slot="icon" name="lightbulb" [size]="18" /> Candidatar-se como mentor
               </app-button>

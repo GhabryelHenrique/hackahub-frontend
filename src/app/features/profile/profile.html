@@ -8,7 +8,7 @@
         <h2 class="profile__name">{{ u.name }}</h2>
         <p class="profile__email"><app-icon name="mail" [size]="15" /> {{ u.email }}</p>
         <dl class="profile__facts">
-          <div><dt>Documento</dt><dd>{{ u.documentId }}</dd></div>
+          <div><dt>CPF</dt><dd>{{ formatCpf(u.documentId) }}</dd></div>
           <div><dt>Nascimento</dt><dd>{{ fullDate(u.birthDate) }}</dd></div>
           <div><dt>Membro desde</dt><dd>{{ fullDate(u.createdAt) }}</dd></div>
         </dl>
@@ -19,28 +19,37 @@
         <form class="profile__form" [formGroup]="form" (ngSubmit)="save()">
           <app-form-field
             label="Nome completo"
+            for="profile-name"
             [required]="true"
             [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''"
           >
-            <input class="control" formControlName="name" />
+            <input id="profile-name" class="control" formControlName="name" autocomplete="name" />
           </app-form-field>
-          <app-form-field label="Telefone">
-            <input class="control" formControlName="phone" placeholder="(11) 90000-0000" />
+          <app-form-field label="Telefone" for="profile-phone" [required]="true" [error]="phoneError()">
+            <input
+              id="profile-phone"
+              class="control"
+              type="tel"
+              formControlName="phone"
+              appMask="phone"
+              autocomplete="tel-national"
+              placeholder="(11) 90000-0000"
+            />
           </app-form-field>
           <div class="profile__row">
-            <app-form-field label="Instituição">
-              <input class="control" formControlName="institution" placeholder="Universidade / empresa" />
+            <app-form-field label="Instituição" for="profile-institution">
+              <input id="profile-institution" class="control" formControlName="institution" placeholder="Universidade / empresa" />
             </app-form-field>
-            <app-form-field label="Curso / área">
-              <input class="control" formControlName="course" placeholder="Ex.: Engenharia" />
+            <app-form-field label="Curso / área" for="profile-course">
+              <input id="profile-course" class="control" formControlName="course" placeholder="Ex.: Engenharia" />
             </app-form-field>
           </div>
           <div class="profile__row">
-            <app-form-field label="GitHub">
-              <input class="control" formControlName="githubUrl" placeholder="https://github.com/você" />
+            <app-form-field label="GitHub" for="profile-github">
+              <input id="profile-github" class="control" type="url" formControlName="githubUrl" placeholder="https://github.com/você" />
             </app-form-field>
-            <app-form-field label="LinkedIn">
-              <input class="control" formControlName="linkedinUrl" placeholder="https://linkedin.com/in/você" />
+            <app-form-field label="LinkedIn" for="profile-linkedin">
+              <input id="profile-linkedin" class="control" type="url" formControlName="linkedinUrl" placeholder="https://linkedin.com/in/você" />
             </app-form-field>
           </div>
           <div class="profile__actions">

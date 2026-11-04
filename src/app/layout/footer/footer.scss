@@ -1,7 +1,16 @@
 .footer {
+  position: relative;
   background: var(--brand-navy-deep);
   color: #cbd5e1;
   margin-top: var(--sp-16);
+}
+/* Fio com o gradiente da marca no topo do rodapé. */
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--brand-gradient);
 }
 
 .footer__inner {
@@ -57,13 +66,7 @@
   font-size: var(--fs-sm);
   color: #64748b;
 }
-.footer__mvp {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-full);
-  padding: 2px 10px;
-  font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
-}
+.footer__made { font-size: var(--fs-xs); color: #64748b; }
 
 @media (max-width: 720px) {
   .footer__inner { grid-template-columns: 1fr; gap: var(--sp-8); }
