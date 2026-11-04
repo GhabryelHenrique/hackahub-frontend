@@ -1,11 +1,11 @@
 name: CI
 
-# PRs e branches de trabalho. Na `main` quem chama este workflow é o deploy.yml
+# PRs e branches de trabalho. Na `main`/`master` quem chama este workflow é o deploy.yml
 # (workflow_call), para os testes rodarem uma vez só antes de publicar.
 on:
   pull_request:
   push:
-    branches-ignore: [main]
+    branches-ignore: [main, master]
   workflow_call:
 
 permissions:

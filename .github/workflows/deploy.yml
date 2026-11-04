@@ -1,13 +1,13 @@
 name: Deploy
 
-# Push na main: CI (runners do GitHub) → build e publicação no runner self-hosted da
+# Push na main (ou master, a branch padrão deste repositório): CI (runners do GitHub) → build e publicação no runner self-hosted da
 # EC2 (papel IAM da instância; nenhuma credencial da AWS no GitHub):
 #   estáticos → S3 · SSR → Lambda hackahub-web-ssr · invalidação do CloudFront.
 # A infraestrutura (CloudFront, Lambda, S3) vem do CloudFormation da hackahub-api
 # (deploy/README.md); os nomes saem de /hackahub/web/* no Parameter Store.
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
 
 concurrency:
