@@ -113,6 +113,14 @@
               <input class="control" type="number" min="1" max="50" formControlName="teamMaxSize" />
             </app-form-field>
           </div>
+
+          <label class="settings__check">
+            <input type="checkbox" formControlName="autoApproveMentors" />
+            <span>
+              <strong>Aprovar mentores automaticamente</strong>
+              <small>Candidaturas de mentor (site e Discord) entram aprovadas, sem passar por Inscrições. O limite de mentores continua valendo.</small>
+            </span>
+          </label>
         </div>
       </app-card>
 

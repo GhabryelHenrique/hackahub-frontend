@@ -46,8 +46,8 @@ export const STATUS_TONE: Record<MembershipStatus, BadgeTone> = {
   REJECTED: 'danger',
 };
 
-/** Senioridade de mentor — texto livre no backend (docs §4.8). */
-export const SENIORITY_OPTIONS = ['Júnior', 'Pleno', 'Sênior', 'Especialista'];
+/** Senioridade de mentor — mesma lista que a API valida (e o select do Discord). */
+export const SENIORITY_OPTIONS = ['Pleno', 'Sênior', 'Especialista', 'PhD'];
 
 /** Área do organizador: selects de publicação do evento. */
 export const EVENT_STATUS_OPTIONS: { value: HackathonStatus; label: string }[] = [

@@ -87,7 +87,7 @@ export class EventDetail {
   protected readonly mentorSteps = ['Expertise', 'Motivação'];
   protected readonly mentorForm = this.fb.nonNullable.group({
     expertise: ['', Validators.required],
-    seniority: [SENIORITY_OPTIONS[1], Validators.required],
+    seniority: [SENIORITY_OPTIONS[0], Validators.required],
     motivation: ['', [Validators.required, Validators.minLength(20)]],
   });
 
@@ -138,7 +138,7 @@ export class EventDetail {
       return;
     }
     this.mentorStep.set(0);
-    this.mentorForm.reset({ expertise: '', seniority: SENIORITY_OPTIONS[1], motivation: '' });
+    this.mentorForm.reset({ expertise: '', seniority: SENIORITY_OPTIONS[0], motivation: '' });
     this.mentorOpen.set(true);
   }
 
@@ -165,11 +165,16 @@ export class EventDetail {
         motivation: raw.motivation,
       })
       .subscribe({
-        next: () => {
+        next: (membership) => {
           this.submittingMentor.set(false);
           this.mentorOpen.set(false);
           this.auth.refresh();
-          this.toast.success('Candidatura enviada! Você poderá acompanhar o status em "Candidaturas".');
+          // Evento com aprovação automática de mentores: já entra aprovado.
+          this.toast.success(
+            membership.status === 'APPROVED'
+              ? 'Pronto! Você já é mentor deste evento.'
+              : 'Candidatura enviada! Você poderá acompanhar o status em "Candidaturas".',
+          );
         },
         error: () => this.submittingMentor.set(false),
       });
