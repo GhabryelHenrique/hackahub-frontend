@@ -13,7 +13,7 @@ import { Component, input } from '@angular/core';
   styles: [
     `.skeleton {
        display: block;
-       background: linear-gradient(90deg, var(--surface-inset) 25%, var(--n-200) 37%, var(--surface-inset) 63%);
+       background: linear-gradient(90deg, var(--surface-inset) 25%, var(--border-strong) 37%, var(--surface-inset) 63%);
        background-size: 400% 100%;
        animation: shimmer 1.4s ease infinite;
      }

@@ -1,7 +1,7 @@
 .footer {
   position: relative;
-  background: var(--brand-navy-deep);
-  color: #cbd5e1;
+  background: var(--brand-black);
+  color: var(--text-muted);
   margin-top: var(--sp-16);
 }
 /* Fio com o gradiente da marca no topo do rodapé. */
@@ -22,7 +22,7 @@
 
 .footer__tagline {
   margin-top: var(--sp-4);
-  color: #94a3b8;
+  color: var(--text-subtle);
   max-width: 34ch;
   font-size: var(--fs-sm);
   line-height: 1.6;
@@ -35,20 +35,20 @@
 }
 .footer__col { display: flex; flex-direction: column; gap: var(--sp-2); }
 .footer__col h4 {
-  color: #fff;
+  color: var(--text);
   font-size: var(--fs-sm);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: var(--sp-2);
 }
 .footer__col a {
-  color: #94a3b8;
+  color: var(--text-subtle);
   font-size: var(--fs-sm);
   text-decoration: none;
 }
-.footer__col a:hover { color: #fff; text-decoration: none; }
+.footer__col a:hover { color: var(--accent-text); text-decoration: none; }
 .footer__col a.is-soon { cursor: default; display: inline-flex; align-items: center; gap: 8px; }
-.footer__col a.is-soon:hover { color: #94a3b8; }
+.footer__col a.is-soon:hover { color: var(--text-subtle); }
 .footer__col a.is-soon span {
   font-size: 10px;
   text-transform: uppercase;
@@ -64,9 +64,9 @@
   padding-block: var(--sp-6);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: var(--fs-sm);
-  color: #64748b;
+  color: var(--text-subtle);
 }
-.footer__made { font-size: var(--fs-xs); color: #64748b; }
+.footer__made { font-size: var(--fs-xs); color: var(--text-subtle); }
 
 @media (max-width: 720px) {
   .footer__inner { grid-template-columns: 1fr; gap: var(--sp-8); }

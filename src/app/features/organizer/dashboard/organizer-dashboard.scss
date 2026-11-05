@@ -44,7 +44,7 @@
   padding: var(--sp-4);
   border-radius: var(--radius);
   background: var(--success-bg);
-  color: #166534;
+  color: var(--success);
   font-size: var(--fs-sm);
   font-weight: 500;
 }
@@ -56,8 +56,8 @@
   flex-direction: column;
   gap: var(--sp-4);
   margin-bottom: var(--sp-6);
-  border-color: rgba(245, 129, 30, 0.35);
-  background: linear-gradient(135deg, rgba(245, 129, 30, 0.06), rgba(46, 144, 216, 0.05)), var(--surface);
+  border-color: rgba(138, 63, 252, 0.35);
+  background: linear-gradient(135deg, rgba(138, 63, 252, 0.06), var(--accent-soft)), var(--surface);
 }
 .ready__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
 .ready__head h3 { font-size: var(--fs-lg); }
@@ -70,7 +70,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: conic-gradient(var(--brand-orange) calc(var(--p) * 1%), rgba(245, 129, 30, 0.15) 0);
+  background: conic-gradient(var(--accent) calc(var(--p) * 1%), rgba(138, 63, 252, 0.15) 0);
 }
 .ready__ring span {
   width: 44px;
@@ -84,7 +84,7 @@
 }
 .ready__list { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-6); }
 .ready__list li { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); }
-.ready__list li.is-done { color: var(--text-subtle); text-decoration: line-through; text-decoration-color: var(--n-300); }
+.ready__list li.is-done { color: var(--text-subtle); text-decoration: line-through; text-decoration-color: var(--border-strong); }
 .ready__list a { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
 .ready__check {
   width: 20px;
@@ -96,7 +96,7 @@
   justify-content: center;
   flex: none;
 }
-.is-done .ready__check { background: var(--success); border-color: var(--success); color: #fff; }
+.is-done .ready__check { background: var(--success); border-color: var(--success); color: var(--brand-black); }
 
 /* ---- Fila de aprovação ---- */
 .queue { display: flex; flex-direction: column; }
@@ -127,8 +127,8 @@
   transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 .icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.icon-btn--approve:hover:not(:disabled) { background: var(--success-bg); color: #15803d; border-color: #86efac; }
-.icon-btn--reject:hover:not(:disabled) { background: var(--danger-bg); color: #b91c1c; border-color: #fca5a5; }
+.icon-btn--approve:hover:not(:disabled) { background: var(--success-bg); color: var(--success); border-color: rgba(60, 207, 127, 0.45); }
+.icon-btn--reject:hover:not(:disabled) { background: var(--danger-bg); color: var(--danger); border-color: rgba(242, 97, 95, 0.45); }
 
 /* ---- Mentoria ---- */
 .tickets { display: flex; flex-direction: column; gap: var(--sp-3); }
@@ -164,8 +164,8 @@
   vertical-align: middle;
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  background: rgba(46, 144, 216, 0.1);
-  color: var(--brand-blue);
+  background: var(--accent-soft);
+  color: var(--accent-text);
   font-size: var(--fs-xs);
   font-weight: 600;
 }

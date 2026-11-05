@@ -52,11 +52,12 @@ export interface Segment {
      .seg__tip {
        position: absolute; left: 50%; bottom: calc(100% + 6px); z-index: 2;
        transform: translate(-50%, 4px); padding: 6px 10px; border-radius: var(--radius-sm);
-       background: var(--brand-navy-deep); color: #e8eef6; font-size: var(--fs-xs);
+       background: var(--surface-raised); color: var(--text-muted); font-size: var(--fs-xs);
+       border: 1px solid var(--border-strong);
        white-space: nowrap; box-shadow: var(--shadow); pointer-events: none;
        opacity: 0; transition: opacity 0.12s, transform 0.12s;
      }
-     .seg__tip strong { color: #fff; }
+     .seg__tip strong { color: var(--text); }
      .seg__part:hover .seg__tip, .seg__part:focus-visible .seg__tip { opacity: 1; transform: translate(-50%, 0); }
 
      .legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px var(--sp-4); margin-top: var(--sp-3); }

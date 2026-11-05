@@ -25,7 +25,7 @@ import { Icon } from '../icon/icon';
        border: 1px solid var(--border); font-size: var(--fs-sm); font-weight: 500;
      }
      :host(.is-selected) .tag {
-       background: rgba(46,144,216,.12); color: var(--brand-blue); border-color: var(--brand-blue);
+       background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent);
      }
      .tag__remove {
        display: inline-flex; border: 0; background: transparent; cursor: pointer;

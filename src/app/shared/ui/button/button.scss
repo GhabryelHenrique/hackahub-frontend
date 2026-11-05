@@ -38,19 +38,20 @@
 .btn--lg { padding: 0 var(--sp-6); height: 52px; font-size: var(--fs-lg); }
 .btn--block { width: 100%; }
 
-/* Primário — laranja (CTA) */
+/* Primário — roxo da marca (CTA) */
 .btn--primary {
-  background: var(--brand-orange);
+  background: var(--accent);
   color: var(--btn-fg);
 }
-.btn--primary:hover { background: var(--brand-orange-600); }
+.btn--primary:hover { background: var(--accent-hover); box-shadow: var(--glow-accent); }
 
-/* Secundário — navy */
+/* Secundário — camada elevada com borda (no tema escuro substitui o navy) */
 .btn--secondary {
-  background: var(--brand-navy);
-  color: var(--btn-fg);
+  background: var(--surface-inset);
+  color: var(--text);
+  border-color: var(--border-strong);
 }
-.btn--secondary:hover { background: var(--brand-navy-deep); }
+.btn--secondary:hover { background: var(--surface-raised); border-color: var(--accent); }
 
 /* Contorno */
 .btn--outline {
@@ -69,7 +70,7 @@
 
 /* Perigo */
 .btn--danger {
-  background: var(--danger);
+  background: var(--danger-solid);
   color: var(--btn-fg);
 }
 .btn--danger:hover { background: #b91c1c; }

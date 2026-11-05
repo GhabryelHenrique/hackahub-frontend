@@ -1,32 +1,19 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-/** Marca Hackahub: símbolo com gradiente + wordmark "Hacka"(navy) + "hub"(laranja). */
+/**
+ * Marca HackaHub: símbolo oficial (public/brand/logo-mark-64.png, gerado a partir de
+ * public/logo_hackahub.png) + wordmark "Hacka" (claro) + "Hub" (roxo da marca).
+ * `invert` é mantido por compatibilidade — no tema escuro a marca já é clara.
+ */
 @Component({
   selector: 'app-brand-logo',
   imports: [RouterLink],
   template: `
-    <a class="brand" [routerLink]="href()" [class.brand--invert]="invert()" aria-label="Hackahub — início">
-      <span class="brand__mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" width="32" height="32">
-          <defs>
-            <linearGradient id="hh-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#3FA9E0" />
-              <stop offset="0.45" stop-color="#2E90D8" />
-              <stop offset="1" stop-color="#F5811E" />
-            </linearGradient>
-          </defs>
-          <rect x="0" y="0" width="32" height="32" rx="9" fill="url(#hh-grad)" />
-          <path
-            d="M11 9v14M21 9v14M11 16h10"
-            stroke="#fff"
-            stroke-width="2.6"
-            stroke-linecap="round"
-          />
-        </svg>
-      </span>
+    <a class="brand" [routerLink]="href()" [class.brand--invert]="invert()" aria-label="HackaHub — início">
+      <img class="brand__mark" src="brand/logo-mark-64.png" width="34" height="34" alt="" aria-hidden="true" />
       <span class="brand__word">
-        <span class="brand__hacka">Hacka</span><span class="brand__hub">hub</span>
+        <span class="brand__hacka">Hacka</span><span class="brand__hub">Hub</span>
       </span>
     </a>
   `,
@@ -34,10 +21,13 @@ import { RouterLink } from '@angular/router';
     `:host { display: inline-flex; }
      .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
      .brand:hover { text-decoration: none; }
-     .brand__mark { display: inline-flex; box-shadow: var(--shadow-sm); border-radius: 9px; }
+     .brand__mark {
+       border-radius: 9px;
+       box-shadow: 0 0 0 1px var(--border), 0 4px 14px rgba(138, 63, 252, 0.25);
+     }
      .brand__word { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.02em; line-height: 1; }
-     .brand__hacka { color: var(--brand-navy); }
-     .brand__hub { color: var(--brand-orange); }
+     .brand__hacka { color: var(--text); }
+     .brand__hub { color: var(--accent); }
      .brand--invert .brand__hacka { color: #fff; }`,
   ],
 })

@@ -101,13 +101,14 @@ function niceStep(max: number, ticks = 4): number {
        position: absolute; top: -6px; transform: translate(10px, -100%);
        display: flex; flex-direction: column; gap: 1px; min-width: 120px;
        padding: 8px 10px; border-radius: var(--radius-sm); pointer-events: none;
-       background: var(--brand-navy-deep); color: #c9d6e6; font-size: var(--fs-xs);
+       background: var(--surface-raised); color: var(--text-muted); font-size: var(--fs-xs);
+       border: 1px solid var(--border-strong);
        box-shadow: var(--shadow); z-index: 2;
      }
      .trend__tip.is-right { transform: translate(calc(-100% - 10px), -100%); }
-     .trend__tip strong { color: #fff; font-size: var(--fs-base); }
-     .trend__delta { color: #9ecbff; }
-     .trend__date { color: #8298b5; }
+     .trend__tip strong { color: var(--text); font-size: var(--fs-base); }
+     .trend__delta { color: var(--accent-text); }
+     .trend__date { color: var(--text-subtle); }
      .trend__x { position: relative; height: 22px; margin-top: 6px; }
      .trend__x span {
        position: absolute; transform: translateX(-50%); white-space: nowrap;

@@ -54,17 +54,17 @@ export function hueFromString(s: string): number {
 
 /**
  * Matiz da capa gerada (`.cover-art`), restrito à faixa fria da marca
- * (190 ciano → 250 índigo) para não destoar do navy/laranja.
+ * (235 índigo → 290 violeta) para não destoar do preto/roxo da logo.
  */
 export function coverHue(s: string): number {
-  return 190 + (hueFromString(s) % 61);
+  return 235 + (hueFromString(s) % 56);
 }
 
 /** `background-image` para capa com foto; `veil` escurece para texto por cima. */
 export function coverImage(url: string | null | undefined, veil = false): string | null {
   if (!url) return null;
   const safe = `url("${url.replace(/"/g, '%22')}")`;
-  return veil ? `linear-gradient(180deg, rgba(11, 27, 48, 0.35), rgba(11, 27, 48, 0.82)), ${safe}` : safe;
+  return veil ? `linear-gradient(180deg, rgba(5, 5, 12, 0.35), rgba(5, 5, 12, 0.82)), ${safe}` : safe;
 }
 
 const dayFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' });

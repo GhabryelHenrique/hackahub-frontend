@@ -17,7 +17,7 @@
   text-decoration: none;
   box-shadow: var(--shadow-lg);
   transform: translateY(-3px);
-  border-color: var(--border-strong);
+  border-color: rgba(138, 63, 252, 0.45);
 }
 
 /* ---- Capa ---- */
@@ -41,7 +41,7 @@
   line-height: 1;
 }
 .card__date strong { font-family: var(--font-display); font-size: 1.25rem; }
-.card__date small { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--brand-orange-600); margin-top: 3px; }
+.card__date small { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-text); margin-top: 3px; }
 
 /* Monograma gigante e translúcido — identidade da capa sem foto. */
 .card__mono {
@@ -73,9 +73,9 @@
   padding: var(--sp-4) var(--sp-4) var(--sp-3);
   flex: 1;
 }
-.card__org { font-size: var(--fs-xs); font-weight: 600; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.04em; }
+.card__org { font-size: var(--fs-xs); font-weight: 600; color: var(--accent-text); text-transform: uppercase; letter-spacing: 0.04em; }
 .card__name { font-size: var(--fs-lg); line-height: 1.25; }
-.card:hover .card__name { color: var(--brand-navy-deep); }
+.card:hover .card__name { color: var(--accent-text); }
 .card__summary {
   color: var(--text-muted);
   font-size: var(--fs-sm);
@@ -105,7 +105,7 @@
   padding: var(--sp-3) var(--sp-4);
   border-top: 1px solid var(--border);
 }
-.card__cta { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-sm); font-weight: 600; color: var(--brand-navy); }
+.card__cta { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-sm); font-weight: 600; color: var(--text); }
 .card__cta app-icon { transition: transform 0.18s var(--ease); }
-.card:hover .card__cta { color: var(--brand-orange-600); }
+.card:hover .card__cta { color: var(--accent-text); }
 .card:hover .card__cta app-icon { transform: translateX(3px); }

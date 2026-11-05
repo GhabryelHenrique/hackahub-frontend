@@ -21,7 +21,7 @@ import { Icon } from '../icon/icon';
      .empty__icon {
        display: inline-flex; align-items: center; justify-content: center;
        width: 64px; height: 64px; border-radius: 50%;
-       background: var(--brand-gradient-soft); color: var(--brand-blue);
+       background: var(--brand-gradient-soft); color: var(--accent-text);
        margin-bottom: var(--sp-2);
      }
      .empty__title { font-size: var(--fs-xl); }
