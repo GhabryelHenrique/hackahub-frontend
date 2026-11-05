@@ -29,7 +29,7 @@
                   @if (m.id === team.leaderId) { <app-badge tone="warning"><app-icon name="crown" [size]="12" /> Líder</app-badge> }
                   @if (m.id === myId()) { <span class="member__you">você</span> }
                 </span>
-                <span class="member__email">{{ m.email }}</span>
+                <span class="member__email">{{ m.email ?? 'Perfil do Discord · sem conta no site' }}</span>
               </div>
               @if (isLeader() && m.id !== team.leaderId) {
                 <button type="button" class="member__remove" (click)="removeMember(m)" [disabled]="busy()" aria-label="Remover">
