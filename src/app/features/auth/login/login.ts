@@ -36,6 +36,8 @@ export class Login {
       this.error.set('Não foi possível entrar com o Discord. Tente novamente.');
     } else if (discord === 'cancelado') {
       this.error.set('Login com o Discord cancelado.');
+    } else if (discord === 'indisponivel') {
+      this.error.set('Login com o Discord indisponível no momento. Entre com e-mail e senha.');
     }
   }
 
