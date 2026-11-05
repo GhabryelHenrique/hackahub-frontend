@@ -12,7 +12,7 @@
   margin: 0 auto;
   padding: var(--sp-3) var(--gutter);
 }
-.pcb__icon { color: var(--brand-orange); flex: none; }
+.pcb__icon { color: var(--accent-text); flex: none; }
 .pcb__text { margin: 0; font-size: var(--fs-sm); color: var(--text); }
 
 .pcb__cta {
@@ -20,7 +20,7 @@
   flex: none;
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--brand-blue);
+  color: var(--accent-text);
   white-space: nowrap;
 }
 .pcb__cta:hover { text-decoration: underline; }

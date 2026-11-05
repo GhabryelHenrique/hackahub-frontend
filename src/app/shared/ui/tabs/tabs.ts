@@ -38,7 +38,7 @@ export interface TabItem {
        white-space: nowrap; transition: background 0.15s var(--ease), color 0.15s var(--ease);
      }
      .tab:hover { color: var(--text); }
-     .tab.is-active { background: var(--surface); color: var(--brand-navy); box-shadow: var(--shadow-sm); }`,
+     .tab.is-active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }`,
   ],
 })
 export class Tabs {

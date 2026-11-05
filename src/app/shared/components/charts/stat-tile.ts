@@ -57,7 +57,7 @@ import { compact } from '../../format';
      .tile__icon {
        display: inline-flex; align-items: center; justify-content: center;
        width: 32px; height: 32px; border-radius: var(--radius);
-       background: var(--brand-gradient-soft); color: var(--brand-blue);
+       background: var(--brand-gradient-soft); color: var(--accent-text);
      }
      .tile__value {
        font-family: var(--font-body); font-weight: 650; font-size: 2rem;

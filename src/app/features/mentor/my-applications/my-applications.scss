@@ -14,7 +14,7 @@
   flex-wrap: wrap;
 }
 .app-item__main { display: flex; flex-direction: column; gap: 4px; }
-.app-item__org { font-size: var(--fs-xs); font-weight: 600; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.04em; }
+.app-item__org { font-size: var(--fs-xs); font-weight: 600; color: var(--accent-text); text-transform: uppercase; letter-spacing: 0.04em; }
 .app-item__name { font-size: var(--fs-lg); font-weight: 600; color: var(--text); }
 .app-item__date { color: var(--text-subtle); font-size: var(--fs-sm); }
 .app-item__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }

@@ -7,7 +7,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'dan
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
- * Botão tematizado (docs §5). Laranja = ação primária (um por vista, docs §1.1).
+ * Botão tematizado (docs §5). Roxo da marca = ação primária (um por vista, docs §1.1).
  * Renderiza `<a routerLink>` quando `routerLink` é fornecido, senão `<button>`.
  */
 @Component({

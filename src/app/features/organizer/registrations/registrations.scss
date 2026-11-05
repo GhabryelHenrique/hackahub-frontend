@@ -20,7 +20,7 @@
   background: var(--surface);
   color: var(--text-subtle);
 }
-.reg__search:focus-within { border-color: var(--brand-blue); box-shadow: var(--shadow-focus); }
+.reg__search:focus-within { border-color: var(--accent); box-shadow: var(--shadow-focus); }
 .reg__search input { flex: 1; border: 0; outline: none; background: transparent; font-size: var(--fs-sm); color: var(--text); }
 
 .reg__list { display: flex; flex-direction: column; gap: var(--sp-3); }
@@ -55,15 +55,15 @@
 .reg__chip {
   padding: 2px 10px;
   border-radius: var(--radius-full);
-  background: rgba(46, 144, 216, 0.1);
-  color: var(--brand-blue);
+  background: var(--accent-soft);
+  color: var(--accent-text);
   font-size: var(--fs-xs);
   font-weight: 600;
 }
 .reg__motivation {
   margin: 0;
   padding-left: var(--sp-3);
-  border-left: 3px solid var(--brand-orange);
+  border-left: 3px solid var(--accent);
   color: var(--text-muted);
   font-size: var(--fs-sm);
   white-space: pre-line;

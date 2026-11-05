@@ -3,7 +3,7 @@
 .team { display: grid; grid-template-columns: 1fr; gap: var(--sp-6); }
 .team__main { display: flex; flex-direction: column; gap: var(--sp-6); }
 .team__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-4); flex-wrap: wrap; }
-.team__eyebrow { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-blue); }
+.team__eyebrow { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-text); }
 .team__name { font-size: var(--fs-2xl); }
 .team__desc { color: var(--text-muted); margin-top: 4px; }
 .team__subtitle { font-size: var(--fs-lg); margin-bottom: var(--sp-3); }
@@ -24,7 +24,7 @@
 .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(46, 144, 216, 0.1); color: var(--brand-blue);
+  background: var(--accent-soft); color: var(--accent-text);
   padding: 6px 12px; border-radius: var(--radius-full); font-size: var(--fs-sm); font-weight: 500;
 }
 
@@ -37,7 +37,7 @@
 .team__empty { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); align-items: start; }
 .create__form { display: flex; flex-direction: column; gap: var(--sp-4); margin-top: var(--sp-4); }
 .rule { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: var(--fs-sm); margin-bottom: var(--sp-4); }
-.rule app-icon { color: var(--brand-blue); }
+.rule app-icon { color: var(--accent-text); }
 
 .browse__list { display: flex; flex-direction: column; gap: var(--sp-3); }
 .browse__item {

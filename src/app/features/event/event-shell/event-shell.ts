@@ -38,7 +38,7 @@ export class EventShell {
   protected readonly head = computed(() => this.ctx.detail() ?? this.ctx.summary());
   protected readonly hue = computed(() => {
     const slug = this.head()?.slug;
-    return slug ? coverHue(slug) : 205;
+    return slug ? coverHue(slug) : 255;
   });
   protected readonly memberships = computed(() => this.auth.membershipsFor(this.hackathonId()));
   protected readonly photo = computed(() => coverImage(this.head()?.coverImage, true));

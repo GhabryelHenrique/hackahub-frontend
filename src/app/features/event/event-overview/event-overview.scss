@@ -10,7 +10,7 @@
 }
 .notice strong { display: block; }
 .notice p { font-size: var(--fs-sm); opacity: 0.9; }
-.notice--warning { background: var(--warning-bg); color: #92400e; }
+.notice--warning { background: var(--warning-bg); color: var(--warning); }
 .notice--warning app-icon { color: var(--warning); }
 
 .ov {
@@ -45,11 +45,11 @@
   color: var(--text);
   transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
-.ov__action:hover { text-decoration: none; border-color: var(--brand-blue); box-shadow: var(--shadow-sm); }
+.ov__action:hover { text-decoration: none; border-color: var(--accent); box-shadow: var(--shadow-sm); }
 .ov__action-icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: var(--radius); flex: none;
-  background: var(--brand-gradient-soft); color: var(--brand-blue);
+  background: var(--brand-gradient-soft); color: var(--accent-text);
 }
 .ov__action-text { flex: 1; display: flex; flex-direction: column; }
 .ov__action-text small { color: var(--text-subtle); font-size: var(--fs-sm); }
@@ -63,7 +63,7 @@
 .ov__help-icon {
   display: inline-flex; align-items: center; justify-content: center; flex: none;
   width: 40px; height: 40px; border-radius: var(--radius);
-  background: var(--brand-gradient-soft); color: var(--brand-blue);
+  background: var(--brand-gradient-soft); color: var(--accent-text);
 }
 .ov__req {
   display: flex; flex-direction: column; align-items: flex-start; gap: 4px;

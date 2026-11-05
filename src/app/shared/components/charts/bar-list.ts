@@ -59,11 +59,12 @@ export interface BarItem {
      .bar__tip {
        position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 2;
        padding: 6px 10px; border-radius: var(--radius-sm);
-       background: var(--brand-navy-deep); color: #e8eef6; font-size: var(--fs-xs);
+       background: var(--surface-raised); color: var(--text-muted); font-size: var(--fs-xs);
+       border: 1px solid var(--border-strong);
        white-space: nowrap; box-shadow: var(--shadow); pointer-events: none;
        opacity: 0; transform: translateY(4px); transition: opacity 0.12s, transform 0.12s;
      }
-     .bar__tip strong { color: #fff; margin-right: 4px; }
+     .bar__tip strong { color: var(--text); margin-right: 4px; }
      .bar:hover .bar__tip, .bar:focus-visible .bar__tip { opacity: 1; transform: none; }`,
   ],
 })

@@ -50,7 +50,7 @@ import { Icon } from '../icon/icon';
        transition: background 0.15s var(--ease), color 0.15s var(--ease);
      }
      .pg__btn:hover:not(:disabled) { background: var(--surface-inset); color: var(--text); }
-     .pg__btn.is-active { background: var(--brand-navy); color: #fff; border-color: var(--brand-navy); }
+     .pg__btn.is-active { background: var(--accent); color: var(--text-invert); border-color: var(--accent); }
      .pg__btn:disabled { opacity: 0.4; cursor: not-allowed; }`,
   ],
 })

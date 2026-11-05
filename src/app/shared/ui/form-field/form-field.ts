@@ -28,7 +28,7 @@ import { Icon } from '../icon/icon';
   styles: [
     `.field { display: flex; flex-direction: column; gap: 6px; }
      .field__label { font-size: var(--fs-sm); font-weight: 500; color: var(--text); }
-     .field__req { color: var(--brand-orange); margin-left: 2px; }
+     .field__req { color: var(--accent-text); margin-left: 2px; }
      .field__msg { display: flex; align-items: center; gap: 5px; font-size: var(--fs-sm); }
      .field__msg--error { color: var(--danger); }
      .field__msg--hint { color: var(--text-subtle); }`,

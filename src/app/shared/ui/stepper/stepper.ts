@@ -30,9 +30,9 @@ import { Icon } from '../icon/icon';
      }
      .step__label { font-size: var(--fs-sm); font-weight: 500; color: var(--text-subtle); white-space: nowrap; }
      .step__line { flex: 1; height: 2px; background: var(--border); margin: 0 var(--sp-2); min-width: 16px; }
-     .step.is-active .step__dot { background: var(--brand-navy); color: #fff; border-color: var(--brand-navy); }
+     .step.is-active .step__dot { background: var(--accent); color: var(--text-invert); border-color: var(--accent); }
      .step.is-active .step__label { color: var(--text); }
-     .step.is-done .step__dot { background: var(--success); color: #fff; border-color: var(--success); }
+     .step.is-done .step__dot { background: var(--success); color: var(--brand-black); border-color: var(--success); }
      .step.is-done .step__line { background: var(--success); }
      .step.is-done .step__label { color: var(--text); }
      @media (max-width: 560px) { .step__label { display: none; } }`,

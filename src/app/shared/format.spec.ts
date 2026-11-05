@@ -102,14 +102,14 @@ describe('format', () => {
       }
     });
 
-    it('coverHue fica na faixa fria da marca (190–250)', () => {
+    it('coverHue fica na faixa índigo→violeta da marca (235–290)', () => {
       for (let i = 0; i < 500; i++) {
         const h = coverHue(`evento-${i}`);
-        expect(h).toBeGreaterThanOrEqual(190);
-        expect(h).toBeLessThanOrEqual(250);
+        expect(h).toBeGreaterThanOrEqual(235);
+        expect(h).toBeLessThanOrEqual(290);
       }
       for (const s of samples) {
-        expect(coverHue(s)).toBe(190 + (hueFromString(s) % 61));
+        expect(coverHue(s)).toBe(235 + (hueFromString(s) % 56));
       }
     });
 

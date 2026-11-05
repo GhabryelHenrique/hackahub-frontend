@@ -66,7 +66,7 @@ export class EventDetail {
   });
   protected readonly hue = computed(() => {
     const e = this.event();
-    return e ? coverHue(e.slug) : 205;
+    return e ? coverHue(e.slug) : 255;
   });
 
   protected readonly isAuthenticated = this.auth.isAuthenticated;

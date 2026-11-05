@@ -57,7 +57,7 @@
   font-size: var(--fs-sm);
   font-weight: 600;
 }
-.imgpick__btn:hover { border-color: var(--brand-orange); color: var(--brand-orange); }
+.imgpick__btn:hover { border-color: var(--accent); color: var(--accent-text); }
 .imgpick__remove { background: none; border: none; color: var(--danger); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
 .imgpick__hint { font-size: var(--fs-xs); color: var(--text-subtle); }
 

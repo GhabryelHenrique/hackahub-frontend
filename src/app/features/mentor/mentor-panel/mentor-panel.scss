@@ -36,12 +36,12 @@
 /* ---- Times ---- */
 .mp__teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-4); }
 .mp-team { display: flex; flex-direction: column; gap: var(--sp-3); }
-.mp-team.is-mine { border-color: rgba(22, 163, 74, 0.35); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08); }
+.mp-team.is-mine { border-color: rgba(60, 207, 127, 0.45); box-shadow: 0 0 0 3px rgba(60, 207, 127, 0.1); }
 .mp-team__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
 .mp-team__head h3 { font-size: var(--fs-lg); }
 .mp-team__desc { color: var(--text-muted); font-size: var(--fs-sm); }
 .mp-team__members { display: flex; flex-wrap: wrap; }
 .mp-avatar { display: inline-flex; margin-right: -6px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface); }
 .mp-team__chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.mp-chip { background: rgba(46, 144, 216, 0.1); color: var(--brand-blue); border-radius: var(--radius-full); padding: 3px 10px; font-size: var(--fs-xs); font-weight: 500; }
+.mp-chip { background: var(--accent-soft); color: var(--accent-text); border-radius: var(--radius-full); padding: 3px 10px; font-size: var(--fs-xs); font-weight: 500; }
 .mp-team app-button { align-self: flex-start; }

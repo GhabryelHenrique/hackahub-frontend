@@ -5,50 +5,62 @@
    ============================================================================= */
 
 :root {
-  /* --- Marca (docs §1.1) --------------------------------------------------- */
-  --brand-navy: #12253f;
-  --brand-navy-deep: #0b1b30;
-  --brand-orange: #f5811e;
-  --brand-orange-600: #da7015;
-  --brand-blue: #2e90d8;
-  --brand-cyan: #3fa9e0;
-  --brand-gradient: linear-gradient(135deg, #3fa9e0 0%, #2e90d8 45%, #f5811e 100%);
-  --brand-gradient-soft: linear-gradient(135deg, rgba(63, 169, 224, 0.14) 0%, rgba(245, 129, 30, 0.14) 100%);
+  /* Tema único escuro: deixa o navegador desenhar scrollbars, autofill e
+     controles nativos (date/checkbox) no modo escuro. */
+  color-scheme: dark;
 
-  /* --- Neutros (escala slate) --------------------------------------------- */
+  /* --- Marca (logo HackaHub: fundo preto + "H" roxo→índigo) --------------- */
+  --brand-black: #05050c;      /* fundo da logo — hero, rodapé, capas */
+  --brand-ink: #0c0b18;        /* preto levemente violeta p/ camadas de marca */
+  --brand-purple: #8a3ffc;     /* roxo do "Hub" — CTA / cor de ação */
+  --brand-purple-600: #7426ee; /* hover/pressionado do CTA */
+  --brand-purple-300: #b48dff; /* roxo claro p/ texto e ícones sobre o escuro (≥7:1) */
+  --brand-indigo: #4c5cff;     /* azul-índigo da base do "H" */
+  --brand-gradient: linear-gradient(135deg, #a74dff 0%, #8a3ffc 42%, #4c5cff 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(167, 77, 255, 0.18) 0%, rgba(76, 92, 255, 0.16) 100%);
+
+  /* --- Papéis de destaque (use estes nos componentes, não a cor crua) ----- */
+  --accent: var(--brand-purple);          /* fundos/bordas de ação (branco por cima: 5:1) */
+  --accent-hover: var(--brand-purple-600);
+  --accent-text: var(--brand-purple-300); /* texto/ícone de destaque sobre superfícies */
+  --accent-soft: rgba(138, 63, 252, 0.14);/* fundo translúcido p/ chips, seleção */
+
+  /* --- Neutros (escala fria levemente violeta, claro → escuro) ------------ */
   --n-0: #ffffff;
-  --n-50: #f6f8fb;
-  --n-100: #eef2f7;
-  --n-200: #e2e8f0;
-  --n-300: #cbd5e1;
-  --n-400: #94a3b8;
-  --n-500: #64748b;
-  --n-600: #475569;
-  --n-700: #334155;
-  --n-800: #1e293b;
-  --n-900: #0f172a;
+  --n-50: #f4f3fa;
+  --n-100: #e4e2f0;
+  --n-200: #c9c6dc;
+  --n-300: #a9a6c0;
+  --n-400: #7f7b98;
+  --n-500: #5d5975;
+  --n-600: #403d57;
+  --n-700: #2a283d;
+  --n-800: #1a1929;
+  --n-900: #0f0e1a;
 
-  /* --- Semânticos --------------------------------------------------------- */
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --warning: #d97706;
-  --warning-bg: #fef3c7;
-  --danger: #dc2626;
-  --danger-bg: #fee2e2;
-  --info: #2e90d8;
-  --info-bg: #e0f2fe;
+  /* --- Semânticos (claros o bastante p/ texto no escuro; -bg translúcido) - */
+  --success: #3ccf7f;
+  --success-bg: rgba(60, 207, 127, 0.14);
+  --warning: #f5b23d;
+  --warning-bg: rgba(245, 178, 61, 0.14);
+  --danger: #f2615f;
+  --danger-bg: rgba(242, 97, 95, 0.14);
+  --danger-solid: #dc2626;     /* fundo de botão destrutivo (branco por cima: 4.8:1) */
+  --info: #7b87ff;
+  --info-bg: rgba(76, 92, 255, 0.16);
 
-  /* --- Papéis de superfície (facilitam dark mode) ------------------------- */
-  --surface: var(--n-0);
-  --surface-muted: var(--n-50);
-  --surface-inset: var(--n-100);
-  --border: var(--n-200);
-  --border-strong: var(--n-300);
-  --text: var(--brand-navy);
-  --text-muted: var(--n-600);
-  --text-subtle: var(--n-500);
-  --text-invert: var(--n-0);
-  --link: var(--brand-blue);
+  /* --- Papéis de superfície ------------------------------------------------ */
+  --surface-muted: #07070f;    /* fundo da página */
+  --surface: #0f0e1a;          /* cards, navbar, campos */
+  --surface-inset: #171627;    /* hover, trilhos, campos desabilitados */
+  --surface-raised: #1c1a30;   /* tooltips, popovers */
+  --border: #24223a;
+  --border-strong: #363353;
+  --text: #eeecf8;
+  --text-muted: #aeabc6;
+  --text-subtle: #858199;
+  --text-invert: var(--n-0);   /* texto sobre --accent */
+  --link: var(--accent-text);
 
   /* --- Tipografia (docs §1.2) --------------------------------------------- */
   --font-display: 'Poppins', 'Sora', 'Segoe UI', system-ui, sans-serif;
@@ -69,11 +81,12 @@
   --radius-lg: 16px;
   --radius-full: 999px;
 
-  /* --- Sombras ------------------------------------------------------------ */
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
-  --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
-  --shadow-focus: 0 0 0 3px rgba(46, 144, 216, 0.35);
+  /* --- Sombras (no escuro, sombra quase não aparece: borda faz o relevo) -- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 63, 252, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(138, 63, 252, 0.55);
+  --glow-accent: 0 6px 24px rgba(138, 63, 252, 0.35);
 
   /* --- Espaçamento (escala 4px) ------------------------------------------- */
   --sp-1: 4px;
@@ -93,27 +106,11 @@
 
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* --- Gráficos (série única = azul da marca; validado ≥3:1 na superfície) --- */
-  --chart-series: var(--brand-blue);
-  --chart-track: rgba(46, 144, 216, 0.14);
-  --chart-grid: var(--n-100);
-  --chart-axis: var(--n-300);
-}
-
-/* Ganchos para dark mode (docs §1.3 — hero já é escuro; tokens preparados). */
-:root[data-theme='dark'] {
-  --surface: #0f1e33;
-  --surface-muted: #0b1b30;
-  --surface-inset: #12253f;
-  --border: #1e3350;
-  --border-strong: #2a4569;
-  --text: #e8eef6;
-  --text-muted: #a9bad0;
-  --text-subtle: #8298b5;
-  --link: var(--brand-cyan);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  /* --- Gráficos (série única = roxo da marca; 3.8:1 sobre --surface) ------ */
+  --chart-series: var(--brand-purple);
+  --chart-track: rgba(138, 63, 252, 0.18);
+  --chart-grid: var(--border);
+  --chart-axis: var(--border-strong);
 }
 
 /* =============================================================================
@@ -143,6 +140,11 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100dvh;
+}
+
+::selection {
+  background: rgba(138, 63, 252, 0.45);
+  color: #fff;
 }
 
 h1, h2, h3, h4, h5 {
@@ -219,8 +221,8 @@ ul, ol { list-style: none; padding: 0; }
 
 /* =============================================================================
    Capa gerada de evento (sem imagem enviada)
-   Navy da marca + brilho frio tingido por `--hue` (coverHue(): faixa ciano→índigo)
-   + brilho laranja + grade pontilhada. Cada evento fica único sem sair da paleta.
+   Preto da marca + brilho tingido por `--hue` (coverHue(): faixa índigo→violeta)
+   + brilho roxo + grade pontilhada. Cada evento fica único sem sair da paleta.
    Com foto, o componente põe a imagem (e um véu, se houver texto) em
    `background-image` inline, o que substitui os gradientes; a grade some.
    ============================================================================= */
@@ -228,11 +230,11 @@ ul, ol { list-style: none; padding: 0; }
   position: relative;
   isolation: isolate;
   color: #fff;
-  background-color: var(--brand-navy-deep);
+  background-color: var(--brand-black);
   background-image:
-    radial-gradient(75% 120% at 0% 0%, hsl(var(--hue, 205) 85% 56% / 0.7) 0%, transparent 58%),
-    radial-gradient(65% 110% at 100% 100%, rgba(245, 129, 30, 0.5) 0%, transparent 58%),
-    linear-gradient(160deg, var(--brand-navy) 0%, var(--brand-navy-deep) 100%);
+    radial-gradient(75% 120% at 0% 0%, hsl(var(--hue, 255) 90% 62% / 0.55) 0%, transparent 58%),
+    radial-gradient(65% 110% at 100% 100%, rgba(138, 63, 252, 0.45) 0%, transparent 58%),
+    linear-gradient(160deg, var(--brand-ink) 0%, var(--brand-black) 100%);
   background-size: cover;
   background-position: center;
 }
@@ -292,7 +294,7 @@ ul, ol { list-style: none; padding: 0; }
   left: -999px;
   top: var(--sp-2);
   z-index: 1000;
-  background: var(--brand-navy);
+  background: var(--accent);
   color: var(--text-invert);
   padding: var(--sp-2) var(--sp-4);
   border-radius: var(--radius);
@@ -316,12 +318,12 @@ ul, ol { list-style: none; padding: 0; }
 .control::placeholder { color: var(--text-subtle); }
 .control:focus-visible {
   outline: none;
-  border-color: var(--brand-blue);
+  border-color: var(--accent);
   box-shadow: var(--shadow-focus);
 }
 .control:disabled { background: var(--surface-inset); cursor: not-allowed; opacity: 0.7; }
 .control.is-invalid { border-color: var(--danger); }
-.control.is-invalid:focus-visible { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25); }
+.control.is-invalid:focus-visible { box-shadow: 0 0 0 3px rgba(242, 97, 95, 0.3); }
 
 textarea.control {
   height: auto;
@@ -335,7 +337,7 @@ select.control {
   appearance: none;
   -webkit-appearance: none;
   padding-right: var(--sp-8);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23aeabc6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right var(--sp-4) center;
   cursor: pointer;

@@ -7,7 +7,7 @@
 .invite__text strong { color: var(--text); }
 .invite__actions { display: flex; gap: var(--sp-2); }
 .invites__hint { display: flex; align-items: center; gap: 6px; color: var(--text-subtle); font-size: var(--fs-sm); margin-top: var(--sp-4); }
-.invites__hint app-icon { color: var(--brand-blue); }
+.invites__hint app-icon { color: var(--accent-text); }
 
 @media (max-width: 560px) {
   .invite__inner { flex-wrap: wrap; }
