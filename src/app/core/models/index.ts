@@ -132,6 +132,8 @@ export interface Hackathon {
   teamMaxSize: number;
   maxParticipants: number | null; // null = ilimitado
   maxMentors: number | null; // null = ilimitado
+  /** Candidaturas de mentor entram aprovadas sem passar pela fila. */
+  autoApproveMentors?: boolean;
   location: string | null;
   price: number | null; // null = gratuito
   createdAt: string;
@@ -317,6 +319,7 @@ export interface CreateHackathonPayload {
   teamMaxSize?: number;
   maxParticipants?: number | null;
   maxMentors?: number | null;
+  autoApproveMentors?: boolean;
   location?: string | null;
   price?: number | null;
 }
@@ -339,6 +342,7 @@ export interface UpdateHackathonPayload {
   teamMaxSize?: number;
   maxParticipants?: number | null;
   maxMentors?: number | null;
+  autoApproveMentors?: boolean;
   location?: string | null;
   price?: number | null;
 }

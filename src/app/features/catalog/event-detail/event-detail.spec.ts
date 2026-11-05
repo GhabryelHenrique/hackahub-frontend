@@ -201,6 +201,25 @@ describe('EventDetail', () => {
       expect(auth.refresh).toHaveBeenCalled();
     });
 
+    it('senioridade é um select com Pleno, Sênior, Especialista e PhD', async () => {
+      await render();
+      await click('Candidatar-se como mentor');
+      const select = el.querySelector<HTMLSelectElement>('[formcontrolname="seniority"]')!;
+      expect(Array.from(select.options).map((o) => o.value)).toEqual(['Pleno', 'Sênior', 'Especialista', 'PhD']);
+    });
+
+    it('evento com aprovação automática avisa que a pessoa já é mentora', async () => {
+      hackathons.applyMentor.mockReturnValue(of(mem('MENTOR', 'APPROVED')));
+      await render();
+      await click('Candidatar-se como mentor');
+      await type('[formcontrolname="expertise"]', 'Backend');
+      await click('Continuar');
+      await type('[formcontrolname="motivation"]', 'Tenho 10 anos de experiência com backend.');
+      await click('Enviar candidatura');
+
+      expect(toast.success).toHaveBeenCalledWith('Pronto! Você já é mentor deste evento.');
+    });
+
     it('motivação curta não envia a candidatura', async () => {
       await render();
       await click('Candidatar-se como mentor');

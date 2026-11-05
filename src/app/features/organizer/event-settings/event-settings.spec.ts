@@ -119,12 +119,26 @@ describe('EventSettings', () => {
       price: 25,
       maxParticipants: 100,
       maxMentors: null,
+      autoApproveMentors: false,
       teamMaxSize: 5,
       status: 'PUBLISHED',
       visibility: 'PUBLIC',
       coverImage: 'http://localhost:3000/uploads/capa.png',
     });
     expect(lastPayload()).not.toHaveProperty('registrationCode');
+  });
+
+  it('flag de aprovar mentores automaticamente carrega e é enviada', async () => {
+    hackathons.detail.mockReturnValue(of({ ...hackathon(), autoApproveMentors: true }));
+    await render();
+    const check = control('autoApproveMentors')!;
+    expect(check.checked).toBe(true);
+
+    check.click();
+    await fixture.whenStable();
+    await save();
+
+    expect(lastPayload().autoApproveMentors).toBe(false);
   });
 
   it('após salvar reflete no contexto, recarrega a sessão e avisa', async () => {
