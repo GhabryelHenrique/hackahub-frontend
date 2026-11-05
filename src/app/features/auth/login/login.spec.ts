@@ -121,6 +121,13 @@ describe('Login', () => {
     expect(text(el.querySelector('.auth__error'))).toBe('Login com o Discord cancelado.');
   });
 
+  it('avisa quando o SSO do Discord não está configurado na API', async () => {
+    await open('/login?discord=indisponivel');
+    expect(text(el.querySelector('.auth__error'))).toBe(
+      'Login com o Discord indisponível no momento. Entre com e-mail e senha.',
+    );
+  });
+
   it('credenciais de demonstração só fora de produção', async () => {
     environment.production = true;
     await open();
