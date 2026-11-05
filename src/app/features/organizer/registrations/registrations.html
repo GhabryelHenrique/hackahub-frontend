@@ -40,7 +40,7 @@
           <app-avatar [name]="m.user?.name ?? '?'" [size]="40" />
           <div class="reg__who">
             <strong>{{ m.user?.name }}</strong>
-            <span>{{ m.user?.email }}</span>
+            <span>{{ m.user?.email ?? 'Perfil do Discord · sem conta no site' }}</span>
           </div>
           <div class="reg__tags">
             <app-badge [tone]="m.role === 'MENTOR' ? 'brand' : 'neutral'">{{ ROLE_LABEL[m.role] }}</app-badge>

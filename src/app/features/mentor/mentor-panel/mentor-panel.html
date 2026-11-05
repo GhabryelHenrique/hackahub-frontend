@@ -40,9 +40,13 @@
               </div>
             } @else if (t.status === 'IN_PROGRESS') {
               <div class="ticket__foot">
-                <a class="ticket__mail" [href]="'mailto:' + t.user.email">
-                  <app-icon name="mail" [size]="15" /> {{ t.user.email }}
-                </a>
+                @if (t.user.email) {
+                  <a class="ticket__mail" [href]="'mailto:' + t.user.email">
+                    <app-icon name="mail" [size]="15" /> {{ t.user.email }}
+                  </a>
+                } @else {
+                  <span class="ticket__mail">Fale pelo Discord (participante sem conta no site)</span>
+                }
                 <app-button size="sm" variant="secondary" [loading]="busyId() === t.id" (click)="complete(t)">
                   <app-icon slot="icon" name="check" [size]="15" /> Concluir
                 </app-button>

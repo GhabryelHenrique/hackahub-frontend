@@ -53,11 +53,16 @@ export interface CurrentUser {
   address?: AddressData | null;
 }
 
-/** Usuário público (toPublicUser). */
+/**
+ * Usuário público (toPublicUser). `discordOnly` = perfil provisório criado pelo
+ * bot do Discord para quem participa sem conta no site: não tem e-mail (null).
+ * Some quando a pessoa vincula uma conta do site (tudo é transferido).
+ */
 export interface PublicUser {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
+  discordOnly?: boolean;
 }
 
 // ---- Catálogo / eventos ---------------------------------------------------
