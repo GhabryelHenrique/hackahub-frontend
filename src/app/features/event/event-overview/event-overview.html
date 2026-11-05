@@ -130,6 +130,17 @@
         </dl>
       </app-card>
     }
+
+    @if (leavable(); as me) {
+      <app-leave-event
+        class="ov__leave"
+        [hackathonId]="me.hackathonId"
+        [role]="me.role"
+        [status]="me.status"
+        [block]="true"
+        (left)="onLeft()"
+      />
+    }
   </aside>
 </div>
 

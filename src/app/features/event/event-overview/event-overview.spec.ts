@@ -6,6 +6,8 @@ import { EventOverview } from './event-overview';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { MentorshipService } from '../../../core/services/mentorship.service';
 import { ToastService } from '../../../core/toast/toast.service';
+import { HackathonService } from '../../../core/services/hackathon.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { MembershipStatus, MentorshipRequest, MentorshipStatus, MyMembership } from '../../../core/models';
 
 function request(id: string, status: MentorshipStatus, extra: Partial<MentorshipRequest> = {}): MentorshipRequest {
@@ -33,11 +35,13 @@ describe('EventOverview', () => {
   const participantStatus = signal<MembershipStatus | null>('APPROVED');
   const mentorStatus = signal<MembershipStatus | null>(null);
   const organizerStatus = signal<MembershipStatus | null>(null);
-  const asMembership = (s: MembershipStatus | null) => (s ? ({ status: s } as MyMembership) : undefined);
+  const asMembership = (s: MembershipStatus | null, role: MyMembership['role'] = 'PARTICIPANT') =>
+    s ? ({ hackathonId: 'h1', role, status: s } as MyMembership) : undefined;
   const ctx = {
     activeId: signal<string | null>('h1'),
     participant: computed(() => asMembership(participantStatus())),
-    mentor: computed(() => asMembership(mentorStatus())),
+    mentor: computed(() => asMembership(mentorStatus(), 'MENTOR')),
+    organizer: computed(() => asMembership(organizerStatus(), 'ORGANIZER')),
     isParticipantApproved: computed(() => participantStatus() === 'APPROVED'),
     isMentorApproved: computed(() => mentorStatus() === 'APPROVED'),
     isOrganizerApproved: computed(() => organizerStatus() === 'APPROVED'),
@@ -64,6 +68,8 @@ describe('EventOverview', () => {
         provideRouter([]),
         { provide: EventContextService, useValue: ctx },
         { provide: MentorshipService, useValue: mentorship },
+        { provide: HackathonService, useValue: { leave: vi.fn() } },
+        { provide: AuthService, useValue: { reload: vi.fn() } },
       ],
     });
     toast = TestBed.inject(ToastService);
@@ -197,6 +203,23 @@ describe('EventOverview', () => {
       await render();
       expect(actions()).toEqual([]);
       expect(text(el)).toContain('Candidatura de mentor pendente');
+    });
+
+    it('participante vê "Cancelar inscrição"; mentor pendente, "Desistir da candidatura"', async () => {
+      await render();
+      expect(text(el)).toContain('Cancelar inscrição');
+      fixture.destroy();
+      participantStatus.set(null);
+      mentorStatus.set('PENDING');
+      await render();
+      expect(text(el)).toContain('Desistir da candidatura');
+    });
+
+    it('organizador não vê o botão de cancelar inscrição', async () => {
+      participantStatus.set(null);
+      organizerStatus.set('APPROVED');
+      await render();
+      expect(text(el)).not.toContain('Cancelar inscrição');
     });
   });
 });

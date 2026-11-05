@@ -159,6 +159,18 @@ export interface Membership {
   mentorProfile?: MentorProfile;
 }
 
+/** Resposta de `DELETE /hackathons/:id/memberships/me` (cancelar inscrição). */
+export interface LeaveEventResult {
+  message: string;
+  roles: MembershipRole[];
+  /** Equipe de que o participante saiu (null se não tinha). */
+  teamId: string | null;
+  /** true quando era líder sozinho e a equipe foi excluída. */
+  teamDeleted: boolean;
+  /** Atendimentos do mentor que voltaram para a fila. */
+  releasedMentorshipIds: string[];
+}
+
 /**
  * Membership enriquecida com o evento embutido — usada em "Meus eventos"
  * (docs §4.4) e nas candidaturas de mentor (docs §4.8).

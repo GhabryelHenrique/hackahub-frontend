@@ -107,6 +107,19 @@ describe('HackathonService', () => {
     expectReq('GET', `${API}/hackathons/h1/memberships/me`).flush([]);
   });
 
+  it('leave faz DELETE /memberships/me (cancelar inscrição)', () => {
+    let deleted = false;
+    service.leave('h1').subscribe((r) => (deleted = r.teamDeleted));
+    expectReq('DELETE', `${API}/hackathons/h1/memberships/me`).flush({
+      message: 'ok',
+      roles: ['PARTICIPANT'],
+      teamId: 't1',
+      teamDeleted: true,
+      releasedMentorshipIds: [],
+    });
+    expect(deleted).toBe(true);
+  });
+
   it('join envia o código de inscrição (ou undefined)', () => {
     service.join('h1', 'SEGREDO').subscribe();
     expectReq('POST', `${API}/hackathons/h1/join`, { registrationCode: 'SEGREDO' }).flush({});

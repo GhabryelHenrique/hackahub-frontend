@@ -109,6 +109,7 @@
                   Acessar área do evento <app-icon slot="icon" name="arrow-right" [size]="18" />
                 </app-button>
               }
+              <app-leave-event [hackathonId]="ev.id" [role]="me.role" [status]="me.status" [block]="true" />
               <p class="cta__note">Cada pessoa participa com um único papel por evento.</p>
             } @else {
               @switch (ev.registrationMode) {

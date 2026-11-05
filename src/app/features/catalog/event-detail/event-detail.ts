@@ -11,6 +11,7 @@ import { ToastService } from '../../../core/toast/toast.service';
 import { HackathonDetail } from '../../../core/models';
 import { Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper } from '../../../shared/ui';
 import { REGISTRATION_LABEL, REGISTRATION_TONE, ROLE_LABEL, SENIORITY_OPTIONS, STATUS_LABEL } from '../../../shared/labels';
+import { LeaveEvent } from '../../../shared/components/leave-event/leave-event';
 import { coverHue, coverImage, dateRange, formatPrice, fullDate, registrationState } from '../../../shared/format';
 
 type ViewState =
@@ -20,7 +21,7 @@ type ViewState =
 
 @Component({
   selector: 'app-event-detail',
-  imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, EmptyState, FormField, Icon, Modal, Skeleton, Stepper],
+  imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, EmptyState, FormField, Icon, LeaveEvent, Modal, Skeleton, Stepper],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.scss',
 })
