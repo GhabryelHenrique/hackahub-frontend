@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventContextService } from '../../../core/event-context/event-context.service';
 import { MentorshipService } from '../../../core/services/mentorship.service';
@@ -8,6 +8,7 @@ import { MentorshipRequest } from '../../../core/models';
 import { Badge, Button, Card, FormField, Icon, Modal, Skeleton } from '../../../shared/ui';
 import { MENTORSHIP_LABEL, MENTORSHIP_TONE, REGISTRATION_LABEL } from '../../../shared/labels';
 import { formatPrice, timeAgo } from '../../../shared/format';
+import { LeaveEvent } from '../../../shared/components/leave-event/leave-event';
 
 interface ActionCard {
   label: string;
@@ -18,7 +19,7 @@ interface ActionCard {
 
 @Component({
   selector: 'app-event-overview',
-  imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, FormField, Icon, Modal, Skeleton],
+  imports: [RouterLink, ReactiveFormsModule, Badge, Button, Card, FormField, Icon, LeaveEvent, Modal, Skeleton],
   templateUrl: './event-overview.html',
   styleUrl: './event-overview.scss',
 })
@@ -27,6 +28,7 @@ export class EventOverview {
   private readonly mentorship = inject(MentorshipService);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   protected readonly REGISTRATION_LABEL = REGISTRATION_LABEL;
   protected readonly MENTORSHIP_LABEL = MENTORSHIP_LABEL;
@@ -96,6 +98,19 @@ export class EventOverview {
       },
       error: () => this.cancellingId.set(null),
     });
+  }
+
+  /** Participação que a própria pessoa pode cancelar (organizador não sai). */
+  protected readonly leavable = computed(() => {
+    if (this.ctx.organizer()) return null;
+    const me = this.ctx.participant() ?? this.ctx.mentor();
+    return me && me.status !== 'REJECTED' ? me : null;
+  });
+
+  /** Fora do evento a área interna deixa de abrir: volta para a página pública dele. */
+  protected onLeft(): void {
+    const slug = this.ctx.summary()?.slug;
+    this.router.navigate(slug ? ['/eventos', slug] : ['/app']);
   }
 
   protected readonly participantPending = computed(() => this.ctx.participant()?.status === 'PENDING');

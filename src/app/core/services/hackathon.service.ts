@@ -8,6 +8,7 @@ import {
   ChallengePayload,
   CreateHackathonPayload,
   Hackathon,
+  LeaveEventResult,
   Membership,
   MembershipRole,
   MembershipStatus,
@@ -90,6 +91,15 @@ export class HackathonService {
   /** Minhas participações neste evento (não exige aprovação). */
   myMemberships(hackathonId: string): Observable<Membership[]> {
     return this.http.get<Membership[]>(`${this.base}/hackathons/${hackathonId}/memberships/me`);
+  }
+
+  /**
+   * Cancela a própria inscrição/candidatura no evento. Participante sai da equipe
+   * (líder sozinho → equipe excluída; líder com outros membros → 409); mentor
+   * devolve os atendimentos em andamento para a fila. Organizador não sai (403).
+   */
+  leave(hackathonId: string): Observable<LeaveEventResult> {
+    return this.http.delete<LeaveEventResult>(`${this.base}/hackathons/${hackathonId}/memberships/me`);
   }
 
   /** Participar (docs §4.2). Comportamento depende do `registrationMode`. */
