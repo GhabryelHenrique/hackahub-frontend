@@ -1,0 +1,71 @@
+name: GitHub Pages
+
+# Versão só de navegador (sem SSR) em https://hackahub.com.br pelo GitHub Pages,
+# enquanto o CloudFront não está liberado na conta AWS. Build com a configuração
+# `pages` do angular.json (outputMode static, sem servidor). Ver README → Deploy.
+# Quando o CloudFront entrar, desligue este workflow e tire o domínio do Pages.
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    name: Build estático
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Repository variable opcional; o padrão é a API de produção.
+      API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.hackahub.com.br' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (CSR, sem SSR)
+        run: npx ng build --configuration production,pages --define "HACKAHUB_API_BASE_URL='$API_BASE_URL'"
+
+      # O Pages não conhece as rotas do Angular: qualquer caminho desconhecido cai
+      # no 404.html, que é o próprio app. .nojekyll evita o processamento Jekyll.
+      - name: Fallback de SPA
+        run: |
+          out=dist/hackahub-frontend/browser
+          cp "$out/index.html" "$out/404.html"
+          touch "$out/.nojekyll"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/hackahub-frontend/browser
+
+  deploy:
+    name: Publicar no Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
