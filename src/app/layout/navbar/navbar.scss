@@ -1,7 +1,18 @@
-.nav {
+/*
+ * O sticky fica no host: os layouts (app/public) são flex em coluna, então o
+ * <app-navbar> tem exatamente a altura do header — um sticky no .nav interno
+ * não tinha para onde "grudar" e a navbar rolava junto com a página, deixando
+ * um vão acima das abas do evento (que grudam em top: var(--navbar-h)).
+ */
+:host {
+  display: block;
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+.nav {
+  position: relative; /* referência do menu mobile (.nav__links absolute) */
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
