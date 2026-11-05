@@ -145,6 +145,19 @@ CloudFormation da `hackahub-api` (`deploy/README.md`).
 O Angular só renderiza no servidor para os hosts de `NG_ALLOWED_HOSTS` (variável do
 Lambda); qualquer outro recebe 400, que é a proteção contra SSRF do `@angular/ssr`.
 
+### Temporário: GitHub Pages (sem SSR)
+
+Enquanto o CloudFront não está liberado na conta AWS, `https://hackahub.com.br` é servido
+pelo **GitHub Pages** só como app de navegador. O workflow
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) builda com a configuração
+`pages` do `angular.json` (`outputMode: static`, sem servidor) e publica a cada push na
+`master`. Rotas profundas caem no `404.html`, que é o próprio app: o navegador abre
+normal, mas a resposta HTTP é 404 e não há SSR para SEO.
+
+Para voltar ao CloudFront: apague no Route 53 os registros A/AAAA de `hackahub.com.br` e o
+CNAME de `www` (o deploy da stack cria os ALIAS e falharia com eles lá), remova o domínio
+em **Settings → Pages** e desative o workflow `GitHub Pages`.
+
 ## Fora de escopo
 
 Billing, white-label, submissões, julgamento, matchmaking e fluxo *push* de mentor. Há ganchos/TODOs onde faz sentido.
